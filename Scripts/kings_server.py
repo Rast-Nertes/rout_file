@@ -55,6 +55,7 @@ def get_wallet():
             choose_payment_method.click()
         except Exception as e:
             print(f"ADD FUNDS ERROR \n{e}")
+            return None
 
         try:
             make_payment = WebDriverWait(driver, 10).until(
@@ -68,6 +69,7 @@ def get_wallet():
             sheepy_button.click()
         except Exception as e:
             print(f"MAKE PAYMENT ERROR \n{e}")
+            return None
 
         try:
             choose_TRC20 = WebDriverWait(driver, 10).until(
@@ -79,8 +81,8 @@ def get_wallet():
             sleep(1)
             actions.send_keys(Keys.ARROW_UP).perform()
             sleep(1)
-            actions.send_keys(Keys.ARROW_UP).perform()
-            sleep(1)
+            # actions.send_keys(Keys.ARROW_UP).perform()
+            # sleep(1)
             actions.send_keys(Keys.ENTER).perform()
             sleep(1)
 
@@ -91,6 +93,7 @@ def get_wallet():
             sleep(2)
         except Exception as e:
             print(f"CHOOSE ERROR \n{e}")
+            return None
 
         driver.execute_script("window.scrollBy(0, 300);")
 
@@ -110,10 +113,9 @@ def get_wallet():
             "currency": "usdt"
         }
 
-#@app.route('/api/selenium/king-servers')
-def king_server_wallet():
+def wallet():
     wallet = get_wallet()
     return wallet
 
 if __name__ == "__main__":
-    king_server_wallet()
+    wallet()
