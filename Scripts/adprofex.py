@@ -9,7 +9,6 @@ from flask import Flask, jsonify
 from twocaptcha import TwoCaptcha
 from selenium import webdriver
 from time import sleep
-import json
 
 #driver = webdriver.Chrome()
 app = Flask(__name__)
@@ -43,21 +42,18 @@ def captcha_and_login(driver):
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
 
-    # driver.find_element(By.XPATH, '//*[@id="f_853789ef-54ce-474f-9ed1-b212cd7e1958"]').send_keys(USERNAME); sleep(2)
-    # driver.find_element(By.XPATH, '//*[@id="f_365ec9cd-ac6f-42e0-8806-07aa76c056a3"]').send_keys(PASSWORD, Keys.ENTER); sleep(2)
-
     try:
         click_button = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[2]/div[2]/div/div/form/div[2]/div/button'))
         )
         click_button.click()
-        sleep(2)
     except Exception as e:
         print(f"CLICK ERROR \n{e}")
 
 def get_wallet():
     with webdriver.Chrome() as driver:
         captcha_and_login(driver)
+        sleep(5)
         driver.get('https://advertiser.adprofex.com/lk/balance')
 
         try:
@@ -67,9 +63,10 @@ def get_wallet():
             add_funds.click()
 
             choose_wallet = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[1]/div/div/div[1]/div[2]/div[2]'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[1]/div/div/div[6]/div[2]/div[2]'))
             )
             choose_wallet.click()
+
         except Exception as e:
             print(f"ADD FUNDS ERROR \n{e}")
 
@@ -110,12 +107,9 @@ def get_wallet():
             "currency": "usdt"
         }
 
-#@app.route("/api/selenium/adprofex")
-def adprofex():
+def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
     return wallet_data
 
 if __name__ == "__main__":
-    adprofex()
-    #app.run(use_reloader=False, debug=True, port=5033)
+    wallet()
