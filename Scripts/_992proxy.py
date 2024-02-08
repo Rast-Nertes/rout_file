@@ -1,3 +1,4 @@
+import cloudscraper
 from selenium import webdriver
 from time import sleep
 from twocaptcha import TwoCaptcha
@@ -14,6 +15,7 @@ from selenium.webdriver.chrome.options import Options
 
 #CONSTANS
 app = Flask(__name__)
+scrap = cloudscraper.create_scraper()
 user_login = 'kiracase34@gmail.com'
 user_password = 'kiramira123!'
 url = 'https://www.seoclerk.com'
@@ -56,10 +58,11 @@ def login(driver):
             sleep(2)
             driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[1]').click()
         except Exception as e:
-            print(f"Не получилось кликнуть. \n{e}")
+            pass
 
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
+        return None
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -75,6 +78,7 @@ def get_wallet():
             driver.execute_script("window.scrollBy(0, 100);")
         except Exception as e:
             print(f"TARIFF ERROR \n{e}")
+            return None
 
         try:
             crypto_currency = WebDriverWait(driver, 10).until(
@@ -88,6 +92,7 @@ def get_wallet():
             continue_to_pay_button.click()
         except Exception as e:
             print(f"CRYPTO CURRENCY ERROR \n{e}")
+            return None
 
         sleep(5)
         new_window = driver.window_handles[1]
@@ -116,13 +121,9 @@ def get_wallet():
             "currency": "usdt"
         }
 
-#@app.route('/api/selenium/922proxy')
-def _922proxy():
-    wallet = get_wallet()
-    #print(wallet)
+def wallet():
+    data_wallet = get_wallet()
     return wallet
 
 if __name__ == "__main__":
-    _922proxy()
-    #app.run(use_reloader=False, debug=True, port=5026)
-
+    wallet()
