@@ -1,21 +1,20 @@
-from scripts import kings_server, _922proxy, adprofex
 from flask import Flask, jsonify
-
+import importlib.util
 
 app = Flask(__name__)
+
+def import_module(module_name):
+    spec = importlib.util.find_spec(module_name)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
 @app.route('/api/selenium/<project_name>')
 def selenium_route(project_name):
-
-    if project_name == '922proxy':
-        return jsonify(_922proxy.wallet())
-
-    elif project_name == 'adprofex':
-        return jsonify(adprofex.wallet())
-
-    elif project_name == 'kings-server':
-        return jsonify(kings_server.wallet())
-
-    else:
+    try:
+        module = import_module(f'scripts.{project_name}')
+        return jsonify(module.wallet())
+    except ModuleNotFoundError:
         return 'Other project logic here'
 
 if __name__ == '__main__':
