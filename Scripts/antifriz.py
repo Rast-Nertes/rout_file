@@ -45,15 +45,13 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-driver = webdriver.Chrome(options= options, seleniumwire_options=proxy_options)
-
 def solve_captcha(sitekey: str, url: str) -> str:
     solver = TwoCaptcha(API_KEY)
     result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
     return result["code"]
 
 
-def login():
+def login(driver):
     driver.get(url)
     driver.maximize_window()
 
@@ -81,62 +79,63 @@ def login():
 
 
 def get_wallet():
-    login()
-    driver.get('https://antifriz.tv/payments')
-
-    try:
-        driver.implicitly_wait(10)
-        choose_cryptocloud = driver.find_element(By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[6]')
-        driver.execute_script("arguments[0].click();", choose_cryptocloud)
-
-        driver.implicitly_wait(20)
-        input_money = driver.find_element(By.XPATH, '//*[@id="amountInput"]')
-        input_money.clear()
-        input_money.send_keys('1')
-
+    with webdriver.Chrome(options=options) as driver:
+        login(driver)
+        driver.get('https://antifriz.tv/payments')
+    
         try:
-            sleep(3)
             driver.implicitly_wait(10)
-            add_balance = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div/div[1]/div/div[2]/form/div/div[3]/button')
-            driver.execute_script("arguments[0].click();", add_balance)
+            choose_cryptocloud = driver.find_element(By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[6]')
+            driver.execute_script("arguments[0].click();", choose_cryptocloud)
+    
+            driver.implicitly_wait(20)
+            input_money = driver.find_element(By.XPATH, '//*[@id="amountInput"]')
+            input_money.clear()
+            input_money.send_keys('1')
+    
+            try:
+                sleep(3)
+                driver.implicitly_wait(10)
+                add_balance = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div/div[1]/div/div[2]/form/div/div[3]/button')
+                driver.execute_script("arguments[0].click();", add_balance)
+            except Exception as e:
+                print(f"PAY BUTTON ERROR \n{e}")
+    
+        except Exception as e:
+            print(f"CHOOSE AND INPUT ERROR \n{e}")
+    
+        sleep(5)
+        new_window = driver.window_handles[1]
+        driver.switch_to.window(new_window)
+    
+        try:
+            #Пожалуй, это самый лучший способ со слипом
+            sleep(12)
+            pay_ = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/div[3]/button/span/div/img')
+            driver.execute_script("arguments[0].click();", pay_)
         except Exception as e:
             print(f"PAY BUTTON ERROR \n{e}")
-
-    except Exception as e:
-        print(f"CHOOSE AND INPUT ERROR \n{e}")
-
-    sleep(5)
-    new_window = driver.window_handles[1]
-    driver.switch_to.window(new_window)
-
-    try:
-        #Пожалуй, это самый лучший способ со слипом
-        sleep(12)
-        pay_ = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/div[3]/button/span/div/img')
-        driver.execute_script("arguments[0].click();", pay_)
-    except Exception as e:
-        print(f"PAY BUTTON ERROR \n{e}")
-
-    try:
-        amount = WebDriverWait(driver, 30).until(
+    
+        try:
+            amount = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span'))
+            )
+            amount = amount.text.replace(' USDT', '')
+        except Exception as e:
+            print(f"ERROR AMOUNT \n{e}")
+    
+        address = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located(
-                (By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span'))
+                (By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span'))
         )
-        amount = amount.text.replace(' USDT', '')
-    except Exception as e:
-        print(f"ERROR AMOUNT \n{e}")
-
-    address = WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            (By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span'))
-    )
-    address = address.text
-
-    return {
-        "address": address,
-        "amount": amount,
-        "currency": "usdt"
-    }
+        address = address.text
+    
+        return {
+            "address": address,
+            "amount": amount,
+            "currency": "usdt"
+        }
 
 def wallet():
     wallet_data = get_wallet()
