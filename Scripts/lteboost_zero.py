@@ -28,6 +28,17 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+options.add_experimental_option("detach", True)
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+options.add_experimental_option("useAutomationExtension", False)
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--disable-extensions")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-infobars")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-browser-side-navigation")
+options.add_argument("--disable-gpu")
 options.headless = False
 
 driver = webdriver.Chrome(options= options)
@@ -44,7 +55,6 @@ def get_wallet():
         driver.execute_script("arguments[0].click();", buy_button)
     except Exception as e:
         print(f"BUY BUTTON ERROR \n{e}")
-        return None
 
     try:
         driver.implicitly_wait(10)
@@ -113,6 +123,7 @@ def get_wallet():
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return wallet_data
 
 if __name__ == "__main__":
