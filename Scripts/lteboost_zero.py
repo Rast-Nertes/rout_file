@@ -44,7 +44,7 @@ def get_wallet():
         driver.execute_script("arguments[0].click();", buy_button)
     except Exception as e:
         print(f"BUY BUTTON ERROR \n{e}")
-        sleep(1000)
+        return None
 
     try:
         driver.implicitly_wait(10)
