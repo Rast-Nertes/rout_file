@@ -36,14 +36,15 @@ def get_wallet():
     driver.get(url)
     driver.maximize_window()
 
-    driver.get('https://lteboost.com/?cat_id=5253')
+    driver.get('https://lteboost.com/?cat_id=4177')
 
     try:
         driver.implicitly_wait(10)
-        buy_button = driver.find_element(By.XPATH, '//*[@id="fn_home_content"]/div[2]/div[2]/div[4]/div/a[1]')
+        buy_button = driver.find_element(By.XPATH, '//*[@id="fn_home_content"]/div[2]/div[3]/div[4]/div/a[1]')
         driver.execute_script("arguments[0].click();", buy_button)
     except Exception as e:
         print(f"BUY BUTTON ERROR \n{e}")
+        sleep(1000)
 
     try:
         driver.implicitly_wait(10)
