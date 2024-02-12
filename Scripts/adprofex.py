@@ -107,9 +107,11 @@ def get_wallet():
             "currency": "usdt"
         }
 
+@app.route("/api/selenium/adprofex")
 def wallet():
     wallet_data = get_wallet()
-    return wallet_data
+    #print(wallet_data)
+    return jsonify(wallet_data)
 
 if __name__ == "__main__":
-    wallet()
+    app.run(use_reloader=False, debug=True, port=5033)

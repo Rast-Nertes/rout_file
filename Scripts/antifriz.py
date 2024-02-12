@@ -1,29 +1,23 @@
 import requests
-from seleniumwire import webdriver
 from time import sleep
-from flask import Flask, jsonify
+from flask import Flask
+from flask import jsonify
 from fake_useragent import UserAgent
-from selenium.webdriver.common.action_chains import ActionChains
+from seleniumwire import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from twocaptcha import TwoCaptcha
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
-# CryptoCloud
+#CONSTANS
 
-# CONSTANS
 app = Flask(__name__)
+url = 'https://antifriz.tv/'
 user_login = 'kiracase34@gmail.com'
 user_password = 'oleg123'
-url = 'https://antifriz.tv/login'
 
-# API CONSTANS
-API_KEY = '7f728c25edca4f4d0e14512d756d6868'
-# API_URL = 'http://rucaptcha.com/in.php'
-# API_RESULT_URL = f'http://rucaptcha.com/res.php?key={API_KEY}&action=get'
-
-# PROXY_CONSTANS
+#PROXY_CONSTANS
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -31,134 +25,132 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 proxy_options = {
-    "proxy": {
-        "http": f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
 
-# CHROME CONSTANS
-options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
-options.add_argument("--disable-save-password-bubble")
-options.add_experimental_option("detach", True)
-options.add_experimental_option("excludeSwitches", ["enable-automation"])
-options.add_experimental_option("useAutomationExtension", False)
-options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_argument("--disable-extensions")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-infobars")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-browser-side-navigation")
-options.add_argument("--disable-gpu")
-options.headless = False
+#API CONSTANS
 
+API_KEY = '7f728c25edca4f4d0e14512d756d6868'
+API_URL = 'http://rucaptcha.com/in.php'
+API_RESULT_URL = f'http://rucaptcha.com/res.php?key={API_KEY}&action=get'
 
-def solve_captcha(sitekey: str, url: str) -> str:
-    solver = TwoCaptcha(API_KEY)
-    result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
-    return result["code"]
+#CHROME OPTIONS
 
+chrome_options = webdriver.ChromeOptions()
+chrome_options.headless = False
+chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+
+#driver = webdriver.Chrome(options=chrome_options, seleniumwire_options=proxy_options)
 
 def login(driver):
-    driver.get(url)
-    driver.maximize_window()
-
     try:
-        driver.implicitly_wait(20)
-        input_email = driver.find_element(By.XPATH, '//*[@id="email"]')
-        input_email.send_keys(user_login)
+        driver.get('https://antifriz.tv/login')
+        driver.maximize_window()
+        print("LOGIN START")
+        #Вводим логин
 
-        driver.implicitly_wait(20)
-        input_password = driver.find_element(By.XPATH, '//*[@id="password"]')
-        input_password.send_keys(user_password)
+        element_start__input_user_login = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located(
+                (By.XPATH, '//*[@id="email"]'))
+        )
+        element_start__input_user_login.send_keys(user_login)
+
+        #Вводим пароль
+
+        input_user_password = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]'))
+        )
+        input_user_password.send_keys(user_password)
+
+        #Заходим
+
+        accept_registration = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located(
+                (By.XPATH, '//*[@id="app"]/div/div[1]/div/form/button'))
+        )
+        accept_registration.click()
+
+        print("LOGIN SUCCEFUL")
+
     except Exception as e:
-        print(f'ERROR INPUT \n{e}')
+        print(f"LOGIN ERROR -- \n{e}")
 
-    driver.implicitly_wait(50)
-    captcha_code = solve_captcha('6LdBtr4aAAAAACrQ8Wu4Yav061NabdPIzv5I1lds', url)
-    driver.execute_script(
-        f'var textarea = document.getElementById("g-recaptcha-response-100000"); textarea.style.display = "block"; textarea.innerHTML = "{captcha_code}";')
-
+def get_wallet_data():
     try:
-        driver.implicitly_wait(20)
-        login_button = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[1]/div/form/button')
-        driver.execute_script("arguments[0].click();", login_button)
-    except Exception as e:
-        print(f"LOGIN BUTTON ERROR \n{e}")
+        with webdriver.Chrome(options=chrome_options, seleniumwire_options=proxy_options) as driver:
+            login(driver)
+            print("WALLET DATA ERROR")
 
-
-def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
-        login(driver)
-        driver.get('https://antifriz.tv/payments')
-
-        try:
-            driver.implicitly_wait(10)
-            choose_cryptocloud = driver.find_element(By.XPATH,
-                                                     '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[5]')
-            driver.execute_script("arguments[0].click();", choose_cryptocloud)
-
-            driver.implicitly_wait(20)
-            input_money = driver.find_element(By.XPATH, '//*[@id="amountInput"]')
-            input_money.clear()
-            input_money.send_keys('1')
+            driver.get('https://antifriz.tv/payments')
 
             try:
-                sleep(3)
-                driver.implicitly_wait(10)
-                add_balance = driver.find_element(By.XPATH,
-                                                  '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[3]/button')
-                driver.execute_script("arguments[0].click();", add_balance)
-            except Exception as e:
-                print(f"PAY BUTTON ERROR \n{e}")
+                driver.find_element(By.XPATH, '//*[@id="jivo_close_button"]/jdiv').click()
+            except:
+                pass
 
-        except Exception as e:
-            print(f"CHOOSE AND INPUT ERROR \n{e}")
-            sleep(1000)
-
-        sleep(5)
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
-
-        try:
-            # Пожалуй, это самый лучший способ со слипом
-            pay_ = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/div[3]/button/span/div/img'))
+            method_of_payment = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[5]'))
             )
-            driver.execute_script("arguments[0].click();", pay_)
-        except Exception as e:
-            print(f"PAY BUTTON ERROR \n{e}")
-            sleep(100)
+            method_of_payment.click()
 
-        try:
+            try:
+                driver.find_element(By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[2]/div[2]/span[1]')
+            except:
+                pass
+
+            driver.execute_script("window.scrollBy(0, 200);")
+
+            method_of_payment_accept = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[3]/button'))
+            )
+            method_of_payment_accept.click()
+
+            new_window = driver.window_handles[1]
+            driver.switch_to.window(new_window)
+
+            choose_usdt = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[3]/div'))
+            )
+            choose_usdt.click()
+
+            accept_email = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="id_order_email"]'))
+            )
+            accept_email.send_keys(user_login)
+
+            accept_email_button = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div/form/div[2]/div[4]/div[2]/a'))
+            )
+            accept_email_button.click()
+
             amount = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located(
-                    (By.XPATH,
-                     '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[1]'))
             )
-            amount = amount.text.replace(' USDT', '')
-        except Exception as e:
-            print(f"ERROR AMOUNT \n{e}")
+            amount = amount.text.replace("USDT", "")
 
-        address = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH,
-                 '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span'))
-        )
-        address = address.text
+            address = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[2]'))
+            )
+            address = address.text
 
-        return {
-            "address": address,
-            "amount": amount,
-            "currency": "usdt"
-        }
+            return {
+                "address": address,
+                "amount": amount,
+                "currency": "usdt"
+            }
+    except Exception as e:
+        print(f"GET WALLET ERROR \n{e}")
+        return None
 
+@app.route('/api/selenium/antifriz')
 def wallet():
-    wallet_data = get_wallet()
-    print(wallet_data)
-    return wallet_data
+    wallet_data = get_wallet_data()
+    return jsonify(wallet_data)
+
 
 if __name__ == "__main__":
-    wallet()
+    app.run(use_reloader = False, debug=True, port=5013)
