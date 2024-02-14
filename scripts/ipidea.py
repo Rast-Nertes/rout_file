@@ -47,13 +47,9 @@ proxy_options = {
     }
 }
 
-#driver = webdriver.Chrome(options=options)
-
 def login(driver):
     driver.get(url)
     driver.maximize_window()
-#//*[@id="__layout"]/div/div/div[1]/div/div[2]/form/div[1]/div/div/input
-#//*[@id="__layout"]/div/div/div[1]/div/div[2]/form/div[2]/div/div/input
     try:
         input_email = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/div/div[1]/div/div[2]/form/div[1]/div/div/input'))
@@ -75,9 +71,7 @@ def login(driver):
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
-        sleep(4)
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
+
         try:
             close_ = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/div[3]/div/div[1]'))
@@ -116,12 +110,9 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE PAYMENT \n{e}")
 
-
-        sleep(2)
-        new_window = driver.window_handles[2]
-        driver.switch_to.window(new_window)
         sleep(5)
         try:
+
             trc_20 = driver.find_element(By.XPATH, '//*[@id="totalListHtml"]/div[1]')
             driver.execute_script("arguments[0].click();", trc_20)
         except Exception as e:
@@ -149,7 +140,6 @@ def get_wallet():
 @app.route('/api/selenium/ipidea')
 def wallet():
     wallet = get_wallet()
-    #print(wallet)
     return jsonify(wallet)
 
 if __name__ == "__main__":
