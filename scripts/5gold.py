@@ -1,6 +1,5 @@
 import requests
 from PIL import Image
-import pytesseract
 from time import sleep
 from flask import Flask
 from flask import jsonify
@@ -142,4 +141,4 @@ def wallet():
     return jsonify(wallet_data)
 
 if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5019)
+    app.run(use_reloader=False, debug=True, port=5026)
