@@ -13,7 +13,7 @@ def import_module(module_name):
 def selenium_route(project_name):
     try:
         module = import_module(f'scripts.{project_name}')
-        return jsonify(module.wallet())
+        return module.wallet()
     except ModuleNotFoundError:
         return 'Other project logic here'
 
