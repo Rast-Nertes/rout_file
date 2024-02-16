@@ -1,7 +1,8 @@
 import pyautogui
-from selenium import webdriver
+#from selenium import webdriver
 from time import sleep
 from flask import Flask, jsonify
+from seleniumwire import webdriver
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
@@ -19,13 +20,27 @@ user_login = 'kiracase34@gmail.com'
 user_password = 'oleg123567'
 
 
+#PROXY_CONSTANS
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 #CHROME OPTIONS
 
 options = webdriver.ChromeOptions()
 options.add_argument('--auto-open-devtools-for-tabs')
 
 def path_to_lunu_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         actions = ActionChains(driver)
         driver.get(url)
         driver.maximize_window()
