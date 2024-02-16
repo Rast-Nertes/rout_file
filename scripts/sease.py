@@ -19,7 +19,6 @@ url = 'https://sease.it/en-gb/collections/polo-e-t-shirt/products/lampuga-off-wh
 user_login = 'kiracase34@gmail.com'
 user_password = 'oleg123567'
 
-
 #PROXY_CONSTANS
 
 proxy_address = "45.130.254.133"
@@ -68,8 +67,9 @@ def path_to_lunu_wallet():
             print(f"ERROR CONTINUE \n{e}")
 
         try:
-            driver.implicitly_wait(30)
-            input_phone = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div/div[1]/div/div/div[2]/div/div[2]/div/div/div/main/div/form/div[1]/div/div/div[2]/div/section/div/div[2]/section/div/div/div[1]/div/div/div/div[1]/div[6]/div/div/div/input')
+            input_phone = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, '#TextField5'))
+            )
             input_phone.clear()
             input_phone.send_keys('+1 223-322-2111')
         except Exception as e:
