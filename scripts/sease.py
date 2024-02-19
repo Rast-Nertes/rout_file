@@ -170,12 +170,11 @@ def path_to_lunu_wallet():
                 pass
 
             try:
-                driver.implicitly_wait(10)
+                sleep(2)
                 pyautogui.moveTo(300, 225)
                 pyautogui.click()
 
-                sleep(2)
-                address = address = driver.execute_script("return navigator.clipboard.readText()")
+                address = driver.execute_script("return navigator.clipboard.readText()")
             except Exception as e:
                 print(f"ERROR MOVE \n{e}")
 
