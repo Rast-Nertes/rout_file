@@ -37,7 +37,6 @@ async def get_wallet():
             await input_email_in_product.write(user_login)
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
-            return None
 
         pyautogui.moveTo(1000, 500)
         pyautogui.click()
@@ -53,7 +52,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", start_buy)
         except Exception as e:
             print(f"START BUY BUTTON ERROR \n{e}")
-            return None
+            return "Not work"
 
         try:
             choose_tether = await driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/form[2]/div[13]', timeout=40)
@@ -61,7 +60,7 @@ async def get_wallet():
             await choose_tether.click()
         except Exception as e:
             print(f"CHOOSE TETHER ERROR \n{e}")
-            return None
+            return "Not work"
 
         try:
             accept = await driver.find_element(By.CSS_SELECTOR, 'div.payment-container > div.popup__bg.active > div > div > input', timeout=20)
@@ -69,6 +68,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", accept)
         except Exception as e:
             print(f"CONTINUE BUTTON ERROR \n{e}")
+            return "Not work"
 
         try:
             amount_element = await driver.find_element(By.ID, 'pay_amount', timeout=10)
@@ -78,7 +78,7 @@ async def get_wallet():
             address = await address_element.text
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-            return None
+            return "Not work"
 
         return {
             "address": address,
