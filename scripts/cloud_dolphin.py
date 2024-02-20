@@ -3,12 +3,7 @@ from flask import Flask
 from flask import jsonify
 from fake_useragent import UserAgent
 from seleniumwire import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from pathlib import Path
-from selenium.webdriver.common.keys import Keys
 
 #CONSTANS
 
@@ -103,8 +98,8 @@ def get_wallet():
         except Exception as e:
             print(f"BUT BUTTON ERROR \n{e}")
 
-        sleep(5)
-        new_window = driver.window_handles[1]
+        sleep(10)
+        new_window = driver.window_handles[-1]
         driver.switch_to.window(new_window)
 
         try:
@@ -113,6 +108,8 @@ def get_wallet():
             sleep(2)
             driver.execute_script("arguments[0].click();", next_step_to_payment)
         except:
+                sleep(2)
+                driver.refresh()
                 driver.implicitly_wait(10)
                 address = driver.find_element(By.CSS_SELECTOR,
                                               'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
@@ -127,6 +124,8 @@ def get_wallet():
                     "currency": "usdt"
                 }
         try:
+            sleep(2)
+            driver.refresh()
             driver.implicitly_wait(10)
             address = driver.find_element(By.CSS_SELECTOR,
                                           'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
