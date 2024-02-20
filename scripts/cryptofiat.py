@@ -54,8 +54,6 @@ proxy_options = {
     }
 }
 
-#find_error = driver.find_element(By.CSS_SELECTOR, 'div.xchange_div > div > div.ajax_post_bids_res > div')
-
 def captcha_solver(driver):
     driver.set_window_size(300, 400)
     driver.execute_script("window.scrollBy(0, 1320);")
@@ -186,7 +184,7 @@ def get_wallet():
                         driver.maximize_window()
                         break
                 except:
-                    pass
+                    break
 
             try:
                 payment_step = WebDriverWait(driver, 30).until(
@@ -197,7 +195,7 @@ def get_wallet():
                 print(f"PAYMENT STEP ERROR \n{e}")
 
             try:
-                sleep(5)
+                sleep(7.5)
                 new_window = driver.window_handles[1]
                 driver.switch_to.window(new_window)
 
@@ -231,5 +229,3 @@ def wallet():
     print(wallet_data)
     return jsonify(wallet_data)
 
-if __name__ == "__main__":
-    wallet()
