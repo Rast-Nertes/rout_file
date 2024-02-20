@@ -25,7 +25,8 @@ async def get_wallet():
         await driver.maximize_window()
 
         try:
-            choose_product = await driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[3]/table/tbody/tr[15]/td[4]/a/i', timeout=10)
+           #time.sleep(100)
+            choose_product = await driver.find_element(By.CSS_SELECTOR, 'div.table-responsive > table > tbody > tr:nth-child(13) > td.text-center > a > i', timeout=10)
             await driver.execute_script("arguments[0].click();", choose_product)
         except Exception as e:
             print(f'CHOOSE PRODUCT ERROR \n{e}')
@@ -38,12 +39,12 @@ async def get_wallet():
             print(f"INPUT EMAIL ERROR \n{e}")
             return None
 
-        pyautogui.moveTo(1000, 525)
+        pyautogui.moveTo(1000, 500)
         pyautogui.click()
 
         time.sleep(2)
 
-        pyautogui.moveTo(1000, 625)
+        pyautogui.moveTo(1000, 600)
         pyautogui.click()
 
         try:
