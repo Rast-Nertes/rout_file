@@ -42,7 +42,7 @@ async def login(driver):
         await input_pass.write(user_pass)
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
-        return None
+        return "Not work input"
 
     try:
         click_button_to_login = await driver.find_element(By.XPATH, '//*[@id="top"]/div[3]/div/div[2]/div/div/div/div/div[2]/form/div/button', timeout=5)
@@ -50,7 +50,7 @@ async def login(driver):
         await driver.execute_script("arguments[0].click();", click_button_to_login)
     except Exception as e:
         print(f"CLICK BUTTON TO LOGIN ERROR \n{e}")
-        return None
+        return "Now work click button to login"
 
 async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
@@ -64,7 +64,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", choose_crypto_pay)
         except Exception as e:
             print(f"CHOOSE ERROR \n{e}")
-            return None
+            return "Not work choose"
 
         try:
             next_step_payment = await driver.find_element(By.CSS_SELECTOR, 'div.formSubmitRow-controls > button > span', timeout=10)
@@ -72,7 +72,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", next_step_payment)
         except Exception as e:
             print(f"NEXT STEP ERROR \n{e}")
-            return None
+            return "Not work next step button"
 
 
         pyautogui.moveTo(420, 435)
@@ -89,6 +89,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", next_step_after_input_email)
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
+            return "Not work input"
 
         try:
             choose_tether = await driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/form[2]/div[14]', timeout=40)
@@ -96,7 +97,7 @@ async def get_wallet():
             await choose_tether.click()
         except Exception as e:
             print(f"CHOOSE TETHER ERROR \n{e}")
-            return None
+            return "Not work choose tether"
 
         try:
             accept = await driver.find_element(By.CSS_SELECTOR,
@@ -106,7 +107,7 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", accept)
         except Exception as e:
             print(f"CONTINUE BUTTON ERROR \n{e}")
-            return None
+            return "Not work continue button"
 
         try:
             amount_element = await driver.find_element(By.ID, 'pay_amount', timeout=30)
@@ -116,7 +117,7 @@ async def get_wallet():
             address = await address_element.text
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-            return None
+            return "Not work data"
 
         return {
             "address": address,
