@@ -25,14 +25,13 @@ async def get_wallet():
         await driver.maximize_window()
 
         try:
-           #time.sleep(100)
-            choose_product = await driver.find_element(By.CSS_SELECTOR, 'div.table-responsive > table > tbody > tr:nth-child(13) > td.text-center > a > i', timeout=10)
+            choose_product = await driver.find_element(By.CSS_SELECTOR, 'div.table-responsive > table > tbody > tr:nth-child(13) > td.text-center > a > i', timeout=20)
             await driver.execute_script("arguments[0].click();", choose_product)
         except Exception as e:
             print(f'CHOOSE PRODUCT ERROR \n{e}')
 
         try:
-            input_email_in_product = await driver.find_element(By.CSS_SELECTOR, '#order > table > tbody > tr:nth-child(2) > td:nth-child(2) > input[type=text]', timeout=10)
+            input_email_in_product = await driver.find_element(By.CSS_SELECTOR, '#order > table > tbody > tr:nth-child(2) > td:nth-child(2) > input[type=text]', timeout=20)
             time.sleep(2)
             await input_email_in_product.write(user_login)
         except Exception as e:
