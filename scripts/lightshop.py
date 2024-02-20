@@ -13,12 +13,8 @@ user_pass = 'oleg34oleg'
 
 #CHROME OPTIONS
 
-options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
-
 def get_wallet():
-     with webdriver.Chrome(options=options) as driver:
+     with webdriver.Chrome() as driver:
         driver.get(url)
         driver.refresh()
         driver.maximize_window()
