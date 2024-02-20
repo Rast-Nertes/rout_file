@@ -54,6 +54,47 @@ proxy_options = {
     }
 }
 
+#find_error = driver.find_element(By.CSS_SELECTOR, 'div.xchange_div > div > div.ajax_post_bids_res > div')
+
+def captcha_solver(driver):
+    driver.set_window_size(200, 300)
+    driver.execute_script("window.scrollBy(0, 1300);")
+    sleep(3)
+    driver.save_screenshot("captcha.jpeg")
+    sleep(2)
+
+    try:
+        solver = imagecaptcha()
+        solver.set_verbose(1)
+        solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
+
+        captcha_text = solver.solve_and_return_solution("captcha.jpeg")
+        sleep(1)
+        driver.maximize_window()
+
+        if captcha_text != 0:
+            print("captcha text " + captcha_text)
+        else:
+            print("task finished with error " + solver.error_code)
+    except Exception as e:
+        print(f"CAPTCHA ERROR \n{e}")
+
+    try:
+        input_captcha = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[3]/div[2]/input'))
+        )
+        input_captcha.clear()
+        input_captcha.send_keys(captcha_text)
+    except Exception as e:
+        print(f"INPUT CAPCTHA \n{e}")
+        return None
+
+    driver.execute_script("window.scrollTo(0, 0);")
+
+    button = driver.find_element(By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[4]/button')
+    sleep(1)
+    driver.execute_script("arguments[0].click();", button)
+    sleep(3)
 
 #driver = webdriver.Chrome(options= options)
 
@@ -130,93 +171,22 @@ def get_wallet():
                 print(f"TICKET ERROR \n{e}")
                 return None
 
-            driver.set_window_size(200, 300)
-            driver.execute_script("window.scrollBy(0, 1300);")
-            sleep(1)
-            driver.save_screenshot("captcha.jpeg")
-            sleep(2)
-            driver.maximize_window()
+            captcha_solver(driver)
 
-            try:
-                solver = imagecaptcha()
-                solver.set_verbose(1)
-                solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
-
-                captcha_text = solver.solve_and_return_solution("captcha.jpeg")
-
-                if captcha_text != 0:
-                    print("captcha text " + captcha_text)
-                else:
-                    print("task finished with error " + solver.error_code)
-            except Exception as e:
-                print(f"CAPTCHA ERROR \n{e}")
-
-            # try:
-            #     # Загружаем капчу
-            #     with open('captcha.png', 'rb') as captcha_file:
-            #         data = {
-            #             'key': API_KEY,
-            #             'method': 'post'
-            #         }
-            #         response = requests.post(API_URL, data=data, files={'file': captcha_file})
-            #     # Проверяем успешное выполнение капчи
-            #     response_text = response.text.split('|')
-            #     if response_text[0] == "OK":
-            #         captcha_id = response_text[1]
-            #         print(f"Капча успешно отправлена. ID капчи: {captcha_id}")
-            #
-            #         # Повторяем запросы для получения результата
-            #         while True:
-            #             result_response = requests.get(f"{API_RESULT_URL}&id={captcha_id}")
-            #             if 'OK' in result_response.text:
-            #                 captcha_solution = result_response.text.split('|')[1]
-            #                 print(f"Captcha решена: {captcha_solution}")
-            #                 break
-            #
-            #             elif 'CAPCHA_NOT_READY' in result_response.text:
-            #                 print("Ожидание решения капчи...")
-            #                 sleep(5)  # Подождите некоторое время перед повторным запросом
-            #             else:
-            #                 print("Ошибка при получении результата.")
-            #                 print(result_response.text)
-            #                 break
-            # except Exception as e:
-            #     print(f"CAPTHCA ERROR \n{e}")
-            #     return None
-
-            try:
-                input_captcha = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[3]/div[2]/input'))
-                )
-                input_captcha.clear()
-                input_captcha.send_keys(captcha_text)
-            except Exception as e:
-                print(f"INPUT CAPCTHA \n{e}")
-                return None
-
-            button = driver.find_element(By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[4]/button')
-            sleep(1)
-            driver.execute_script("arguments[0].click();", button)
-
-            try:
-                driver.implicitly_wait(5)
-                error = driver.find_element(By.CSS_SELECTOR, '#exch_html > div.xchange_div > div > div.ajax_post_bids_res > div').text
-                if "Ошибка" in error:
-                    try:
-                        input_captcha = WebDriverWait(driver, 10).until(
-                            EC.visibility_of_element_located((By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[3]/div[2]/input'))
-                        )
-                        input_captcha.clear()
-                        input_captcha.send_keys(captcha_text)
-                    except Exception as e:
-                        print(f"INPUT CAPCTHA \n{e}")
-                        return None
-
-                    button = driver.find_element(By.XPATH, '//*[@id="exch_html"]/div[2]/div/div[4]/button')
-                    sleep(1)
-                    driver.execute_script("arguments[0].click();", button)
-            except:
-                pass
+            while True:
+                try:
+                    driver.implicitly_wait(5)
+                    sleep(3)
+                    find_error = driver.find_element(By.CSS_SELECTOR,'div > div.ajax_post_bids_res > div').text
+                    print(find_error)
+                    if "Ошибка!" in find_error:
+                        captcha_solver(driver)
+                    else:
+                        print("Solve captcha")
+                        driver.maximize_window()
+                        break
+                except:
+                    pass
 
             try:
                 payment_step = WebDriverWait(driver, 30).until(
