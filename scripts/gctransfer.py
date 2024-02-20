@@ -101,7 +101,7 @@ def get_wallet():
         except Exception as e:
             print(f'LAST STEP ERROR \n{e}')
 
-        sleep(5)
+        sleep(10)
         new_window = driver.window_handles[1]
         driver.switch_to.window(new_window)
         driver.refresh()
