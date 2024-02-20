@@ -17,7 +17,6 @@ user_pass = 'kirakira123'
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
-print(proxy_url)
 
 async def login(driver):
     await driver.get(url)
