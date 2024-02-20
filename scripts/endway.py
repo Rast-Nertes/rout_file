@@ -6,13 +6,6 @@ from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 import asyncio
 
-proxy_username = 'WyS1nY'
-proxy_password = '8suHN9'
-proxy_host = '196.19.121.187'
-proxy_port = '8000'
-proxy_auth = f"{proxy_username}:{proxy_password}@"
-proxy_url = f"https://{proxy_auth}{proxy_host}:{proxy_port}"
-
 #CONSTANS
 
 url = 'https://endway.su/login/'
@@ -24,7 +17,6 @@ user_pass = 'kirakira123'
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
-#options.add_argument(f'--proxy-server=196.19.121.187:8000:WyS1nY:8suHN9')
 print(proxy_url)
 
 async def login(driver):
@@ -67,7 +59,7 @@ async def get_wallet():
             return "Not work choose"
 
         try:
-            next_step_payment = await driver.find_element(By.CSS_SELECTOR, 'div.formSubmitRow-controls > button > span', timeout=10)
+            next_step_payment = await driver.find_element(By.CSS_SELECTOR, 'div.formSubmitRow-controls > button > span', timeout=20)
             sleep(2)
             await driver.execute_script("arguments[0].click();", next_step_payment)
         except Exception as e:
@@ -80,7 +72,7 @@ async def get_wallet():
         sleep(5)
 
         try:
-            input_email = await driver.find_element(By.CSS_SELECTOR, '#details_email', timeout=30)
+            input_email = await driver.find_element(By.CSS_SELECTOR, '#details_email', timeout=40)
             sleep(3)
             await input_email.write(user_login)
 
