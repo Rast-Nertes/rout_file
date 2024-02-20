@@ -57,8 +57,8 @@ proxy_options = {
 #find_error = driver.find_element(By.CSS_SELECTOR, 'div.xchange_div > div > div.ajax_post_bids_res > div')
 
 def captcha_solver(driver):
-    driver.set_window_size(200, 300)
-    driver.execute_script("window.scrollBy(0, 1300);")
+    driver.set_window_size(300, 400)
+    driver.execute_script("window.scrollBy(0, 1320);")
     sleep(3)
     driver.save_screenshot("captcha.jpeg")
     sleep(2)
@@ -230,3 +230,6 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+if __name__ == "__main__":
+    wallet()
