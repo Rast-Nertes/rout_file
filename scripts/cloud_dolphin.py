@@ -1,6 +1,5 @@
 from time import sleep
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify
 from fake_useragent import UserAgent
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
@@ -85,14 +84,14 @@ def get_wallet():
             print(f"CHOOSE TARIFF \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             choose_payment_method = driver.find_element(By.CSS_SELECTOR, 'div.crypto-payments-container > div.cryptadium-payment-item.payment-item0')
             driver.execute_script("arguments[0].click();", choose_payment_method)
         except Exception as e:
             print(f"CHOOSE PAYMENT METHOD ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             buy_button = driver.find_element(By.CSS_SELECTOR, 'div.to-pay-container > div.datas-block-container > button > span')
             driver.execute_script("arguments[0].click();", buy_button)
         except Exception as e:
