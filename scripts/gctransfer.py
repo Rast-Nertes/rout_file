@@ -81,8 +81,8 @@ def get_wallet():
 
         for _ in range(2):
             actions.send_keys(Keys.ARROW_DOWN).perform()
-            sleep(0.5)
-
+            sleep(1)
+        
         actions.send_keys(Keys.ENTER).perform()
 
         try:
@@ -96,16 +96,22 @@ def get_wallet():
         try:
             driver.implicitly_wait(20)
             pay_last_step = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/a')
-            href = pay_last_step.get_attribute('href')
-            driver.get(href)
+            sleep(2.5)
+            driver.execute_script("arguments[0].click();", pay_last_step)
         except Exception as e:
             print(f'LAST STEP ERROR \n{e}')
 
+        sleep(10)
+        new_window = driver.window_handles[1]
+        driver.switch_to.window(new_window)
+
         try:
+            driver.refresh()
+            sleep(5)
             buy_with_trc_20 = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button'))
+                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/div[3]/button'))
             )
-            sleep(2.5)
+            sleep(3.5)
             driver.execute_script("arguments[0].click();", buy_with_trc_20)
         except Exception as e:
             print(f"BUY WITH TRC20 ERROR \n{e}")
