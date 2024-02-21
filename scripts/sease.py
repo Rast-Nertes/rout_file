@@ -117,6 +117,22 @@ def path_to_lunu_wallet():
             print(f"CHOOSE LUNU CRYPTO PAY ERROR \n{e}")
 
         try:
+            driver.implicitly_wait(5)
+            error_find = driver.find_element(By.ID, 'error-for-TextField7')
+
+            driver.implicitly_wait(10)
+            input_address = driver.find_element(By.XPATH, '//*[@id="shipping-address1"]')
+            input_address.clear()
+            input_address.send_keys("112")
+
+            sleep(7)
+            actions.send_keys(Keys.ARROW_DOWN).perform()
+            sleep(1)
+            actions.send_keys(Keys.ENTER).perform()
+        except Exception as e:
+            print(f"COMPLETE ")
+
+        try:
             driver.implicitly_wait(30)
             iframe_url = driver.find_element(By.XPATH, '//*[@id="lunu-payment-widget"]/div/iframe').get_attribute('src')
             driver.get(iframe_url)
@@ -143,8 +159,8 @@ def path_to_lunu_wallet():
             print(f"CHOOSE LUNU ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
-            choose_tether = driver.find_element(By.XPATH, '//*[@id="root"]/div/div[1]/div[1]/div[2]/div[2]/div[1]/div/div/div[3]/div/div/div[2]')
+            driver.implicitly_wait(30)
+            choose_tether = driver.find_element(By.CSS_SELECTOR, 'div.w386.layoutRow.fhaS.fvaC.ovxH > div > div > div:nth-child(3) > div > div > div.MuiButtonBase-root.dB\*2.abs\*2.s.cr\@mouse')
             driver.execute_script("arguments[0].click();", choose_tether)
 
             sleep(3)
@@ -152,6 +168,14 @@ def path_to_lunu_wallet():
             driver.execute_script("arguments[0].click();", trc20_network)
         except Exception as e:
             print(f"CHOOSE TRC20 NETWORK \n{e}")
+
+            driver.implicitly_wait(10)
+            choose_tether = driver.find_element(By.CSS_SELECTOR, '//*[@id="root"]/div/div[1]/div[1]/div[2]/div[2]/div[1]/div/div/div[3]/div/div/div[2]')
+            driver.execute_script("arguments[0].click();", choose_tether)
+
+            sleep(3)
+            trc20_network = driver.find_element(By.CSS_SELECTOR, 'div.pt30 > div:nth-child(1) > div.MuiButtonBase-root.dB\*2.abs\*2.s.cr\@mouse')
+            driver.execute_script("arguments[0].click();", trc20_network)
 
         try:
             amount = WebDriverWait(driver, 30).until(
@@ -188,5 +212,5 @@ def path_to_lunu_wallet():
 
 def wallet():
     wallet_data = path_to_lunu_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
