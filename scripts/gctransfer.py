@@ -95,16 +95,11 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            pay_last_step = driver.find_element(By.CSS_SELECTOR, 'div.text-center.col-md-4 > div > div > form > a')
-            sleep(0.5)
-            driver.execute_script("arguments[0].click();", pay_last_step)
+            pay_last_step = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(2) > div > div > div.text-center.col-md-4 > div > div > form > a')
+            href = pay_last_step.get_attribute('href')
+            driver.get(href)
         except Exception as e:
             print(f'LAST STEP ERROR \n{e}')
-
-        sleep(10)
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
-        driver.refresh()
 
         try:
             buy_with_trc_20 = WebDriverWait(driver, 30).until(
@@ -116,11 +111,11 @@ def get_wallet():
             print(f"BUY WITH TRC20 ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(30)
             address = driver.find_element(By.CSS_SELECTOR,
                                           'div.col-span-9.ms-16 > div > div.data-info.pt-12 > div.data-info__address.flex.items-center.justify-between > div > span').text
 
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(30)
             amount = driver.find_element(By.CSS_SELECTOR,
                                          'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > div:nth-child(1) > span:nth-child(2)').text
 
@@ -136,4 +131,5 @@ def get_wallet():
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
