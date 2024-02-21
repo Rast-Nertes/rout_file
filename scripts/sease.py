@@ -170,7 +170,7 @@ def path_to_lunu_wallet():
             print(f"CHOOSE TRC20 NETWORK \n{e}")
 
             driver.implicitly_wait(10)
-            choose_tether = driver.find_element(By.CSS_SELECTOR, '//*[@id="root"]/div/div[1]/div[1]/div[2]/div[2]/div[1]/div/div/div[3]/div/div/div[2]')
+            choose_tether = driver.find_element(By.XPATH, '//*[@id="root"]/div/div[1]/div[1]/div[2]/div[2]/div[1]/div/div/div[3]/div/div/div[2]')
             driver.execute_script("arguments[0].click();", choose_tether)
 
             sleep(3)
