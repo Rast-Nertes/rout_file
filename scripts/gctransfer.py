@@ -49,7 +49,7 @@ def login(driver):
         print(f"DATA ERROR \n{e}")
 
     try:
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(20)
         button_login = driver.find_element(By.CSS_SELECTOR, '#app > div > div:nth-child(2) > div > div > div > div > span > form > button')
         driver.execute_script("arguments[0].click();", button_login)
     except Exception as e:
@@ -64,7 +64,7 @@ def get_wallet():
         try:
             driver.implicitly_wait(10)
             buy_product = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(1) > div > div > div.pl-4.pr-4.mb-4.text-center > button')
-            sleep(1)
+            sleep(2.5)
             driver.execute_script("arguments[0].click();", buy_product)
             #На анимацию
             sleep(3)
@@ -86,15 +86,15 @@ def get_wallet():
         actions.send_keys(Keys.ENTER).perform()
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             accept_choose = driver.find_element(By.CSS_SELECTOR, 'div.text-center.col-md-4 > div > div > form > button')
-            sleep(2)
+            sleep(3)
             driver.execute_script("arguments[0].click();", accept_choose)
         except Exception as e:
             print(f"ACCEPT ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             pay_last_step = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(2) > div > div > div.text-center.col-md-4 > div > div > form > a')
             href = pay_last_step.get_attribute('href')
             driver.get(href)
@@ -102,7 +102,7 @@ def get_wallet():
             print(f'LAST STEP ERROR \n{e}')
 
         try:
-            buy_with_trc_20 = WebDriverWait(driver, 30).until(
+            buy_with_trc_20 = WebDriverWait(driver, 40).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button'))
             )
             sleep(2.5)
