@@ -87,22 +87,22 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(20)
-            accept_choose = driver.find_element(By.CSS_SELECTOR, 'div.text-center.col-md-4 > div > div > form > button')
-            sleep(3)
+            accept_choose = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/button')
+            sleep(2)
             driver.execute_script("arguments[0].click();", accept_choose)
         except Exception as e:
             print(f"ACCEPT ERROR \n{e}")
 
         try:
             driver.implicitly_wait(20)
-            pay_last_step = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(2) > div > div > div.text-center.col-md-4 > div > div > form > a')
+            pay_last_step = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/a')
             href = pay_last_step.get_attribute('href')
             driver.get(href)
         except Exception as e:
             print(f'LAST STEP ERROR \n{e}')
 
         try:
-            buy_with_trc_20 = WebDriverWait(driver, 40).until(
+            buy_with_trc_20 = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button'))
             )
             sleep(2.5)
