@@ -1,6 +1,5 @@
 from time import sleep
 from flask import Flask
-import pyautogui
 from flask import jsonify
 from fake_useragent import UserAgent
 from selenium import webdriver
@@ -71,18 +70,19 @@ def get_wallet():
         except Exception as e:
             print(f"BUY BUTTON ERROR \n{e}")
 
+        #sleep(1000)
         try:
-            pyautogui.moveTo(1300, 450)
-            sleep(1)
-            pyautogui.click()
-            sleep(1)
+            choose_ = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/fieldset[1]/div'))
+            )
+            choose_.click()
         except Exception as e:
             print(f"CHOOSE ERROR \n{e}")
 
         for _ in range(2):
             actions.send_keys(Keys.ARROW_DOWN).perform()
             sleep(1)
-        
+
         actions.send_keys(Keys.ENTER).perform()
 
         try:
@@ -96,14 +96,11 @@ def get_wallet():
         try:
             driver.implicitly_wait(20)
             pay_last_step = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/a')
-            sleep(2.5)
-            driver.execute_script("arguments[0].click();", pay_last_step)
+            pay_last_step = pay_last_step.get_attribute('href')
+            sleep(1.5)
+            driver.get(pay_last_step)
         except Exception as e:
             print(f'LAST STEP ERROR \n{e}')
-
-        sleep(10)
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
 
         try:
             driver.refresh()
