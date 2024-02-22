@@ -117,10 +117,7 @@ def path_to_lunu_wallet():
             print(f"CHOOSE LUNU CRYPTO PAY ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(5)
-            error_find = driver.find_element(By.ID, 'error-for-TextField7')
-
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             input_address = driver.find_element(By.XPATH, '//*[@id="shipping-address1"]')
             input_address.clear()
             input_address.send_keys("112")
