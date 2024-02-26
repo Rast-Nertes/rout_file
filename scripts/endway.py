@@ -14,7 +14,9 @@ user_pass = 'kirakira123'
 
 #CHROME OPTIONS
 
-chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe' # Здесь укажи абсолютный путь к экзешнику хрома
+with open('config.txt') as file:
+    chrome_path = file.read().strip() # Здесь укажи абсолютный путь к экзешнику хрома
+
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
