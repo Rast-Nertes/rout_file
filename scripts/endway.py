@@ -69,10 +69,9 @@ async def get_wallet():
             print(f"NEXT STEP ERROR \n{e}")
             return "Not work next step button"
 
-
+        sleep(5)
         pyautogui.moveTo(420, 435)
         pyautogui.click()
-        sleep(5)
 
         try:
             input_email = await driver.find_element(By.CSS_SELECTOR, '#details_email', timeout=40)
