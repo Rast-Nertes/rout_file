@@ -14,9 +14,11 @@ user_pass = 'kirakira123'
 
 #CHROME OPTIONS
 
+chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe' # Здесь укажи абсолютный путь к экзешнику хрома
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
+options.binary_location = chrome_path
 
 async def login(driver):
     await driver.get(url)
@@ -118,4 +120,5 @@ async def get_wallet():
 
 def wallet():
     wallet_data = asyncio.run(get_wallet())
-    return jsonify(wallet_data)
+    print(wallet_data)
+    return wallet_data
