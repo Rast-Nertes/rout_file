@@ -34,14 +34,8 @@ def get_wallet():
             print(f"INPUT EMAIL ERROR \n{e}")
 
         try:
-            pyautogui.moveTo(1000, 500)
-            pyautogui.click()
-
-            time.sleep(2)
-
-            pyautogui.press("down")
-            time.sleep(1)
-            pyautogui.press("enter")
+            choose_payment_xpath = '//*[@id="order"]/table/tbody/tr[4]/td[2]/select/option[1]'
+            driver.execute_script(f"document.evaluate('{choose_payment_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();")
         except Exception as e:
             print(f"ERROR CHOOSE PAYMENT \n{e}")
 
