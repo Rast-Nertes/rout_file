@@ -39,12 +39,18 @@ def get_wallet():
             print(f"INPUT EMAIL ERROR \n{e}")
 
         try:
-            choose_payment_xpath = '//*[@id="order"]/table/tbody/tr[4]/td[2]/select/option[1]'
-            driver.execute_script(f"document.evaluate('{choose_payment_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();")
+            choose_payment_xpath1 = '//*[@id="order"]/table/tbody/tr[4]/td[2]/select/option[1]'
+            driver.execute_script(f"document.evaluate('{choose_payment_xpath1}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();")
+
+            time.sleep(3)
+            choose_payment_xpath2 = '//*[@id="order"]/table/tbody/tr[4]/td[2]/select/option[1]'
+            driver.execute_script(f"document.evaluate('{choose_payment_xpath2}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();")
         except Exception as e:
             print(f"ERROR CHOOSE PAYMENT \n{e}")
 
         try:
+            #Время на удаления объекта
+            time.sleep(5)
             start_buy = driver.find_element(By.CSS_SELECTOR, '#order > footer > button', timeout=40)
             time.sleep(2)
             driver.execute_script("arguments[0].click();", start_buy)
