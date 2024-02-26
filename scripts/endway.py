@@ -121,4 +121,4 @@ async def get_wallet():
 def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
-    return wallet_data
+    return jsonify(wallet_data)
