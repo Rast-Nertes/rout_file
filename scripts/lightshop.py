@@ -11,10 +11,15 @@ user_login = 'kiracase34@gmail.com'
 user_pass = 'oleg34oleg'
 
 #CHROME OPTIONS
+with open('config.txt') as file:
+    chrome_path = file.read().strip()
+
+options = webdriver.ChromeOptions()
+options.binary_location = chrome_path
 
 def get_wallet():
 
-     with webdriver.Chrome() as driver:
+     with webdriver.Chrome(options=options) as driver:
         driver.get(url)
         driver.refresh()
         driver.maximize_window()
