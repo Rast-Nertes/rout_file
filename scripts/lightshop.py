@@ -1,7 +1,6 @@
 import time
 import pyautogui
 from flask import jsonify
-from fake_useragent import UserAgent
 from selenium_driverless.sync import webdriver
 from selenium_driverless.types.by import By
 
@@ -14,6 +13,7 @@ user_pass = 'oleg34oleg'
 #CHROME OPTIONS
 
 def get_wallet():
+
      with webdriver.Chrome() as driver:
         driver.get(url)
         driver.refresh()
@@ -21,6 +21,7 @@ def get_wallet():
 
         try:
             choose_product = driver.find_element(By.CSS_SELECTOR, 'div.table-responsive > table > tbody > tr:nth-child(13) > td.text-center > a > i', timeout=20)
+            time.sleep(2)
             driver.execute_script("arguments[0].click();", choose_product)
         except Exception as e:
             print(f'CHOOSE PRODUCT ERROR \n{e}')
@@ -32,13 +33,17 @@ def get_wallet():
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
 
-        pyautogui.moveTo(1000, 500)
-        pyautogui.click()
+        try:
+            pyautogui.moveTo(1000, 500)
+            pyautogui.click()
 
-        time.sleep(2)
+            time.sleep(2)
 
-        pyautogui.moveTo(1000, 600)
-        pyautogui.click()
+            pyautogui.press("down")
+            time.sleep(1)
+            pyautogui.press("enter")
+        except Exception as e:
+            print(f"ERROR CHOOSE PAYMENT \n{e}")
 
         try:
             start_buy = driver.find_element(By.CSS_SELECTOR, '#order > footer > button', timeout=40)
@@ -80,6 +85,7 @@ def get_wallet():
             "amount": amount,
             "currency": "usdt"
         }
+
 
 def wallet():
     wallet_data = get_wallet()
