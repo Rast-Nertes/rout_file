@@ -88,15 +88,15 @@ async def get_wallet():
             await driver.execute_script("arguments[0].click();", choose_trc20)
 
             input_email_ = await driver.find_element(By.CSS_SELECTOR, 'form > div > div.sc-jbKcbu.jRVrdt.text-field-wrap > input')
-            sleep(1.5)
+            sleep(4)
             await input_email_.write(user_login)
         except Exception as e:
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
         try:
-            sunbmit_button = await driver.find_element(By.ID, 'submit-payment')
+            submit_button = await driver.find_element(By.ID, 'submit-payment')
             sleep(1.5)
-            await driver.execute_script("arguments[0].click();", sunbmit_button)
+            await driver.execute_script("arguments[0].click();", submit_button)
         except Exception as e:
             print(f"SUBMIT BUTTON ERROR \n{e}")
 
