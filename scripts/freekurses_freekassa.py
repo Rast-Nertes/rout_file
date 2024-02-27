@@ -6,8 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-#PAYMENTARS
-
 #CONSTANS
 
 user_login = 'kiracase34@gmail.com'
@@ -146,10 +144,6 @@ def choose_payment_method():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-
-        input("Press")
-
-
 
 def wallet():
     wallet_data = choose_payment_method()
