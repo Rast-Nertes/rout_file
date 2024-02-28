@@ -112,13 +112,13 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR,
-                                         'div.send-deposit-step__body > div.send-deposit-step__info > div:nth-child(1) > div.payment-info-item__content > div > div.copy-text__box').text.replace(
+            amount = driver.find_element(By.XPATH,
+                                         '//*[@id="payment-page"]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[1]').text.replace(
                 "USDT", '').replace(" ", '').replace("\nTRX", '')
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.CSS_SELECTOR,
-                                          'div.invoice__steps > div.send-deposit-step > div.send-deposit-step__body > div.send-deposit-step__info > div:nth-child(2) > div.payment-info-item__content > div > div.copy-text__box').text
+            address = driver.find_element(By.XPATH,
+                                          '//*[@id="payment-page"]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[2]/div/div[1]').text
 
             return {
                 "address": address,
@@ -132,4 +132,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
