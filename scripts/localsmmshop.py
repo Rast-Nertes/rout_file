@@ -84,7 +84,7 @@ def get_wallet():
             print(f"INPUT NUMBER ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             input_email = driver.find_element(By.ID, 'billing_email')
             input_email.clear()
             input_email.send_keys(user_login)
@@ -92,24 +92,24 @@ def get_wallet():
             print(f"ERROR INPUT LOGIN \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             place_order_button = driver.find_element(By.ID, 'place_order')
-            sleep(3)
+            sleep(6)
             driver.execute_script("arguments[0].click();", place_order_button)
         except Exception as e:
             print(f"ERROR PLACE ORDER BUTTON \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             trc20_network = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(2) > div > div.col-md-6.order-md-2.mt-2 > div > a.a-btn1')
-            sleep(1.5)
+            sleep(2)
             driver.execute_script("arguments[0].click();", trc20_network)
         except Exception as e:
             print(f"TRC20 NETWORK \n{e}")
 
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.ID,'amt_val').text
+            amount = driver.find_element(By.ID, 'amt_val').text
 
             driver.implicitly_wait(10)
             address = driver.find_element(By.ID, 'add_val').get_attribute('value')
@@ -121,7 +121,6 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-        #input("Press")
 
 
 def wallet():
