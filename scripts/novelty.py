@@ -27,12 +27,12 @@ def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         driver.get(url)
         driver.maximize_window()
-
+        sleep(5)
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR, 'div.product-entry-wrapper > div.summary.entry-summary > p.price > span > ins > span > bdi').text.replace("$", "")
+            amount = driver.find_element(By.XPATH, '//*[@id="product-1104"]/div[1]/div[2]/p[1]/span/ins/span/bdi').text.replace("$", "")
 
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             address = driver.find_element(By.XPATH, '/html/body/div[2]/main/div[2]/article/div[2]/div[2]/article/div[1]/div[2]/table/tbody[1]/tr[4]/td[2]').text
 
             return {
@@ -42,7 +42,6 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-        #input("Press")
 
 def wallet():
     wallet_data = get_wallet()
