@@ -1,0 +1,100 @@
+from flask import jsonify
+from selenium import webdriver
+from time import sleep
+from fake_useragent import UserAgent
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+# CONSTANS
+
+url = 'https://psd-seller.com/downloads/poland-id-card-template-psd/'
+user_login = "kiracase34@gmail.com"
+user_password = "kiramira555"
+
+# CHROME CONSTANS
+
+options = webdriver.ChromeOptions()
+user_agent = UserAgent()
+options.add_argument(f"user-agent={user_agent.random}")
+options.add_argument("--disable-save-password-bubble")
+options.headless = False
+
+
+def get_wallet():
+    with webdriver.Chrome(options=options) as driver:
+        driver.get(url)
+        driver.maximize_window()
+
+        try:
+            driver.implicitly_wait(10)
+            purchase_button = driver.find_element(By.XPATH, '/html/body/section[2]/div/div/div[2]/div/div[1]/form/div/button')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", purchase_button)
+        except Exception as e:
+            print(f"PURCHASE ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(10)
+            checkout_button = driver.find_element(By.CSS_SELECTOR, '#edd_purchase_24-3 > div > a')
+            sleep(10)
+            driver.execute_script("arguments[0].click();", checkout_button)
+        except Exception as e:
+            print(f"CHECKOUT BUTTON ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(30)
+            input_email = driver.find_element(By.ID, 'edd-email')
+            input_email.clear()
+            input_email.send_keys(user_login)
+
+            driver.implicitly_wait(10)
+            input_first_name = driver.find_element(By.ID, 'edd-first')
+            input_first_name.clear()
+            input_first_name.send_keys("Kira")
+
+            driver.implicitly_wait(10)
+            input_last_name = driver.find_element(By.ID, 'edd-last')
+            input_last_name.clear()
+            input_last_name.send_keys("Ivanova")
+        except Exception as e:
+            print(f"INPUT DATA ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(10)
+            purchase_button_2 = driver.find_element(By.ID, 'edd-purchase-button')
+            sleep(3)
+            driver.execute_script("arguments[0].click();", purchase_button_2)
+        except Exception as e:
+            print(f"PURCHASE BUTTON2 ERROR")
+
+        try:
+            driver.implicitly_wait(10)
+            choose_tether = driver.find_element(By.CSS_SELECTOR, 'bp-public-invoice-card > div > div > div > bp-public-invoice-card-state-prepared > div > div:nth-child(2) > a > button')
+            sleep(2)
+            driver.execute_script("arguments[0].click();", choose_tether)
+        except Exception as e:
+            print(f"CHOOSE TETHER ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(20)
+            amount = driver.find_element(By.CSS_SELECTOR, 'div.active-state__main-container > div.active-state__component-main-text > span.active-state__send.ng-star-inserted > span:nth-child(1)').text.replace(" ", "")
+
+
+            driver.implicitly_wait(10)
+            address = driver.find_element(By.CSS_SELECTOR, 'bp-public-invoice-card > div > div > div > div.active-state__main-container > div.active-state__component-main-text > div > p').text
+
+            return {
+                "address": address,
+                "amount": amount,
+                "currency": "usdt"
+            }
+        except Exception as e:
+            print(f"DATA ERROR \n{e}")
+
+def wallet():
+    wallet_data = get_wallet()
+    print(wallet_data)
+    return jsonify(wallet_data)
