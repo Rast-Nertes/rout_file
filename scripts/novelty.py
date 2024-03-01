@@ -10,22 +10,22 @@ from selenium.webdriver.common.by import By
 
 #CONSTANS
 
-url = 'https://noveltydocumentstore.ws'
+url = 'https://noveltydocumentstore.ws/'
 user_login = "kiracase34@gmail.com"
 user_password = "kiramira555"
 
 #CHROME CONSTANS
 
-options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
-options.add_argument("--disable-save-password-bubble")
-options.headless = False
+#####
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome() as driver:
         driver.get(url)
         driver.maximize_window()
+
+        sleep(10)
+
+        driver.get(url)
 
         try:
             driver.implicitly_wait(10)
@@ -54,3 +54,6 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+if __name__ == "__main__":
+    wallet()
