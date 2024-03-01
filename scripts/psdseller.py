@@ -32,17 +32,44 @@ def get_wallet():
             driver.implicitly_wait(10)
             purchase_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/button')
             sleep(3)
-            driver.execute_script("arguments[0].click();", purchase_button)
+            purchase_button.click()
         except Exception as e:
             print(f"PURCHASE ERROR \n{e}")
 
         try:
             driver.implicitly_wait(30)
             checkout_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/a')
-            sleep(10)
-            driver.execute_script("arguments[0].click();", checkout_button)
+            sleep(3)
+            checkout_button.click()
         except Exception as e:
             print(f"CHECKOUT BUTTON ERROR \n{e}")
+
+        sleep(5)
+
+        try:
+            driver.implicitly_wait(10)
+            cart_empty_find = driver.find_element(By.ID, 'edd_checkout_wrap').text
+            if "empty" in cart_empty_find:
+                driver.get('https://psd-seller.com/downloads/luxembourg-id-card-template-psd/')
+
+                try:
+                    driver.implicitly_wait(10)
+                    purchase_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/button')
+                    sleep(3)
+                    purchase_button.click()
+                except Exception as e:
+                    print(f"PURCHASE ERROR \n{e}")
+
+                try:
+                    driver.implicitly_wait(30)
+                    checkout_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/a')
+                    sleep(5)
+                    checkout_button.click()
+                except Exception as e:
+                    print(f"CHECKOUT BUTTON ERROR \n{e}")
+
+        except Exception as e:
+            print(f"ITEM`s HERE.")
 
         try:
             driver.implicitly_wait(30)
