@@ -27,13 +27,12 @@ def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         driver.get(url)
         driver.maximize_window()
-        sleep(5)
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="product-1104"]/div[1]/div[2]/p[1]/span/ins/span/bdi').text.replace("$", "")
+            amount = driver.find_element(By.CSS_SELECTOR, '#product-1104 > div.product-entry-wrapper > div.summary.entry-summary > p.price > span > ins > span > bdi').text.replace("$", "")
 
             driver.implicitly_wait(20)
-            address = driver.find_element(By.XPATH, '/html/body/div[2]/main/div[2]/article/div[2]/div[2]/article/div[1]/div[2]/table/tbody[1]/tr[4]/td[2]').text
+            address = driver.find_element(By.CSS_SELECTOR, '#tab-description > div:nth-child(12) > table > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)').text
 
             return {
                 "address": address,
