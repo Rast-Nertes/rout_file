@@ -16,7 +16,7 @@ user_password = "kiramira555"
 
 #CHROME CONSTANS
 
-#####
+######
 
 def get_wallet():
     with webdriver.Chrome() as driver:
