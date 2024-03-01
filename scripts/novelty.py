@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 #CONSTANS
 
-url = 'https://noveltydocumentstore.ws/product/uk-driving-license-psd-template-in-background-effect-photo-card-new-update-v3/index.php'
+url = 'https://noveltydocumentstore.ws'
 user_login = "kiracase34@gmail.com"
 user_password = "kiramira555"
 
@@ -20,7 +20,6 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-#options.add_argument("--headless")
 options.headless = False
 
 def get_wallet():
@@ -28,14 +27,20 @@ def get_wallet():
         driver.get(url)
         driver.maximize_window()
 
-        sleep(10)
+        try:
+            driver.implicitly_wait(10)
+            choose_license = driver.find_element(By.CSS_SELECTOR, 'div.woocommerce.columns-5 > ul > li.product.type-product.post-1104.status-publish.first.instock.product_cat-dl.product_cat-united-kingdom.product_tag-dl.product_tag-uk.has-post-thumbnail.sale.downloadable.virtual.purchasable.product-type-simple > a > h2')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", choose_license)
+        except Exception as e:
+            print(f"CHOOSE LICENSE ERROR \n{e}")
 
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '/html/body/div[2]/main/div[2]/article/div[2]/div[1]/div[2]/p[1]/span/ins/span/bdi').text.replace("$", "")
+            amount = driver.find_element(By.XPATH, '//*[@id="product-1104"]/div[1]/div[2]/p[1]/span/ins/span/bdi').text.replace("$", "")
 
             driver.implicitly_wait(20)
-            address = driver.find_element(By.XPATH, '/html/body/div[2]/main/div[2]/article/div[2]/div[2]/article/div[1]/div[2]/table/tbody[1]/tr[4]/td[2]').text
+            address = driver.find_element(By.XPATH, '//*[@id="tab-description"]/div[2]/table/tbody[1]/tr[4]/td[2]').text
 
             return {
                 "address": address,
