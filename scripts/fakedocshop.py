@@ -7,8 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-#222222@gmail.com
-#2233445566
+
 # CONSTANS
 
 url = 'https://fakedocshop.com/memberships/'
@@ -108,7 +107,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
