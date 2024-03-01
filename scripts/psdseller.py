@@ -70,7 +70,9 @@ def get_wallet():
 
         except Exception as e:
             print(f"ITEM`s HERE.")
-
+        
+        sleep(2)
+        
         try:
             driver.implicitly_wait(30)
             input_email = driver.find_element(By.ID, 'edd-email')
