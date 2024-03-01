@@ -25,20 +25,20 @@ options.headless = False
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
-        driver.get(url)
+        driver.get('https://psd-seller.com/downloads/luxembourg-id-card-template-psd/')
         driver.maximize_window()
 
         try:
             driver.implicitly_wait(10)
-            purchase_button = driver.find_element(By.XPATH, '/html/body/section[2]/div/div/div[2]/div/div[1]/form/div/button')
-            sleep(1.5)
+            purchase_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/button')
+            sleep(3)
             driver.execute_script("arguments[0].click();", purchase_button)
         except Exception as e:
             print(f"PURCHASE ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
-            checkout_button = driver.find_element(By.CSS_SELECTOR, '#edd_purchase_24-3 > div > a')
+            driver.implicitly_wait(30)
+            checkout_button = driver.find_element(By.XPATH, '//*[@id="edd_purchase_169-3"]/div/a')
             sleep(10)
             driver.execute_script("arguments[0].click();", checkout_button)
         except Exception as e:
