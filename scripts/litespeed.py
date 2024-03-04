@@ -29,7 +29,7 @@ user_pass = 'LYi7BHwGJ3Xdc8D'
 
 #CHROME OPTIONS
 
-with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
+with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip() # Здесь укажи абсолютный путь к экзешнику хрома
     exctention_path = paths[1].strip()
