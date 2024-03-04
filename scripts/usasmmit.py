@@ -97,8 +97,8 @@ def get_wallet():
             print(f"TICKET ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
-            choose_currency = driver.find_element(By.ID, 'CsaltCoin')
+            driver.implicitly_wait(20)
+            choose_currency = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div/article/div/form[2]/div[2]/div/div/ul/li[1]/div/fieldset/p/select')
             sleep(2)
             choose_currency.click()
 
@@ -111,9 +111,10 @@ def get_wallet():
         except Exception as e:
             print(f"CHOOSE CURRENCY ERROR \n{e}")
 
+        #input("Press")
         try:
             driver.implicitly_wait(30)
-            address = driver.find_element(By.ID, 'alt-coinAddress').get_attribute("value")
+            address = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div/article/div/form[2]/div[2]/div/div/ul/li[1]/div/fieldset/div[1]/div/div/div/input').get_attribute("value")
 
             driver.implicitly_wait(30)
             amount = driver.find_element(By.CSS_SELECTOR, '#wapg_order_review > div > div > h3 > strong').text
