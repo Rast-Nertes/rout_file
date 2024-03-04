@@ -31,12 +31,12 @@ def get_wallet():
         driver.get('https://ewallets.cc/my-account/')
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             input_email = driver.find_element(By.ID, 'username')
             input_email.clear()
             input_email.send_keys(user_login)
 
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             input_password = driver.find_element(By.ID, 'password')
             input_password.clear()
             input_password.send_keys(user_password)
@@ -44,25 +44,36 @@ def get_wallet():
             print(f"INPUT DATA ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             button_login = driver.find_element(By.CSS_SELECTOR, 'div.page-wrapper.my-account.mb > div > div > div.account-container.lightbox-inner > div > form > p:nth-child(3) > button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", button_login)
         except Exception as e:
             print(f"BUTTON LOGIN ERROR \n{e}")
-        #input("Press")
 
-        #driver.get(url)
+        driver.get(url)
 
-        # try:
-        #     driver.implicitly_wait(10)
-        #     add_to_busket_button = driver.find_element(By.CSS_SELECTOR, 'div > div.product-info.summary.col-fit.col.entry-summary.product-summary.form-minimal > form > button')
-        #     sleep(1.5)
-        #     driver.execute_script("arguments[0].click();", add_to_busket_button)
-        # except Exception as e:
-        #     print(f"ADD TO BUSKET ERROR \n{e}")
+        try:
+            driver.implicitly_wait(10)
+            add_to_busket_button = driver.find_element(By.CSS_SELECTOR, 'div > div.product-info.summary.col-fit.col.entry-summary.product-summary.form-minimal > form > button')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", add_to_busket_button)
+        except Exception as e:
+            print(f"ADD TO BUSKET ERROR \n{e}")
 
-        #input("Press")
+        driver.get('https://ewallets.cc/cart/')
+
+        try:
+            driver.implicitly_wait(20)
+            count = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div/div[2]/div[1]/form/div/table/tbody/tr[1]/td[5]/div/input[2]')
+            count.clear()
+            count.send_keys("1")
+            sleep(1)
+            actions.send_keys(Keys.ENTER).perform()
+            sleep(7.5)
+        except Exception as e:
+            print(f"COUNT INPUT ERROR \n{e}")
+
 
         driver.get('https://ewallets.cc/checkout/')
 
@@ -74,15 +85,26 @@ def get_wallet():
             input_email.send_keys('rwork875@gmail.com')
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
-        #
-        # try:
-        #     driver.implicitly_wait(10)
-        #     choose_crypto_currency = driver.find_element(By.ID, 'select2-payment_cryptapi_coin-container')
-        #     sleep(1.5)
-        #     choose_crypto_currency.click()
-        #     sleep(1)
-        # except Exception as e:
-        #     print(f"CHOOSE CRYPTO ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(30)
+            choose_crypto_currency = driver.find_element(By.ID, 'select2-payment_cryptapi_coin-container')
+            sleep(1.5)
+            choose_crypto_currency.click()
+            sleep(1)
+
+            for _ in range(20):
+                actions.send_keys(Keys.ARROW_UP).perform()
+                sleep(0.2)
+
+            for _ in range(12):
+                actions.send_keys(Keys.ARROW_DOWN).perform()
+                sleep(0.5)
+
+            actions.send_keys(Keys.ENTER).perform()
+            sleep(5)
+        except Exception as e:
+            print(f"CHOOSE CRYPTO ERROR \n{e}")
 
         try:
             driver.implicitly_wait(10)
