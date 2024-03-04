@@ -117,7 +117,7 @@ def get_wallet():
             address = driver.find_element(By.ID, 'alt-coinAddress').get_attribute("value")
 
             driver.implicitly_wait(30)
-            amount = driver.find_element(By.CSS_SELECTOR, '#wapg_order_review > table > tbody > tr > td.product-name > strong').text
+            amount = driver.find_element(By.CSS_SELECTOR, '#wapg_order_review > table > tbody > tr > td.product-name > strong').text.replace('× ', "")
 
             return {
                 "address": address,
