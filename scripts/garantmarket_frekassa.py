@@ -108,12 +108,14 @@ def get_wallet():
         except Exception as e:
             print(f"SUBMIT ERROR \n{e}")
 
+        input("Press")
+
         try:
-            driver.implicitly_wait(20)
-            address = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[7]/div[2]').text
+            driver.implicitly_wait(40)
+            address = driver.find_element(By.XPATH, '/html/body/div[4]/div[2]/div/div[5]/div[1]/div[3]/div[7]/div[2]').text
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[5]/span').text
+            amount = driver.find_element(By.XPATH, '/html/body/div[4]/div[2]/div/div[5]/div[1]/div[3]/div[5]/span').text
 
             return {
                 "address": address,
@@ -122,14 +124,9 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
-        #input("Press")
 
 
 def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
