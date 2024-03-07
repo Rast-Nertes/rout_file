@@ -104,11 +104,9 @@ def get_wallet():
             driver.implicitly_wait(10)
             submit_payment = driver.find_element(By.ID, 'submit-payment')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", submit_payment)
+            submit_payment.click()
         except Exception as e:
             print(f"SUBMIT ERROR \n{e}")
-
-        input("Press")
 
         try:
             driver.implicitly_wait(40)
