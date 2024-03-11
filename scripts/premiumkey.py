@@ -113,7 +113,7 @@ def get_wallet():
             continue_without_email_button.click()
 
             driver.implicitly_wait(10)
-            choose_network = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[4]')
+            choose_network = driver.find_element(By.CSS_SELECTOR, 'div.short-background.css-10h2p0h.e1wz9m0w0 > div.css-nl7kme.e7kd91g2 > div > div > label:nth-child(3)')
             driver.execute_script("arguments[0].click();", choose_network)
 
             driver.implicitly_wait(10)
@@ -145,6 +145,7 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
+
 
 def wallet():
     wallet_data = get_wallet()
