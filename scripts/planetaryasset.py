@@ -21,11 +21,26 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--disable-extensions")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-browser-side-navigation")
+options.add_argument("--disable-gpu")
+options.add_experimental_option("detach", True)
 
 
 def login(driver):
     driver.get(url)
     driver.maximize_window()
+
+    try:
+        driver.implicitly_wait(10)
+        click_me_button = driver.find_element(By.XPATH, '//button[@id="clickbutton"]')
+        sleep(1.5)
+        driver.execute_script("arguments[0].click();", click_me_button)
+    except Exception as e:
+        print(f"CLICK ME BUTTON ERROR \n{e}")
+
 
     try:
         driver.implicitly_wait(30)
@@ -49,7 +64,7 @@ def login(driver):
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
-        sleep(3)
+        sleep(7.5)
         driver.get('https://planetaryasset.io/?a=deposit')
 
         try:
@@ -85,7 +100,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
