@@ -13,13 +13,13 @@ user_password = 'a5NvMaGjExXU@@a'
 
 #CHROME CONSTANS
 
-# with open('config.txt') as file:
-#     chrome_path = file.read().strip()
+with open('config.txt') as file:
+    chrome_path = file.read().strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
-# options.binary_location = chrome_path
+options.binary_location = chrome_path
 
 #PROXY CONSTANS
 proxy_name = 'WyS1nY'
