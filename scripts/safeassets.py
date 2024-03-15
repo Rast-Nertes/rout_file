@@ -14,7 +14,8 @@ user_password = 'a5NvMaGjExXU@@a'
 #CHROME CONSTANS
 
 with open('config.txt') as file:
-    chrome_path = file.read().strip()
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
