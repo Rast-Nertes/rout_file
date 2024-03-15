@@ -23,10 +23,10 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.binary_location = chrome_path
 
 #PROXY CONSTANS
-proxy_name = 'WyS1nY'
-proxy_pass = '8suHN9'
+proxy_name = 'K0nENe'
+proxy_pass = 'uw7RQ3'
 proxy_port = '8000'
-proxy_ip = "196.19.121.187"
+proxy_ip = "45.130.254.133"
 
 
 async def login(driver):
