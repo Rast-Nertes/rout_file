@@ -36,16 +36,16 @@ async def login(driver):
     await driver.maximize_window()
 
     try:
-        find_frame = await driver.find_element(By.TAG_NAME, 'iframe', timeout=15)
+        find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
         await asyncio.sleep(1)
         iframe_document = await find_frame[0].content_document
 
-        checkbox = await iframe_document.find_element(By.CSS_SELECTOR, 'challenge-stage > div > label > input[type=checkbox] - checkbox', timeout=20)
-        await asyncio.sleep(10)
+        checkbox = await iframe_document.find_element(By.CSS_SELECTOR, '#challenge-stage > div > label > span.ctp-label', timeout=20)
+        await asyncio.sleep(3)
         await checkbox.click()
-
-        checkbox = await iframe_document.find_element(By.CSS_SELECTOR, 'challenge-stage > div > label > input[type=checkbox] - checkbox', timeout=20)
-        await asyncio.sleep(10)
+        
+        checkbox = await iframe_document.find_element(By.CSS_SELECTOR, '#challenge-stage > div > label > span.ctp-label', timeout=20)
+        await asyncio.sleep(6)
         await checkbox.click()
     except Exception as e:
         print(f"CLICK \n{e}")
