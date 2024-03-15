@@ -34,7 +34,7 @@ async def login(driver):
     sleep(1)
     await driver.get('https://www.safeassets.com/login/say/invalid_login/e/username')
     await driver.maximize_window()
-    
+
     try:
         find_frame = await driver.find_element(By.TAG_NAME, 'iframe', timeout=15)
         await asyncio.sleep(1)
@@ -42,7 +42,11 @@ async def login(driver):
 
         checkbox = await iframe_document.find_element(By.CSS_SELECTOR, 'challenge-stage > div > label > input[type=checkbox] - checkbox', timeout=20)
         await asyncio.sleep(10)
-        await driver.execute_script("arguments[0].click();", checkbox)
+        await checkbox.click()
+
+        checkbox = await iframe_document.find_element(By.CSS_SELECTOR, 'challenge-stage > div > label > input[type=checkbox] - checkbox', timeout=20)
+        await asyncio.sleep(10)
+        await checkbox.click()
     except Exception as e:
         print(f"CLICK \n{e}")
 
