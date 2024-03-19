@@ -114,10 +114,10 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            address = driver.find_element(By.CSS_SELECTOR, 'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
+            amount = driver.find_element(By.CSS_SELECTOR, 'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
 
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.CSS_SELECTOR, 'div.payment_req > div > div.payment_requisites > div.req_to_clipboard > p').text
+            address = driver.find_element(By.CSS_SELECTOR, 'div.payment_req > div > div.payment_requisites > div.req_to_clipboard > p').text
 
             return {
                 "address": address,
