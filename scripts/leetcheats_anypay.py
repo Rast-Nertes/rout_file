@@ -72,12 +72,13 @@ def get_wallet():
             print(f"ERROR CHOOSE PAYMENT \n{e}")
 
         try:
+            sleep(5)
             find_frame = driver.find_elements(By.TAG_NAME, 'iframe')
-            sleep(1)
+            sleep(2)
             iframe_document = find_frame[0].content_document
 
-            checkbox = iframe_document.find_element(By.CSS_SELECTOR,
-                                                          '#challenge-stage > div > label > span.ctp-label', timeout=20)
+            checkbox = iframe_document.find_element(By.XPATH,
+                                                          '//label[@class="ctp-checkbox-label"]/input', timeout=20)
             sleep(3)
             checkbox.click()
         except Exception as e:
