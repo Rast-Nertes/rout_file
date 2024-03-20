@@ -109,7 +109,6 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_perfect_money)
             sleep(3)
-            input("press")
         except Exception as e:
             print(f"ERROR CHOOSE NOWPAYMENTS \n{e}")
 
