@@ -108,13 +108,18 @@ def get_wallet():
             choose_perfect_money = driver.find_element(By.CSS_SELECTOR, 'li.wc_payment_method.payment_method_pm > label')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_perfect_money)
+            sleep(3)
+            input("press")
+        except Exception as e:
+            print(f"ERROR CHOOSE NOWPAYMENTS \n{e}")
 
+        try:
             driver.implicitly_wait(10)
             place_order = driver.find_element(By.ID, 'place_order')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", place_order)
         except Exception as e:
-            print(f"ERROR CHOOSE NOWPAYMENTS \n{e}")
+            print(f"ERROR PLACE ORDER \n{e}")
 
         try:
             driver.implicitly_wait(10)
