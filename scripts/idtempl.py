@@ -129,16 +129,24 @@ def get_wallet():
             print(f"ERROR PLACE ORDER BUTTON \n{e}")
 
         try:
-            driver.implicitly_wait(10)
-            next_step_button = driver.find_element(By.CSS_SELECTOR, 'div.invoice__steps > div.choose-currency-step > button')
+            driver.implicitly_wait(20)
+            next_step_button = driver.find_element(By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", next_step_button)
+            while True:
+                driver.implicitly_wait(5)
+                error = driver.find_element(By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[3]').text
+                if error == None:
+                    break
+                else:
+                    driver.execute_script("arguments[0].click();", next_step_button)
+            sleep(3)
         except Exception as e:
             print(f"ERROR NEXT STEP BUTTON \n{e}")
 
         try:
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.CSS_SELECTOR, 'div.send-deposit-step__body > div.send-deposit-step__info > div:nth-child(1) > div.payment-info-item__content > div > div.copy-text__box').text.replace('USDT', '').replace(" ", '').replace('TRX', '').replace('\n', '')
+            amount = driver.find_element(By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[1]').text.replace('USDT', '').replace(" ", '').replace('TRX', '').replace('\n', '')
 
             driver.implicitly_wait(10)
             address = driver.find_element(By.CSS_SELECTOR, 'div.send-deposit-step > div.send-deposit-step__body > div.send-deposit-step__info > div:nth-child(2) > div.payment-info-item__content > div > div.copy-text__box').text
