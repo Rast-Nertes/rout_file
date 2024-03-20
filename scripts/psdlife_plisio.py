@@ -94,6 +94,10 @@ def get_wallet():
             driver.implicitly_wait(10)
             address = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div[2]/div/div[7]').text
 
+            if address == None:
+                sleep(2)
+                address = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div[2]/div/div[7]').text
+
             return {
                 "address": address,
                 "amount": amount,
