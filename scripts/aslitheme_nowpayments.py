@@ -86,7 +86,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            choose_nowpayments = driver.find_element(By.CSS_SELECTOR, 'li.wc_payment_method.payment_method_nowpayments_gateway')
+            choose_nowpayments = driver.find_element(By.CSS_SELECTOR, '#payment > ul > li.wc_payment_method.payment_method_nowpayments_gateway > label')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_nowpayments)
             sleep(1)
