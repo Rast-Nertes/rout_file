@@ -51,18 +51,22 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE PAYMENT \n{e}")
 
-        try:
-            sleep(5)
-            find_frame = driver.find_elements(By.TAG_NAME, 'iframe')
-            sleep(2)
-            iframe_document = find_frame[0].content_document
+        print("CHOOSE SUCCESS")
 
-            checkbox = iframe_document.find_element(By.XPATH,
-                                                          '//label[@class="ctp-checkbox-label"]/input', timeout=20)
-            sleep(3)
-            checkbox.click()
+        try:
+            find_frame = driver.find_elements(By.TAG_NAME, 'iframe')
+            if find_frame == None:
+                pass
+            else:
+                sleep(0.5)
+                iframe_document = find_frame[0].content_document
+                checkbox = iframe_document.find_element(By.XPATH, '//label[@class="ctp-checkbox-label"]/input', timeout=10)
+                sleep(3)
+                checkbox.click()
         except Exception as e:
             print(f"CLICK \n{e}")
+
+        print("SUCCESS")
 
         try:
             choose_tether = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[2]/div[1]/div[3]/div[2]', timeout=30)
