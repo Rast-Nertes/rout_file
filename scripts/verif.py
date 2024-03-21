@@ -67,6 +67,7 @@ def login(driver):
         login_button = driver.find_element(By.CSS_SELECTOR, '#login-form > button')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
+        sleep(10)
     except Exception as e:
         print(f"LOGIN ERROR \n{e}")
 
@@ -88,7 +89,7 @@ def get_wallet():
                 break
 
         try:
-            driver.implicitly_wait(30)
+            driver.implicitly_wait(60)
             input_amount = driver.find_element(By.XPATH, '//*[@id="form"]/div[1]/input')
             input_amount.clear()
             input_amount.send_keys('1000')
@@ -124,4 +125,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
