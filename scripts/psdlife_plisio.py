@@ -84,19 +84,16 @@ def get_wallet():
             choose_network = driver.find_element(By.CSS_SELECTOR, 'div.invoice__contentWr.is-white > div.invoice__content > div > div.step-currencies__list > div:nth-child(2) > button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_network)
+            sleep(7.5)
         except Exception as e:
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
         try:
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div[1]/div/div[2]/div/span[1]').text
+            amount = driver.find_element(By.ID, 'step_pay__amount_payTo').text
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div[2]/div/div[7]').text
-
-            if address == None:
-                sleep(2)
-                address = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div[2]/div/div[7]').text
+            address = driver.find_element(By.CSS_SELECTOR, 'div.invoice__contentWr.is-white > div.invoice__content > div > div.step-pay__address').text
 
             return {
                 "address": address,
