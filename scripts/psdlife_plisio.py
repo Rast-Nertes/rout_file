@@ -89,10 +89,10 @@ def get_wallet():
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(60)
             amount = driver.find_element(By.ID, 'step_pay__amount_payTo').text
 
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(60)
             address = driver.find_element(By.CSS_SELECTOR, 'div.invoice__contentWr.is-white > div.invoice__content > div > div.step-pay__address').text
 
             return {
