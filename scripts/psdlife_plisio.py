@@ -85,6 +85,12 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_network)
             sleep(7.5)
+
+            wait = WebDriverWait(driver, 70) 
+            wait.until(EC.visibility_of_element_located((By.TAG_NAME, "body")))
+
+            current_window = driver.current_window_handle
+            driver.switch_to.window(current_window)
         except Exception as e:
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
@@ -108,3 +114,6 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+if __name__ == "__main__":
+    wallet()
