@@ -20,7 +20,6 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_argument('--headless')
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
