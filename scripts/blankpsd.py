@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 
 url = 'https://blankpsd.com/product/ohio-drivers-license-template/?doing_wp_cron=1709210338.6194310188293457031250'
 user_login = "kiracase34@gmail.com"
-user_password = "kiramira555"
+user_password = "ErJYGKiG7w2fGTF"
 
 # CHROME CONSTANS
 
