@@ -56,6 +56,8 @@ async def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE SELIX \n{e}")
 
+        sleep(7.5)
+
         try:
             find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
             sleep(2)
@@ -63,11 +65,11 @@ async def get_wallet():
 
             checkbox = await iframe_document.find_element(By.XPATH, '//input[@type="checkbox"]', timeout=20)
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", checkbox)
+            checkbox.click()
 
             checkbox = await iframe_document.find_element(By.XPATH, '//input[@type="checkbox"]', timeout=10)
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", checkbox)
+            checkbox.click()
         except Exception as e:
             print(f"ERROR CHECKBOX \n{e}")
 
