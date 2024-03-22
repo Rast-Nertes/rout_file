@@ -54,7 +54,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            choose_trc20 = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[2]/div[8]/div/div')
+            choose_trc20 = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[2]/div[9]/div/div')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
@@ -74,7 +74,7 @@ def get_wallet():
             print(f"ERROR INPUT EMAIL \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(60)
             amount = driver.find_element(By.ID, 'amount').get_attribute('value')
 
             driver.implicitly_wait(10)
