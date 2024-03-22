@@ -1,5 +1,7 @@
+import asyncio
+
 from flask import jsonify
-from selenium_driverless.sync import webdriver
+from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
 from fake_useragent import UserAgent
@@ -29,82 +31,69 @@ options.add_argument("--disable-gpu")
 options.binary_location = chrome_path
 
 
-def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
-        driver.maximize_window()
-        driver.get(url)
+async def login(driver):
+    await driver.get(url)
+    await driver.maximize_window()
+
+
+async def get_wallet():
+    async with webdriver.Chrome(options=options) as driver:
+        await login(driver)
+        sleep(3)
 
         try:
-            buy_button = driver.find_element(By.CSS_SELECTOR, 'div.list.row > div.prices-block.col-md-4 > div > button', timeout=40)
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_button)
+            buy_button = await driver.find_element(By.XPATH, '/html/body/main/div/div[2]/div[2]/div/button', timeout=20)
+            await driver.execute_script("arguments[0].click();", buy_button)
         except Exception as e:
             print(f"ERROR BUY BUTTON \n{e}")
 
         try:
-            input_email = driver.find_element(By.ID, 'purchases-email', timeout=30)
-            input_email.write(user_email)
+            input_email = await driver.find_element(By.ID, 'purchases-email', timeout=20)
+            await input_email.write(user_email)
 
-            choose_freekassa = driver.find_element(By.CSS_SELECTOR, 'div.pay-sellix.linear-gradient-border.purple', timeout=20)
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_freekassa)
+            choose_selix = await driver.find_element(By.CSS_SELECTOR, 'div.data-row.payment-method > div.pay-sellix.linear-gradient-border.purple', timeout=20)
+            await driver.execute_script("arguments[0].click();", choose_selix)
         except Exception as e:
-            print(f"ERROR CHOOSE PAYMENT \n{e}")
-
-        print("CHOOSE SUCCESS")
+            print(f"ERROR CHOOSE SELIX \n{e}")
 
         try:
-            find_frame = driver.find_elements(By.TAG_NAME, 'iframe')
-            if find_frame == None:
-                pass
-            else:
-                sleep(0.5)
-                iframe_document = find_frame[0].content_document
-                checkbox = iframe_document.find_element(By.XPATH, '//label[@class="ctp-checkbox-label"]/input', timeout=10)
-                sleep(3)
-                checkbox.click()
-        except Exception as e:
-            print(f"CLICK \n{e}")
+            choose_usdt = await driver.find_element(By.XPATH, '//*[@id="gateway-body"]/div[2]/div[1]/div[3]/div[2]', timeout=20)
+            await driver.execute_script("arguments[0].click();", choose_usdt)
 
-        print("SUCCESS")
+            choose_trc = await driver.find_element(By.XPATH, '//*[@id="gateway-body"]/div[2]/div[1]/div[3]/div[2]/div[2]/div[3]', timeout=20)
+            await driver.execute_script("arguments[0].click();", choose_trc)
 
-        try:
-            choose_tether = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[2]/div[1]/div[3]/div[2]', timeout=30)
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_tether)
-
-            choose_trc20 = driver.find_element(By.XPATH, '//*[@id="gateway-body"]/div[2]/div[1]/div[3]/div[2]/div[2]/div[3]', timeout=20)
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_trc20)
-
-            submit_payment = driver.find_element(By.XPATH, '//*[@id="gateway-footer"]/div/button', timeout=10)
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", submit_payment)
+            continue_button = await driver.find_element(By.CSS_SELECTOR, '#gateway-footer > div > button', timeout=20)
+            await driver.execute_script("arguments[0].click();", continue_button)
         except Exception as e:
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
+        sleep(2)
         try:
-            show_details_button = driver.find_element(By.XPATH, '//*[@id="embed-body"]/div/div[1]/div[6]/div[2]/div[1]', timeout=20)
+            details = await driver.find_element(By.XPATH, '//*[@id="embed-body"]/div/div[1]/div[6]/div[2]/div[1]', timeout=20)
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", show_details_button)
+            await driver.execute_script("arguments[0].click();", details)
         except Exception as e:
-            print(f"SHOW DETAILS ERROR \n{e}")
+            print(f"ERROR DETAILS \n{e}")
 
+        sleep(3)
         try:
-            address = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[6]/div[2]/div[2]/div/div[2]/span[2]/div/div[2]/span', timeout=20).text
+            address_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[6]/div[2]/div[2]/div/div[2]/span[2]/div/div[2]/span', timeout=20)
+            address = await address_elem.text
 
-            amount = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[6]/div[2]/div[2]/div/div[2]/span[1]/div/div[2]/span', timeout=20).text
-
-            return {
-                "address": address,
-                "amount": amount,
-                "currency": "usdt"
-            }
+            amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div/div/div/div/div/div[1]/div[6]/div[2]/div[2]/div/div[2]/span[1]/div/div[2]/span')
+            amount = await amount_elem.text
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            print(f"ERROR DATA \n{e}")
+
+        return {
+            "address": address,
+            "amount": amount,
+            "currency": "usdt"
+        }
 
 
 def wallet():
-    wallet_data = get_wallet()
+    wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
