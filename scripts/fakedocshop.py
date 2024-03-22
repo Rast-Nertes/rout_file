@@ -11,8 +11,8 @@ from selenium.webdriver.common.by import By
 # CONSTANS
 
 url = 'https://fakedocshop.com/memberships/'
-user_login = "222222@gmail.com"
-user_password = "kiramira555"
+user_login = "nobrandnametoshow@gmail.com"
+user_password = "PPZKQ6rqhS!6yW"
 
 # CHROME CONSTANS
 
