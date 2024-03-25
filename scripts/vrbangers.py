@@ -95,8 +95,14 @@ def get_wallet():
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
         try:
+            # input("Press")
             driver.implicitly_wait(30)
-            address = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
+            address = driver.find_element(By.XPATH, '/html/body/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
+
+            if address == '':
+                sleep(3)
+                address = driver.find_element(By.XPATH, '/html/body/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
+
 
             driver.implicitly_wait(10)
             amount = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[3]').text
