@@ -20,15 +20,16 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+# options.add_argument('--headless')
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "62.3.13.13"
+proxy_login = '1QjtPL'
+proxy_password = 'pHSyxy'
 proxy_port = 8000
 
 proxy_options = {
     "proxy":{
-        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_address}",
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
@@ -80,15 +81,10 @@ def get_wallet():
             pass
 
         try:
-            driver.implicitly_wait(10)
-            choose_crypto = driver.find_element(By.XPATH, '//*[@id="premium-form"]/div[1]/div/div[3]/div[2]/div')
+            driver.implicitly_wait(50)
+            choose_crypto = driver.find_element(By.XPATH, '//div[@data-x-value="USDT"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_crypto)
-
-            driver.implicitly_wait(10)
-            choose_usdt = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[1]/div/div[2]/div/div/div[1]/div/form/div[1]/div/div[3]/div[2]/div/div[2]/div/div[4]')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_usdt)
         except Exception as e:
             print(f"ERROR CHOOSE USDT \n{e}")
 
