@@ -18,7 +18,7 @@ api = '7f728c25edca4f4d0e14512d756d6868'
 
 # CHROME CONSTANS
 
-with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
+with open('config.txt') as file:
     paths = file.readlines()
     extension_path = paths[1].strip()
 
