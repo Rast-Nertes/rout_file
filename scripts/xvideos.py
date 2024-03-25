@@ -73,7 +73,7 @@ def get_wallet():
         login(driver)
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             accept = driver.find_element(By.CSS_SELECTOR, 'div > button.btn.btn-primary.disclaimer-enter-straight')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", accept)
@@ -89,7 +89,7 @@ def get_wallet():
             print(f"ERROR CHOOSE USDT \n{e}")
 
         try:
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(30)
             buy_now_button = driver.find_element(By.CSS_SELECTOR, 'div > button > span.submit-txt-product.submit-txt-product-697')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", buy_now_button)
@@ -97,7 +97,7 @@ def get_wallet():
             print(f"ERROR BUY NOW BUTTON \n{e}")
 
         try:
-            driver.implicitly_wait(15)
+            driver.implicitly_wait(40)
             choose_network = driver.find_element(By.CSS_SELECTOR, 'div.invoice__steps > div.choose-currency-step > div.currencies-select > div')
             sleep(1.5)
             choose_network.click()
