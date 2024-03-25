@@ -15,6 +15,11 @@ user_password = "onvB2mkVH5c"
 
 # CHROME CONSTANS
 
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
@@ -22,16 +27,12 @@ with open('config.txt') as file:
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
-options.add_argument("--disable-save-password-bubble")
-options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_argument("--disable-extensions")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-browser-side-navigation")
-options.add_argument("--disable-gpu")
 options.binary_location = chrome_path
 
 
 async def login(driver):
+    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
+    sleep(2)
     await driver.get(url)
     await driver.maximize_window()
 
@@ -52,6 +53,7 @@ async def get_wallet():
             await input_email.write(user_email)
 
             choose_selix = await driver.find_element(By.CSS_SELECTOR, 'div.data-row.payment-method > div.pay-sellix.linear-gradient-border.purple', timeout=20)
+            sleep(1.5)
             await driver.execute_script("arguments[0].click();", choose_selix)
         except Exception as e:
             print(f"ERROR CHOOSE SELIX \n{e}")
@@ -59,9 +61,9 @@ async def get_wallet():
         sleep(7.5)
 
         try:
-            find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
+            find_frame = await driver.find_element(By.TAG_NAME, 'iframe', timeout=10)
             sleep(2)
-            iframe_document = find_frame[0].content_document
+            iframe_document = find_frame.content_document
 
             checkbox = await iframe_document.find_element(By.XPATH, '//input[@type="checkbox"]', timeout=20)
             sleep(1.5)
