@@ -17,7 +17,7 @@ user_password = "wDxr$7sSsT8p4VL"
 api = '7f728c25edca4f4d0e14512d756d6868'
 
 # CHROME CONSTANS
-
+#C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
 with open('config.txt') as file:
     paths = file.readlines()
     extension_path = paths[1].strip()
@@ -136,9 +136,10 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR SEND \n{e}")
 
+        # input('press')
         try:
             driver.implicitly_wait(10)
-            choose_method = driver.find_element(By.CSS_SELECTOR, 'div > div.scroll-bar-container-wrapper > div.scroll-bar-container.cd__list.ps > div:nth-child(2)')
+            choose_method = driver.find_element(By.XPATH, '//*[@id="app-portals"]/div[1]/div[2]/div/div[2]/div[1]/div[2]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
