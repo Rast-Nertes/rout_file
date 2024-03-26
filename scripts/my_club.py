@@ -139,7 +139,7 @@ def get_wallet():
         # input('press')
         try:
             driver.implicitly_wait(10)
-            choose_method = driver.find_element(By.XPATH, '//*[@id="app-portals"]/div[1]/div[2]/div/div[2]/div[1]/div[2]')
+            choose_method = driver.find_element(By.XPATH, '//div[@class="cd__payment-button"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
