@@ -18,7 +18,7 @@ api = '7f728c25edca4f4d0e14512d756d6868'
 
 # CHROME CONSTANS
 #C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
-with open('config.txt') as file:
+with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
     paths = file.readlines()
     extension_path = paths[1].strip()
 
@@ -48,7 +48,7 @@ def login(driver):
     # input("Press")
     driver.switch_to.window(driver.window_handles[0])
     try:
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(30)
         input_api_key = driver.find_element(By.CSS_SELECTOR,
                                             'body > div > div.content > table > tbody > tr:nth-child(1) > td:nth-child(2) > input[type=text]')
         input_api_key.clear()
@@ -62,7 +62,7 @@ def login(driver):
         print(f"ERROR CONNECT \n{e}")
 
     driver.switch_to.window(driver.window_handles[1])
-
+    sleep(2.5)
     try:
         driver.implicitly_wait(40)
         button_login = driver.find_element(By.CSS_SELECTOR, 'nav.ga__nav-right > div > button.btn.btn-outline-pale.btn-medium')
@@ -136,10 +136,9 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR SEND \n{e}")
 
-        # input('press')
         try:
-            driver.implicitly_wait(10)
-            choose_method = driver.find_element(By.XPATH, '//div[@class="cd__payment-button"]')
+            driver.implicitly_wait(30)
+            choose_method = driver.find_element(By.XPATH, '/html/body/div[1]/div/section/div[1]/div[2]/div/div[2]/div[1]/div[2]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
