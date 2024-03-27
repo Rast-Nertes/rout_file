@@ -26,15 +26,15 @@ proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
-# with open('config.txt') as file:
-#     paths = file.readlines()
-#     chrome_path = paths[0].strip()
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 # options.add_argument("--auto-open-devtools-for-tabs")
-# options.binary_location = chrome_path
+options.binary_location = chrome_path
 
 
 def solve_captcha():
