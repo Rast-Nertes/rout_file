@@ -108,7 +108,7 @@ def get_wallet():
             print(f"ERROR CHOOSE FREEKASSA \n{e}")
 
         try:
-            driver.implicitly_wait(30)
+            sleep(5.5)
             driver.switch_to.window(driver.window_handles[1])
             driver.refresh()
             sleep(2)
