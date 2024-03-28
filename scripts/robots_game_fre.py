@@ -69,9 +69,9 @@ def login(driver):
 
     while True:
         try:
+            sleep(2.5)
             driver.implicitly_wait(7.5)
-            find_error = driver.find_element(By.XPATH, 'body > div.message.message--type_warning.message--visible_show').text
-            sleep(1)
+            find_error = driver.find_element(By.CSS_SELECTOR, 'body > div.message.message--type_warning.message--visible_show').text
 
             if "робот" in find_error:
 
