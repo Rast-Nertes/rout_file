@@ -103,9 +103,9 @@ def login(driver):
                 print(f"Капча решается...")
                 sleep(5)
             else:
+                print(f"Captcha solved!")
                 break
         except:
-            print(f"Captcha solved!")
             break
 
     try:
@@ -116,8 +116,13 @@ def login(driver):
     except Exception as e:
         print(f"LOGIN ERROR \n{e}")
 
-    sleep(7.5)
-    driver.get('https://my.club/Marta_fun_yoga')
+    try:
+        driver.implicitly_wait(40)
+        choose = driver.find_element(By.XPATH, '//*[@id="app"]/div/section/div/a[1]')
+        sleep(1.5)
+        driver.execute_script("arguments[0].click();", choose)
+    except Exception as e:
+        print(f'ERROR CHOOSE \n{e}')
 
 
 def get_wallet():
@@ -126,22 +131,24 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(60)
-            make_gift = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[2]/div[7]/div/div/div/div[3]/div')
+            join_button = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/aside/div[1]/div[3]/button')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", make_gift)
+            driver.execute_script("arguments[0].click();", join_button)
 
-            driver.implicitly_wait(20)
-            # send = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/div/form/button')
-            send = driver.find_element(By.CSS_SELECTOR, 'div.modal-ds-body.modal-ds-body--background--none.modal-ds-body--size--regular > div > div > form > button')
+            driver.implicitly_wait(30)
+            join_club = driver.find_element(By.CSS_SELECTOR, 'div.modal-ds-body.modal-ds-body--background--none.modal-ds-body--size--regular > div > div.modal-ds-footer.modal-ds-footer--background--dark > div > div > button')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", send)
-            sleep(3)
+            driver.execute_script("arguments[0].click();", join_club)
         except Exception as e:
             print(f"ERROR SEND \n{e}")
 
         try:
             driver.implicitly_wait(30)
-            choose_method = driver.find_element(By.XPATH, '/html/body/div[1]/div/section/div[1]/div[2]/div/div[2]/div[1]/div[2]')
+            choose_method_text = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({1}) > div.b5__left > div:nth-child(2) > div.text-s14-w500').text
+            if "Crypto" in choose_method_text:
+                choose_method = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({1}) > div.b5__left > div:nth-child(2) > div.text-s14-w500')
+            else:
+                choose_method = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({2}) > div.b5__left > div:nth-child(2) > div.text-s14-w500')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
@@ -176,7 +183,7 @@ def get_wallet():
             sleep(1.5)
             input_email.clear()
             input_email.send_keys(user_email)
-            
+
             driver.implicitly_wait(20)
             continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/button')
             sleep(1.5)
