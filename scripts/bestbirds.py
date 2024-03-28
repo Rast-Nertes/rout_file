@@ -70,6 +70,7 @@ def login(driver):
 
     while True:
         try:
+            sleep(3.5)
             driver.implicitly_wait(6.5)
             find_error = driver.find_element(By.CSS_SELECTOR, 'div.message.message--type_warning.message--visible_show').text
 
