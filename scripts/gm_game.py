@@ -107,10 +107,13 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE FREEKASSA \n{e}")
 
-        sleep(2.5)
-        driver.switch_to.window(driver.window_handles[1])
-        driver.refresh()
-        sleep(2)
+        try:
+            driver.implicitly_wait(30)
+            driver.switch_to.window(driver.window_handles[1])
+            driver.refresh()
+            sleep(2)
+        except Exception as e:
+            print(f"SWITCH ERROR \n{e}")
 
         try:
             driver.implicitly_wait(60)
