@@ -14,13 +14,16 @@ from selenium.webdriver.common.by import By
 url = 'https://my.club/'
 user_email = "kiracase34"
 user_password = "wDxr$7sSsT8p4VL"
-api = '7f728c25edca4f4d0e14512d756d6868'
 
 # CHROME CONSTANS
 #C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
 with open('config.txt') as file:
     paths = file.readlines()
-    extension_path = paths[1].strip()
+    api = paths[1].strip()
+
+with open('config.txt') as file:
+    paths = file.readlines()
+    extension_path = paths[2].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -169,9 +172,15 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            without_email = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[1]/div[2]/button[2]')
+            input_email = driver.find_element(By.XPATH, '//input[@name="email"]')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", without_email)
+            input_email.clear()
+            input_email.send_keys(user_email)
+            
+            driver.implicitly_wait(20)
+            continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/button')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", continue_button)
 
             driver.implicitly_wait(50)
             choose_tron = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[3]/div/div/label[3]/span[2]/div')
