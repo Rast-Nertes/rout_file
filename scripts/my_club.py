@@ -48,7 +48,6 @@ def login(driver):
     driver.get(url)
     driver.maximize_window()
 
-    # input("Press")
     driver.switch_to.window(driver.window_handles[0])
     try:
         driver.implicitly_wait(30)
