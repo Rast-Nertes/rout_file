@@ -19,11 +19,11 @@ user_password = "wDxr$7sSsT8p4VL"
 #C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
 with open('config.txt') as file:
     paths = file.readlines()
-    api = paths[1].strip()
+    api = paths[3].strip()
 
 with open('config.txt') as file:
     paths = file.readlines()
-    extension_path = paths[2].strip()
+    extension_path = paths[1].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
