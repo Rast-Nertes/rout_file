@@ -10,13 +10,24 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
 url = 'https://bimbim.com/ru/auth/login'
 user_email = "Spongegege"
 user_email_ = 'kiracase34@gmail.com'
 user_password = "Qwerty62982"
 
 # CHROME CONSTANS
+
+proxy_address = "62.3.13.13"
+proxy_login = '1QjtPL'
+proxy_password = 'pHSyxy'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -29,7 +40,7 @@ def login(driver):
     driver.maximize_window()
 
     try:
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(5)
         accept_cookie = driver.find_element(By.XPATH, '//*[@id="react-app"]/div/div[2]/button')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", accept_cookie)
@@ -81,7 +92,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(60)
-            choose_crypto = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/ul/li[3]/form/button')
+            choose_crypto = driver.find_element(By.XPATH, '//svg[@class="svgicon svgicon-coingate"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_crypto)
 
