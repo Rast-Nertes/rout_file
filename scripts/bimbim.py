@@ -92,19 +92,35 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(60)
-            choose_crypto = driver.find_element(By.XPATH, '//svg[@class="svgicon svgicon-coingate"]')
+            choose_crypto = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_crypto)
 
-            driver.implicitly_wait(40)
-            buy_cr = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/div[2]/form[1]/div/div[2]/button')
+            while True:
+                try:
+                    driver.implicitly_wait(10)
+                    buy_cr = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/ul/li[3]/form/button')
+                    sleep(1.5)
+                    driver.execute_script("arguments[0].click();", buy_cr)
+
+                    print("complete")
+                    break
+                except:
+                    driver.implicitly_wait(60)
+                    choose_crypto = driver.find_element(By.XPATH,
+                                                        '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
+                    sleep(1.5)
+                    driver.execute_script("arguments[0].click();", choose_crypto)
+
+            driver.implicitly_wait(30)
+            pay_but = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/div[2]/form[1]/div/div[2]/button')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_cr)
+            driver.execute_script("arguments[0].click();", pay_but)
         except Exception as e:
             print(f"ERROR CHOOSE CRYPTO \n{e}")
 
         try:
-            driver.implicitly_wait(20)
+            driver.implicitly_wait(90)
             choose_usdt = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div/label[8]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
