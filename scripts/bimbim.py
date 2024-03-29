@@ -112,6 +112,7 @@ def get_wallet():
             input_email.click()
             sleep(1.5)
             pyautogui.write(user_email_)
+            # input_email.send_keys(user_email_)
 
             driver.implicitly_wait(20)
             continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[2]/div/div[2]/div/button')
@@ -133,12 +134,12 @@ def get_wallet():
         driver.set_window_size(1200, 500)
 
         try:
-            sleep(3.5)
+            sleep(5.5)
             driver.implicitly_wait(60)
-            amount = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/p').text.replace("USDT", '').replace(" ", '')
+            amount = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[5]/div/div[2]/div/p').text.replace("USDT", '').replace(" ", '')
 
-            driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[6]/div/div[2]/div/p').text
+            driver.implicitly_wait(30)
+            address = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[6]/div/div[2]/div/p').text
 
             return {
                 "address": address,
