@@ -120,8 +120,9 @@ def get_wallet():
             print(f"ERROR CHOOSE CRYPTO \n{e}")
 
         try:
+            input("Press")
             driver.implicitly_wait(90)
-            choose_usdt = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div/label[8]')
+            choose_usdt = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[4]/div/div/label[8]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
 
