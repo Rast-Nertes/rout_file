@@ -83,34 +83,23 @@ def get_wallet():
         login(driver)
 
         try:
-            driver.implicitly_wait(60)
-            buy_credits = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
+            driver.implicitly_wait(40)
+            choose_method = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[3]/p/span/a')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_credits)
+            driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
-            print(f"ERROR BUY CREDITS \n{e}")
+            print(f'ERROR CHOOSE METHOD \n{e}')
 
         try:
             driver.implicitly_wait(60)
-            choose_crypto = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_crypto)
+            find_tags = driver.find_elements(By.TAG_NAME, 'li')
 
-            while True:
-                try:
-                    driver.implicitly_wait(10)
-                    buy_cr = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/ul/li[3]/form/button')
+            for tag in find_tags:
+                print(tag.text)
+                if "криптовалют" in tag.text:
                     sleep(1.5)
-                    driver.execute_script("arguments[0].click();", buy_cr)
-
-                    print("complete")
+                    tag.click()
                     break
-                except:
-                    driver.implicitly_wait(60)
-                    choose_crypto = driver.find_element(By.XPATH,
-                                                        '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
-                    sleep(1.5)
-                    driver.execute_script("arguments[0].click();", choose_crypto)
 
             driver.implicitly_wait(30)
             pay_but = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div[2]/div[2]/form[1]/div/div[2]/button')
@@ -120,7 +109,6 @@ def get_wallet():
             print(f"ERROR CHOOSE CRYPTO \n{e}")
 
         try:
-            input("Press")
             driver.implicitly_wait(90)
             choose_usdt = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[4]/div/div/label[8]')
             sleep(1.5)
