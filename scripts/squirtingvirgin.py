@@ -23,6 +23,18 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
@@ -58,7 +70,7 @@ def login(driver):
         print(f"ERROR CHOOSE CRYPTO \n{e}")
 
     try:
-        click(driver, 35, '/html/body/div[2]/div[3]/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/button')
+        click(driver, 30, '//button[@data-pm-title="crypto"]')
     except Exception as e:
         print(f'ERROR CHOOSE CRYPTO METHOD \n{e}')
 
@@ -75,10 +87,10 @@ def get_wallet():
         try:
             sleep(5)
             driver.implicitly_wait(40)
-            amount = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[3]').text
+            amount = driver.find_element(By.XPATH, '/html/body/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[3]').text
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
+            address = driver.find_element(By.XPATH, '/html/body/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
 
             return {
                 "address": address,
