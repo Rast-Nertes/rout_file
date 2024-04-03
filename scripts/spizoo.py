@@ -105,11 +105,11 @@ def login(driver):
 
     while True:
         try:
-            sleep(2.5)
-            driver.implicitly_wait(7.5)
-            find_error = driver.find_element(By.CSS_SELECTOR, 'div > fieldset > div > div.join_error').text
+            sleep(3.5)
+            driver.implicitly_wait(10.5)
+            find_error = driver.find_element(By.XPATH, '//*[@id="content"]/form/div/fieldset/div/div[1]').text
 
-            if "try" in find_error:
+            if "failed" in find_error:
 
                 result_captcha = captcha_solver(driver.current_url)
 
@@ -126,6 +126,7 @@ def login(driver):
                 sleep(1.5)
                 click(driver, 30, '//*[@id="content"]/form/div/button')
             else:
+                print("CAPTCHA solved")
                 break
         except:
             break
@@ -178,7 +179,7 @@ def get_wallet():
         login(driver)
 
         try:
-            sleep(3.5)
+            sleep(5.5)
             driver.implicitly_wait(60)
             amount = driver.find_element(By.ID, 'CryptoPopupPaymentAmountValue').text
 
