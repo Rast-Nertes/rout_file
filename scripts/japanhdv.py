@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from anticaptchaofficial.recaptchav2proxyless import *
@@ -17,6 +17,18 @@ user_email = "leonidstakanov11@gmail.com"
 user_password = "Qwerty62982"
 
 # CHROME CONSTANS
+
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -81,16 +93,20 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
-
+        sleep(2.5)
         try:
-            sleep(4.5)
             driver.implicitly_wait(40)
-            amount = driver.find_element(By.XPATH, '//*[@id="helpa1"]/strong[1]').text.replace("USDT.TRC20", '').replace(" ", '')
+            amount = driver.find_element(By.CSS_SELECTOR, 'div.pay-block > div.w-row > div.w-col.w-col-3 > div:nth-child(2)').text.replace("USDT.TRC20", '').replace(" ", '')
+
+            if len(amount) < 3:
+                sleep(5)
+                driver.implicitly_wait(40)
+                amount = driver.find_element(By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[1]/div[2]').text.replace("USDT.TRC20", '').replace(" ", '')
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="helpa1"]/strong[2]').text
+            address = driver.find_element(By.CSS_SELECTOR, '#email-form > div.pay-block > div.w-row > div.w-col.w-col-6 > div.address').text
 
             return {
                 "address": address,
