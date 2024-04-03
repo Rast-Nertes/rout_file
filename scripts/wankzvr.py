@@ -16,7 +16,6 @@ user_name = "rwork875"
 user_email_2 = "rwork875@gmail.com"
 user_password = "332144ek1134"
 
-#332144ek1134
 # CHROME CONSTANS
 
 proxy_address = "196.19.121.187"
@@ -75,24 +74,18 @@ def login(driver):
     try:
         driver.implicitly_wait(30)
         input_name = driver.find_element(By.XPATH, '//*[@id="main"]/div/section[1]/form/div/div[2]/div[1]/div[2]/div[2]/div[1]/input')
-        sleep(0.5)
-        input_name.click()
         sleep(1.5)
-        pyautogui.write(user_name)
+        input_name.send_keys(user_name)
 
         driver.implicitly_wait(30)
         input_email = driver.find_element(By.XPATH, '//*[@id="main"]/div/section[1]/form/div/div[2]/div[1]/div[2]/div[2]/div[2]/input')
-        sleep(0.5)
-        input_email.click()
         sleep(1.5)
-        pyautogui.write(user_email_2)
+        input_email.send_keys(user_email_2)
 
         driver.implicitly_wait(30)
         input_pass = driver.find_element(By.XPATH, '//*[@id="main"]/div/section[1]/form/div/div[2]/div[1]/div[2]/div[2]/div[3]/input')
-        sleep(0.5)
-        input_pass.click()
         sleep(1.5)
-        pyautogui.write(user_password)
+        input_pass.send_keys(user_password)
     except Exception as e:
         print(f"ERROR INPUT DATA \n{e}")
 
