@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -21,7 +21,20 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 #FUNC
+
 
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
@@ -65,7 +78,8 @@ def login(driver):
         print(f'ERROR SUBMIT BUTTON \n{e}')
 
     try:
-        click(driver, 60, '/html/body/div[2]/div[3]/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/button')
+        sleep(5)
+        click(driver, 60, '/html/body/div[2]/div[3]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/button')
     except Exception as e:
         print(f"ERROR CHOOSE METHOD \n{e}")
 
@@ -76,10 +90,11 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
+            sleep(2.5)
             driver.implicitly_wait(40)
             amount = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[3]').text
 
