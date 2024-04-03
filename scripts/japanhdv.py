@@ -84,7 +84,6 @@ def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
 
-        input("Press")
         try:
             sleep(4.5)
             driver.implicitly_wait(40)
@@ -106,7 +105,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
