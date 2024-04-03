@@ -73,6 +73,7 @@ def get_wallet():
         login(driver)
 
         try:
+            sleep(5)
             driver.implicitly_wait(40)
             amount = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[3]').text
 
