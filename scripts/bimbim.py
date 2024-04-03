@@ -1,6 +1,6 @@
 import pyautogui
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -79,7 +79,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
@@ -127,8 +127,8 @@ def get_wallet():
             sleep(1.5)
             input_email.click()
             sleep(1.5)
-            pyautogui.write(user_email_)
-            # input_email.send_keys(user_email_)
+            input_email.send_keys(user_email_)
+            # pyautogui.write(user_email_)
 
             driver.implicitly_wait(20)
             continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[2]/div/div[2]/div/button')
