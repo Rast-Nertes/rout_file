@@ -95,18 +95,18 @@ def login(driver):
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
-        sleep(2.5)
+
         try:
-            driver.implicitly_wait(40)
-            amount = driver.find_element(By.CSS_SELECTOR, 'div.pay-block > div.w-row > div.w-col.w-col-3 > div:nth-child(2)').text.replace("USDT.TRC20", '').replace(" ", '')
+            sleep(3.5)
+            address = WebDriverWait(driver, 45).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[3]/div[2]'))
+            )
+            address = address.text
 
-            if len(amount) < 3:
-                sleep(5)
-                driver.implicitly_wait(40)
-                amount = driver.find_element(By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[1]/div[2]').text.replace("USDT.TRC20", '').replace(" ", '')
-
-            driver.implicitly_wait(10)
-            address = driver.find_element(By.CSS_SELECTOR, '#email-form > div.pay-block > div.w-row > div.w-col.w-col-6 > div.address').text
+            amount = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[1]/div[2]'))
+            )
+            amount = amount.text.replace('USDT.TRC20', '').replace(" ", '')
 
             return {
                 "address": address,
