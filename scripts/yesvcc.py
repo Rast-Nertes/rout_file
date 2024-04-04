@@ -81,7 +81,7 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(35)
-            amount = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div/div/div/div[2]/div[1]/div[5]/div[1]/div/div[1]/div[2]/span').text.replace("USDT", '').replace("($5.00)", '').replace(" ", '')
+            amount = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div/div/div/div[2]/div[1]/div[5]/div[1]/div/div[1]/div[2]/span').text.replace("USDT", '').split('(')[0].strip().replace(" ", '')
 
             driver.implicitly_wait(10)
             address = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div/div/div/div[2]/div[1]/div[5]/div[1]/div/div[1]/div[4]/span').text
