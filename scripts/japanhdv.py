@@ -34,6 +34,7 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+options.add_argument('--headless')
 
 
 def click(driver, time, XPATH):
@@ -95,9 +96,8 @@ def login(driver):
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
-
         try:
-            sleep(3.5)
+            sleep(6.5)
             address = WebDriverWait(driver, 45).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[3]/div[2]'))
             )
