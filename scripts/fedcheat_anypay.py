@@ -20,7 +20,7 @@ proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
-with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
+with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
 
