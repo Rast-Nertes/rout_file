@@ -35,6 +35,12 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.add_argument('--headless')
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--disable-extensions")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-browser-side-navigation")
+options.add_argument("--disable-gpu")
+options.add_experimental_option("detach", True)
 
 
 def click(driver, time, XPATH):
@@ -97,7 +103,7 @@ def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
         try:
-            sleep(6.5)
+            sleep(10.5)
             address = WebDriverWait(driver, 45).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="email-form"]/div[2]/div[1]/div[3]/div[2]'))
             )
