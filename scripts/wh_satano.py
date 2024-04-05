@@ -62,9 +62,9 @@ def login(driver):
 
     try:
         input_data(driver, 20, '//*[@id="email"]', user_email)
-        sleep(1)
+        sleep(1.5)
         input_data(driver, 20, '//*[@id="Re_Enter_Email"]', user_email)
-        sleep(1)
+        sleep(1.5)
         click(driver, 20, '//*[@id="pay_btn"]')
     except Exception as e:
         print(f'ERROR SUBMIT \n{e}')
@@ -77,10 +77,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(40)
-            amount = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/p/span').text.replace("USDT", '').replace(" ", '')
+            amount = driver.find_element(By.XPATH, '//*[@id="form1"]/div[3]/div/div[1]/div[2]/span').text.replace(" ", '')
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/div/div[1]/div/span').text
+            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[2]/div/div[2]/img').get_attribute('alt')
 
             return {
                 "address": address,
