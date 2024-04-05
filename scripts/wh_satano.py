@@ -75,12 +75,17 @@ def get_wallet():
         login(driver)
 
         try:
-            sleep(3.5)
+            click(driver, 20, '//*[@id="form1"]/section/section/div[2]/div[1]/div[4]')
+            sleep(1.5)
+        except Exception as e:
+            print(f"ERROR CHOOSE \n{e}")
+
+        try:
             driver.implicitly_wait(40)
             amount = driver.find_element(By.XPATH, '//*[@id="form1"]/div[3]/div/div[1]/div[2]/span').text.replace(" ", '')
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[2]/div/div[2]/img').get_attribute('alt')
+            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/div/div[1]/div/span').text
 
             return {
                 "address": address,
