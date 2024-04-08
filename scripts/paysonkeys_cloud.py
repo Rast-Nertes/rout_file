@@ -22,43 +22,45 @@ proxy_port = 8000
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
+    ext = paths[1].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.binary_location = chrome_path
+# options.add_extension(ext)
 
 
 async def login(driver):
+    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
+    await asyncio.sleep(1.5)
     await driver.get(url)
     await driver.maximize_window()
 
     try:
-        click_log = await driver.find_element(By.ID, 'block-user', timeout=20)
+        click_log = await driver.find_element(By.ID, 'block-user', timeout=40)
         await driver.execute_script("arguments[0].click();", click_log)
     except Exception as e:
         print(f"ERROR CHOOSE \n{e}")
 
     try:
-        input_username = await driver.find_element(By.ID, 'username', timeout=20)
+        await asyncio.sleep(1.5)
+
+        input_username = await driver.find_element(By.ID, 'username', timeout=40)
         await input_username.write(user_email)
 
-        sleep(1.5)
+        await asyncio.sleep(1.5)
 
-        input_username = await driver.find_element(By.ID, 'password', timeout=20)
+        input_username = await driver.find_element(By.ID, 'password', timeout=30)
         await input_username.write(user_password)
 
         await asyncio.sleep(7.5)
 
-        log_button = await driver.find_element(By.XPATH, '//*[@id="auth"]/div/div/button[1]', timeout=20)
+        log_button = await driver.find_element(By.XPATH, '//*[@id="auth"]/div/div/button[1]', timeout=40)
         await log_button.click()
     except Exception as e:
         print(f"INPUT LOG ERROR \n{e}")
-    #
-    # await asyncio.sleep(2.5)
-    # await driver.get('https://paysonkeys.com/my/profile')
-    #
-    # input("press")
+
     try:
         await asyncio.sleep(1.5)
         buy_but = await driver.find_element(By.XPATH, '/html/body/div[2]/main/section[1]/div/div[1]/div[2]/div[2]/button', timeout=20)
