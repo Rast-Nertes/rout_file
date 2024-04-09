@@ -1,5 +1,4 @@
 import asyncio
-
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -7,18 +6,11 @@ from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANS
-
-site_key = '403eeefd-a2f9-4d2b-a9f4-c19e87b2a4dd'
 url = 'https://www.tg.casino/en/slots'
 user_email = "kiracase34@gmail.com"
 user_password = "t9UsT5Pj2Uq@REU"
 
 # CHROME CONSTANS
-
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
-proxy_port = 8000
 
 with open('config.txt') as file:
     paths = file.readlines()
