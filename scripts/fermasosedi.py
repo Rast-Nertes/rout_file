@@ -26,7 +26,7 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 site_key = '6Lf8eygTAAAAAHaMc2B9zckwEiTz4B_VdYthyhGT'
 
-with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
+with open('config.txt') as file:
     paths = file.readlines()
     api_key = paths[2].strip()
 
