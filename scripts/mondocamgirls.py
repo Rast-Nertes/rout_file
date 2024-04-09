@@ -1,6 +1,7 @@
-from flask import jsonify
-from seleniumwire import webdriver
 from time import sleep
+from flask import jsonify
+from seleniumwire.thirdparty.mitmproxy.net.tls import VERSION_CHOICES
+from seleniumwire import webdriver
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 
