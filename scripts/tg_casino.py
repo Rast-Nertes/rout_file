@@ -6,6 +6,7 @@ from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANS
+
 url = 'https://www.tg.casino/en/slots'
 user_email = "kiracase34@gmail.com"
 user_password = "t9UsT5Pj2Uq@REU"
@@ -61,7 +62,7 @@ async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
-        sleep(4.5)
+        await asyncio.sleep(4.5)
         try:
             address_elem = await driver.find_element(By.ID, 'deposit-address', timeout=30)
             address = await address_elem.text
@@ -69,15 +70,14 @@ async def get_wallet():
             amount_elem = await driver.find_element(By.XPATH, '/html/body/div[8]/div[3]/div/div/div/div/div[2]/div/p', timeout=30)
             amount = await amount_elem.text
 
+            return {
+                "address": address,
+                "amount": amount.replace("Min. Deposit", '').replace("USDTT", '').replace(' ', ''),
+                "currency": "usdt"
+            }
         except Exception as e:
             print(f"ERROR DATA \n{e}")
-
-        return {
-            "address": address,
-            "amount": amount.replace("Min. Deposit", '').replace("USDTT", '').replace(' ', ''),
-            "currency": "usdt"
-        }
-
+        
 
 def wallet():
     wallet_data = asyncio.run(get_wallet())
