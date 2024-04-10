@@ -29,7 +29,6 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.binary_location = chrome_path
-# options.add_extension(ext)
 
 
 async def login(driver):
@@ -77,17 +76,18 @@ async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
-        await asyncio.sleep(4.5)
         try:
-            address_elem = await driver.find_element(By.XPATH, '/html/body/div[3]/div/div[1]/div/div/div[2]/section/div[1]/div[2]/span/span', timeout=30)
+            await asyncio.sleep(2.5)
+            address_elem = await driver.find_element(By.CSS_SELECTOR, 'div > div.modal-body > div.wallet-bonus-deposit-message.deposit-message > div > div > div > span:nth-child(1)', timeout=30)
             address = await address_elem.text
 
-            amount_elem = await driver.find_element(By.XPATH, '/html/body/div[3]/div/div[1]/div/div/div[2]/div[2]/div/div/div/span[1]', timeout=30)
+
+            amount_elem = await driver.find_element(By.CSS_SELECTOR, 'section > div.wallet-layout__left-column > div.wallet-address > span > span', timeout=30)
             amount = await amount_elem.text
 
             return {
-                "address": address,
-                "amount": amount.replace("$", '').replace(" ", ''),
+                "address": amount.replace(" ", ''),
+                "amount":address,
                 "currency": "usdt"
             }
         except Exception as e:
