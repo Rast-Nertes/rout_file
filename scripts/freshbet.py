@@ -19,17 +19,17 @@ with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
     ext = paths[1].strip()
-
+    
 proxy_address = "196.19.121.187"
 proxy_login = 'WyS1nY'
 proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
+options.binary_location = chrome_path
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.binary_location = chrome_path
 
 
 async def login(driver):
@@ -71,8 +71,9 @@ async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
-        await asyncio.sleep(4.5)
+        await asyncio.sleep(2.5)
         try:
+            await asyncio.sleep(2.5)
             address_elem = await driver.find_element(By.CSS_SELECTOR, 'li.crypto-payment-container > div > div.options > div.crypto-cont-el.visible > div > div', timeout=30)
             address = await address_elem.text
 
