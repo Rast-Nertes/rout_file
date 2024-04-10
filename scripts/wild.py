@@ -29,8 +29,6 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.binary_location = chrome_path
-options.add_argument('--headless')
-# options.add_extension(ext)
 
 
 async def login(driver):
