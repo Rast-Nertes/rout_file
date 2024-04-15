@@ -40,7 +40,7 @@ proxy_options = {
 }
 
 #C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
-with open('C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt') as file:
+with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
     ext = paths[1].strip()
