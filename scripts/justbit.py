@@ -104,13 +104,14 @@ def login(driver):
                 print('Wait 5 sec...')
             else:
                 print('Solve!')
-                sleep(1.5)
+                sleep(2.5)
                 click(driver, 20, '/html/body/div[5]/div[2]/div[2]/form/div[3]/div[1]/button[1]/div')
                 break
         except:
             break
 
     try:
+        sleep(1.5)
         click(driver, 20, '//*[@id="app"]/div[2]/header/div/div/div[3]/div/button[1]/div')
     except Exception as e:
         print(f'ERROR DEPOS BUTTON \n{e}')
