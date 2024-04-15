@@ -114,12 +114,15 @@ def login(driver):
             break
 
     try:
-        click(driver, 20, '/html/body/gg-root/gg-layout-wrapper/div/div/ng-component/main/section/ng-component/ng-component/form/section/gg-button/button/div')
+        click(driver, 30, '/html/body/gg-root/gg-layout-wrapper/div/div/ng-component/main/section/ng-component/ng-component/form/section/gg-button/button/div')
     except Exception as e:
         print(f'ERROR SOLVE CAPT \n{e}')
 
     try:
-        click(driver, 40, '//[@class="transparent-div"]')
+        driver.implicitly_wait(90)
+        click_depos_but = driver.find_element(By.XPATH, '/html/body/gg-root/gg-layout-wrapper/div/gg-layout-header/div/div/gg-layout-header-rounded/header/div/div/gg-layout-header-deposit-button/gg-layout-deposit-button-rounded/gg-button/button/sp-msg')
+        sleep(3.5)
+        driver.execute_script("arguments[0].click();", click_depos_but)
     except Exception as e:
         print(f'ERROR DEPOS BUT \n{e}')
 
