@@ -39,7 +39,7 @@ proxy_options = {
     }
 }
 
-#C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
+
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
@@ -119,7 +119,7 @@ def login(driver):
         print(f'ERROR SOLVE CAPT \n{e}')
 
     try:
-        click(driver, 40, '/html/body/gg-root/gg-layout-wrapper/div/gg-layout-header/div/div/gg-layout-header-rounded/header/div/div/gg-layout-header-deposit-button/gg-layout-deposit-button-rounded/gg-button/button/div')
+        click(driver, 40, '//[@class="transparent-div"]')
     except Exception as e:
         print(f'ERROR DEPOS BUT \n{e}')
 
