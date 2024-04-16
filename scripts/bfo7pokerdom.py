@@ -2,23 +2,14 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
 
 url = 'https://bfo7pokerdom.com/auth/login'
-# user_email = "rwork875@gmail.com"
-# user_password = "0993e12kasrl2"
 site_key = '6Lc9h3oUAAAAAIVlZ8EWCx1ycpVDxAS8WKYV0mYO'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
-
-#0993e12kasrl2
 
 # CHROME CONSTANS
 
