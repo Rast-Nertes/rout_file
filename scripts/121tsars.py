@@ -22,6 +22,12 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
+with open('config.txt') as file:
+    paths = file.readlines()
+    path = paths[0].strip()
+
+options.binary_location = path
+
 
 async def login(driver):
     await driver.maximize_window()
@@ -76,7 +82,6 @@ async def get_wallet():
             await asyncio.sleep(1)
             address = await address_elem.get_attribute('title')
 
-            #Там в тексте указано 20 EUR, я решил просто в amount передать, чтобы не мучаться 
             await asyncio.sleep(1.5)
             return {
                 "address": address,
