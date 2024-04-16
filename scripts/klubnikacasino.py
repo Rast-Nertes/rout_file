@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from anticaptchaofficial.recaptchav2proxyless import *
@@ -18,10 +18,6 @@ user_password = "221ldaa2312L"
 #221ldaa2312L
 
 # CHROME CONSTANS
-
-with open('config.txt') as file:
-    paths = file.readlines()
-    api_key = paths[2].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -106,8 +102,10 @@ def login(driver):
             break
 
     try:
+        sleep(3.5)
         driver.execute_script("window.scrollBy(0, 500);")
-
+        sleep(1.5)
+        
         driver.implicitly_wait(30)
         click_sect = driver.find_element(By.XPATH, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form/div[3]/div/div/div/div/div[2]/div')
         sleep(1.5)
@@ -132,7 +130,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
