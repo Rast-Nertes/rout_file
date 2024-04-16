@@ -2,11 +2,6 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
@@ -67,8 +62,14 @@ def login(driver):
         print(f'ERROR NEXT BUT \n{e}')
 
     try:
+        driver.implicitly_wait(30)
+        click_select = driver.find_element(By.XPATH, '//*[@id="TypeCurr_msdd"]')
+        sleep(1.5)
+        click_select.click()
+
         driver.implicitly_wait(20)
         choose_tc20 = driver.find_element(By.XPATH, '//span[@class="ddlabel" and text()="USDT"]')
+        sleep(1.5)
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
