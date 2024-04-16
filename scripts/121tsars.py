@@ -1,12 +1,7 @@
 import asyncio
-import cloudscraper
-import pickle
-from bs4 import  BeautifulSoup
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANTS
@@ -26,10 +21,6 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-
-# COOKIES
-# options.binary_location = chrome_path
-# options.add_extension(ext)
 
 
 async def login(driver):
@@ -85,6 +76,7 @@ async def get_wallet():
             await asyncio.sleep(1)
             address = await address_elem.get_attribute('title')
 
+            #Там в тексте указано 20 EUR, я решил просто в amount передать, чтобы не мучаться 
             await asyncio.sleep(1.5)
             return {
                 "address": address,
