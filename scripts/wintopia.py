@@ -78,18 +78,18 @@ async def login(driver):
     await driver.switch_to.window(wind[0])
 
     try:
-        choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=60)
+        choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=80)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", choose_tether)
 
-        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[2]/ul/li[1]/a', timeout=40)
+        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[2]/ul/li[1]/a', timeout=60)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
         print(f'ERROR CHOOSE TRC20 \n{e}')
 
     try:
-        pay_but = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/span[2]/button', timeout=20)
+        pay_but = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/span[2]/button', timeout=80)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", pay_but)
     except Exception as e:
@@ -102,7 +102,7 @@ async def get_wallet():
 
         await asyncio.sleep(1.5)
         try:
-            copy_address = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[2]/div/div[3]/a', timeout=20)
+            copy_address = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[2]/div/div[3]/a', timeout=60)
             await asyncio.sleep(1)
             await copy_address.click()
 
