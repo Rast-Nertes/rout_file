@@ -91,7 +91,7 @@ async def login(driver):
     try:
         pay_but = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/span[2]/button', timeout=80)
         await asyncio.sleep(2.5)
-        await driver.execute_script("arguments[0].click();", pay_but)
+        await pay_but.click()
     except Exception as e:
         print(f'ERROR PAY BUT \n{e}')
 
