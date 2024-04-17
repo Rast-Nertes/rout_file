@@ -99,6 +99,7 @@ async def get_wallet():
             await asyncio.sleep(1)
             await copy_address.click()
 
+            await asyncio.sleep(1)
             address = pyperclip.paste()
 
             await asyncio.sleep(2.5)
@@ -122,7 +123,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
