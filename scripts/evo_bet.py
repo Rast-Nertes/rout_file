@@ -65,6 +65,8 @@ def get_wallet():
         sleep(1.5)
         driver.get(find_frame)
 
+        # input("Press")
+
         try:
             try:
                 driver.implicitly_wait(15)
@@ -74,7 +76,7 @@ def get_wallet():
                 amount = '10.00'
 
             try:
-                click(driver, 20, '//*[@id="app"]/div/div/div/div[2]/div/a[12]/div/div[1]/img')
+                click(driver, 20, '//img[@alt="USDT (TRC20)"]')
             except Exception as e:
                 print(f'ERROR CHOOSE TRC20 \n{e}')
 
