@@ -1,10 +1,8 @@
 import asyncio
 import pyautogui
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANTS
@@ -34,6 +32,7 @@ options.binary_location = chrome_path
 
 async def login(driver):
     await driver.maximize_window()
+    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
     await driver.get(url, timeout=60)
 
@@ -48,7 +47,7 @@ async def login(driver):
 
     try:
         click_log = await driver.find_element(By.XPATH, '//*[@id="recaptcha"]', timeout=20)
-        await asyncio.sleep(2)
+        await asyncio.sleep(4)
         await click_log.click()
     except Exception as e:
         print(f'ERROR CLICK LOG \n{e}')
