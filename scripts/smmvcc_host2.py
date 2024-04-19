@@ -86,10 +86,16 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(20)
-            choose_currency = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/section[2]/div/div/div/div/form[3]/div/div[2]/div/div[2]/div/ul/li[1]/div/p/span')
-            choose_currency.click()
+            choose_currency = driver.find_element(By.XPATH, '//*[@id="payment"]/ul/li[2]/label')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", choose_currency)
 
-            for _ in range(4):
+            driver.implicitly_wait(20)
+            click_sect = driver.find_element(By.XPATH, '//*[@id="CsaltCoin"]')
+            sleep(1.5)
+            click_sect.click()
+
+            for _ in range(5):
                 actions.send_keys(Keys.ARROW_DOWN).perform()
                 sleep(0.5)
 
@@ -107,10 +113,10 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR,'div.mcc.online_payment_instructions.mycryptocheckout > div > p > span.amount > span > input').get_attribute('value').replace("USDT_TRON", "").replace(" ", "")
+            amount = driver.find_element(By.XPATH,'//*[@id="wapg_order_review"]/table/tbody/tr/td[2]/span[1]').text.replace("$", "").replace(" ", "")
 
             driver.implicitly_wait(10)
-            address = driver.find_element(By.CSS_SELECTOR, 'div.mcc.online_payment_instructions.mycryptocheckout > div > p > span.to > span > input').get_attribute('value')
+            address = driver.find_element(By.CSS_SELECTOR, '#alt-coinAddress').get_attribute('value')
 
             return {
                 "address": address,
@@ -119,6 +125,7 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
+
 
 def wallet():
     wallet_data = get_wallet()
