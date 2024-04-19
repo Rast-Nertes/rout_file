@@ -2,7 +2,7 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -89,19 +89,16 @@ def get_wallet():
             choose_currency = driver.find_element(By.XPATH, '//*[@id="payment"]/ul/li[2]/label')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_currency)
-
-            driver.implicitly_wait(20)
-            click_sect = driver.find_element(By.XPATH, '//*[@id="CsaltCoin"]')
-            sleep(1.5)
-            click_sect.click()
-
-            for _ in range(5):
-                actions.send_keys(Keys.ARROW_DOWN).perform()
-                sleep(0.5)
-
-            actions.send_keys(Keys.ENTER).perform()
         except Exception as e:
             print(f"CHOOSE CURRENCY ERROR \n{e}")
+
+        sleep(5.5)
+
+        try:
+            select_element = Select(driver.find_element(By.ID, 'CsaltCoin'))
+            select_element.select_by_visible_text('Tether(USDT)')
+        except Exception as e:
+            print(f'ERROR CHOOSE TRC20 \n{e}')
 
         try:
             driver.implicitly_wait(10)
