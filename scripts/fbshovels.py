@@ -1,4 +1,3 @@
-import cloudscraper
 from selenium import webdriver
 from time import sleep
 from twocaptcha import TwoCaptcha
@@ -15,7 +14,6 @@ from selenium.webdriver.chrome.options import Options
 
 #CONSTANS
 app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
 user_login = 'kiracase34@gmail.com'
 #user_password = 'kiramira123!'
 url = 'https://fbshovels.com'
