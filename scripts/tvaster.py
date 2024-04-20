@@ -14,7 +14,8 @@ user_password = '3GEahNCa@L24XzF'
 #CHROME CONSTANS
 
 with open('config.txt') as file:
-    chrome_path = file.read().strip() # Здесь укажи абсолютный путь к экзешнику хрома
+    paths = file.readlines()
+    chrome_path = paths[0].strip() # Здесь укажи абсолютный путь к экзешнику хрома
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
