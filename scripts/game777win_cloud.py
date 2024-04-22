@@ -36,7 +36,7 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
-    await driver.get(url, timeout=60)
+    await driver.get(url, timeout=90)
 
     try:
         input_email = await driver.find_element(By.XPATH, '//*[@id="email"]', timeout=30)
@@ -45,14 +45,16 @@ async def login(driver):
         input_password = await driver.find_element(By.XPATH, '//*[@id="password"]', timeout=20)
         await input_password.write(user_password)
 
-        click_log = await driver.find_element(By.XPATH, '/html/body/div[4]/div/div/div[2]/div/div/div[2]/div[1]/div/div/form/button', timeout=20)
+        click_log = await driver.find_element(By.XPATH,
+                                              '/html/body/div[4]/div/div/div[2]/div/div/div[2]/div[1]/div/div/form/button',
+                                              timeout=20)
         await asyncio.sleep(1)
         await click_log.click()
     except Exception as e:
         print(f'ERROR LOGIN SESSION \n{e}')
 
     await asyncio.sleep(3.5)
-    await driver.get('https://game777win.com/ru/profile/cash')
+    await driver.get('https://game777win.com/ru/profile/cash', timeout=90)
 
     try:
         choose_trc20 = await driver.find_element(By.XPATH, '//img[@alt="USDT TRC-20"]', timeout=20)
@@ -69,12 +71,14 @@ async def get_wallet():
         log = await login(driver)
         if log:
             return "Login error. Check script."
-        
+
         await asyncio.sleep(2.5)
         try:
             click_copy_but = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/div[2]/div[2]/div[1]/div[1]/div[1]/div/div/button', timeout=20)
             await asyncio.sleep(1.5)
             await click_copy_but.click()
+
+            await asyncio.sleep(2.5)
             address = pyperclip.paste()
 
             amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/span[1]', timeout=30)
@@ -93,4 +97,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
