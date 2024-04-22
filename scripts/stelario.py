@@ -1,7 +1,6 @@
 import asyncio
 import pyperclip
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
@@ -76,7 +75,10 @@ async def login(driver):
         print("Error")
         input_email = await driver.find_element(By.XPATH, '//*[@id="login"]', timeout=60)
         if input_email:
-            return 'Login error. Check script.'
+            return jsonify({
+    "status": 0,
+    "exception": "Login error. Check script."
+}), 500
 
     try:
         click_depos_but = await driver.find_element(By.XPATH, '//*[@id="walletDepositSubmit"]', timeout=30)
@@ -112,7 +114,7 @@ async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         log_data = await login(driver)
         if log_data:
-            return "Login error."
+            return log_data
 
         await asyncio.sleep(1.5)
         try:
