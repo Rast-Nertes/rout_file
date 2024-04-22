@@ -61,13 +61,6 @@ async def login(driver):
     except:
         return 'Login error. Check script.'
 
-    try:
-        click_copy_but = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/div[2]/div[2]/div[1]/div[1]/div[1]/div/div/button', timeout=20)
-        await asyncio.sleep(1)
-        await click_copy_but.click()
-    except Exception as e:
-        print(f'ERROR CLICK COPY ADDRESS \n{e}')
-
     return None
 
 
@@ -76,9 +69,12 @@ async def get_wallet():
         log = await login(driver)
         if log:
             return "Login error. Check script."
-
+        
         await asyncio.sleep(2.5)
         try:
+            click_copy_but = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/div[2]/div[2]/div[1]/div[1]/div[1]/div/div/button', timeout=20)
+            await asyncio.sleep(1.5)
+            await click_copy_but.click()
             address = pyperclip.paste()
 
             amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/span[1]', timeout=30)
