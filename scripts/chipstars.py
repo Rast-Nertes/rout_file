@@ -103,7 +103,7 @@ async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
-        await asyncio.sleep(4.5)
+        await asyncio.sleep(10)
         try:
             address_elem = await driver.find_element(By.ID, 'outlined-adornment-password', timeout=30)
             address = await address_elem.__getattribute__("value")
