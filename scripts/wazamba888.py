@@ -100,9 +100,15 @@ async def get_wallet():
         except Exception as e:
             print(f'ERROR DEPOS \n{e}')
 
-        await asyncio.sleep(2)
-        wind = await driver.window_handles
-        await driver.switch_to.window(wind[0])
+        await asyncio.sleep(4)
+        winds = await driver.window_handles
+        for window in winds:
+            await asyncio.sleep(1)
+            await driver.switch_to.window(window)
+            title = await driver.title
+            print(title)
+            if "gat" in title:
+                break
 
         await asyncio.sleep(4.5)
         try:
