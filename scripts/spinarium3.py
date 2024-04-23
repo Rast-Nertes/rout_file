@@ -71,6 +71,7 @@ def get_wallet():
         login(driver)
 
         try:
+            sleep(5)
             driver.implicitly_wait(60)
             address = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div/input').get_attribute('data-maska-value')
             print(address)
