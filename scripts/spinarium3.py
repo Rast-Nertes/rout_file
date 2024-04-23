@@ -71,18 +71,24 @@ def get_wallet():
         login(driver)
 
         try:
-            sleep(5)
+            sleep(2)
             driver.implicitly_wait(60)
-            address = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div/input').get_attribute('data-maska-value')
+            address_elem = driver.find_element(By.XPATH, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div/div[1]/button')
+            sleep(1.5)
+            address_elem.click()
+
+            sleep(2)
+            address = pyperclip.paste()
             print(address)
 
             sleep(2)
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/main/div[1]/div/div[2]/div/div/div[1]/div[2]').text.replace("USDTT", '').replace("CZK", '').replace("238 =", '').replace(" ", '').replace("\n", '')
+            amount = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/main/div[1]/div/div[2]/div/div/div[1]/div[2]').text.split("USDTT")[1]
+            print(amount)
 
             return {
                 "address": address,
-                "amount": amount,
+                "amount": amount.replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
