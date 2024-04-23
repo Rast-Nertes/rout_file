@@ -85,7 +85,6 @@ async def get_wallet():
         log = await login(driver)
         if log:
             return log
-        # input("Пресс")
 
         amount_elem = await driver.find_element(By.XPATH, '/html/body/linda-popup-body/div/linda-cashbox-popup/div/div[4]/div[2]/linda-cashbox-deposit-form/form/div[3]/div[2]/div[1]', timeout=20)
         amount = await amount_elem.text
@@ -123,11 +122,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-"""
-create mode 100644 scripts/chipstars.py
-create mode 100644 scripts/oxi_casino.py
-create mode 100644 scripts/spinarium3.py
-create mode 100644 scripts/un1imcas.py
-"""
