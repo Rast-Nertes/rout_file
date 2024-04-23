@@ -43,7 +43,7 @@ def login(driver):
         input_data(driver, 20, '//input[@placeholder="Password"]', user_password)
         sleep(1)
         try:
-            click(driver, 10, '//*[@id="onesignal-slidedown-cancel-button"]')
+            click(driver, 20, '//*[@id="onesignal-slidedown-cancel-button"]')
         except:
             pass
 
