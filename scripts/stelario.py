@@ -87,9 +87,15 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR CLICK DEPOS BUT \n{e}')
 
-    await asyncio.sleep(3.5)
-    wind = await driver.window_handles
-    await driver.switch_to.window(wind[0])
+    await asyncio.sleep(12.5)
+    winds = await driver.window_handles
+    for window in winds:
+        await asyncio.sleep(1)
+        await driver.switch_to.window(window)
+        title = await driver.title
+        print(title)
+        if "Dep" in title:
+            break
 
     try:
         choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=90)
