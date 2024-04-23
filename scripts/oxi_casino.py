@@ -8,7 +8,7 @@ from fake_useragent import UserAgent
 # CONSTANTS
 
 url = 'https://oxi.casino/'
-user_email = "kiracase34@gmail.com11"
+user_email = "kiracase34@gmail.com"
 user_password = "Kiramira123"
 
 #4h12l312l4L2
@@ -88,20 +88,27 @@ async def login(driver):
     await driver.clear_proxy()
     await asyncio.sleep(2.5)
     await driver.set_single_proxy(f"http://WyS1nY:8suHN9@196.19.121.187:8000")
-    await asyncio.sleep(1.5)
+    await asyncio.sleep(2.5)
     await driver.refresh()
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     try:
-        choose_tether = await driver.find_element(By.XPATH,
-                                                  '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span',
-                                                  timeout=60)
-        await asyncio.sleep(1)
-        await driver.execute_script("arguments[0].click();", choose_tether)
+        try:
+            choose_tether = await driver.find_element(By.XPATH,
+                                                      '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span',
+                                                      timeout=20)
+            await asyncio.sleep(1)
+            await driver.execute_script("arguments[0].click();", choose_tether)
+        except:
+            await asyncio.sleep(1.5)
+            await driver.refresh()
+            await asyncio.sleep(3.5)
 
-        choose_trc20 = await driver.find_element(By.XPATH,
-                                                 '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[2]/ul/li[1]/a',
-                                                 timeout=40)
+            choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=20)
+            await asyncio.sleep(1)
+            await driver.execute_script("arguments[0].click();", choose_tether)
+
+        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[2]/ul/li[1]/a', timeout=40)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
@@ -153,7 +160,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
