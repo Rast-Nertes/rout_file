@@ -57,9 +57,9 @@ def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
-        click(driver, 20, '/html/body/app-root/div/app-desktop-header/header/app-desktop-header-logged-in/section/nav/a')
+        click(driver, 20, '//a[text()=" Deposit "]')
     except Exception as e:
-        find_input_tag = driver.find_element(By.XPATH, '//*[@id="username"]', timeout=10)
+        find_input_tag = driver.find_element(By.XPATH, '//*[@id="username"]')
         if find_input_tag:
             return {"status": "0", "ext": "Login error. Check script."}
         else:
