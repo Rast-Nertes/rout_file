@@ -2,7 +2,6 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -66,11 +65,11 @@ def login(driver):
     driver.get('https://hugewin.com/en/deposit')
 
     try:
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(50)
         get_href = driver.find_element(By.XPATH, '//*[@id="wrapper"]/div/section[2]/section/div[1]/div/div/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]/div/a').get_attribute('href')
         driver.get(get_href)
     except Exception as e:
-        find_input_tag = driver.find_element(By.XPATH, '//*[@id="account-menu"]/div/form/div[1]/input', timeout=10)
+        find_input_tag = driver.find_element(By.XPATH, '//*[@id="account-menu"]/div/form/div[1]/input')
         if find_input_tag:
             return {"status": "0", "ext": "Login error. Check script."}
         else:
