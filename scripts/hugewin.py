@@ -2,6 +2,7 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
+from anticaptchaofficial.recaptchav2proxyless import *
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -54,8 +55,8 @@ def login(driver):
     driver.maximize_window()
 
     try:
-        click(driver, 20, '//*[@id="wrapper"]/header/div[1]/div[2]/div[2]/a[1]')
-        input_data(driver, 20, '//*[@id="account-menu"]/div/form/div[1]/input', user_email)
+        click(driver, 80, '//*[@id="wrapper"]/header/div[1]/div[2]/div[2]/a[1]')
+        input_data(driver, 40, '//*[@id="account-menu"]/div/form/div[1]/input', user_email)
         input_data(driver, 20, '//*[@id="account-menu"]/div/form/div[2]/input', user_password)
         click(driver, 20, '//*[@id="account-menu"]/div/form/input')
     except Exception as e:
