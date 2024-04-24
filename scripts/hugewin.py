@@ -66,7 +66,7 @@ def login(driver):
     driver.get('https://hugewin.com/en/deposit')
 
     try:
-        driver.implicitly_wait(50)
+        driver.implicitly_wait(70)
         get_href = driver.find_element(By.XPATH, '//*[@id="wrapper"]/div/section[2]/section/div[1]/div/div/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]/div/a').get_attribute('href')
         driver.get(get_href)
     except Exception as e:
