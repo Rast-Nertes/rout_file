@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,29 +14,48 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_argument("--headless")
-options.headless = False
+# options.add_argument("--headless")
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 #CONSTANS
 
-url = 'https://infoshopik.com/shop/aleksej-chechukevich-denezhnaja-mashina-2024/'
+url = 'https://infoshopik.com/shop/stepik-shuhashla-osnovy-analiticheskogo-myshlenija-think-101-2024/'
 user_login = "kiracase34@gmail.com"
 user_password = ""
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         driver.get(url)
         driver.maximize_window()
 
         try:
+            driver.implicitly_wait(20)
+            input_count = driver.find_element(By.XPATH, '//input[@type="number"]')
+            input_count.clear()
+            input_count.send_keys('2')
+            sleep(2.5)
+
             driver.implicitly_wait(10)
-            buy_one_click_button = driver.find_element(By.CSS_SELECTOR, 'form > button.single_add_to_cart_button.clickBuyButton.button21.button.alt.ld-ext-left')
+            buy_one_click_button = driver.find_element(By.NAME, 'add-to-cart')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", buy_one_click_button)
+
+            sleep(2.5)
+            driver.get('https://infoshopik.com/wishlist/checkout/')
         except Exception as e:
             print(f"BUY ONE CLICK BUTTON ERROR \n{e}")
-
 
         try:
             driver.implicitly_wait(10)
@@ -46,6 +65,14 @@ def get_wallet():
             input_email.send_keys(user_login)
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(20)
+            choose_aaio = driver.find_element(By.XPATH, '//*[@id="payment"]/ul/li[2]/label')
+            sleep(1.5)
+            choose_aaio.click()
+        except Exception as e:
+            print(f'ERROR CHOOSE AIO \n{e}')
 
         print("Step 1 skip")
 
@@ -61,7 +88,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            choose_trc20 = driver.find_element(By.CSS_SELECTOR, 'div.row.g-2.mb-3.animate__animated.animate__fadeIn > div:nth-child(13) > div > div')
+            choose_trc20 = driver.find_element(By.XPATH, '//img[@alt="Tether (TRC-20)"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
