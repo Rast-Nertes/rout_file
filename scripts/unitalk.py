@@ -1,7 +1,6 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
-#from seleniumwire import webdriver
 from fake_useragent import UserAgent
 from flask import Flask, jsonify
 from twocaptcha import TwoCaptcha
@@ -11,7 +10,6 @@ from time import sleep
 #thedex.cloud
 
 #CONSTANS
-app = Flask(__name__)
 user_login = 'kiracase34@gmail.com'
 user_password = '0WvpZNBM'
 url = 'https://my.unitalk.cloud/enter.html#auth'
@@ -49,10 +47,12 @@ options.add_argument("--disable-gpu")
 #options.add_argument("--headless")
 options.add_experimental_option("detach", True)
 
+
 def solve_captcha(sitekey: str, url: str) -> str:
     solver = TwoCaptcha(api_key)
     result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
     return result["code"]
+
 
 def captcha_and_login(driver):
     driver.get(url)
@@ -88,6 +88,7 @@ def captcha_and_login(driver):
         print(f"BUTTON ERROR \n{e}")
         return None
     sleep(5)
+
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -137,7 +138,10 @@ def get_wallet():
         except Exception as e:
             print(f"TETHER TRC20 BUTTON ERROR \n{e}")
             return None
-
+        
+        
+        driver.set_window_size(800, 400)
+        sleep(2.5)
         amount = WebDriverWait(driver, 30).until(
             EC.visibility_of_element_located(
                 (By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div[1]/div[3]/div/div[3]/div[1]/div[2]'))
@@ -155,6 +159,7 @@ def get_wallet():
             "amount": amount,
             "currency": "usdt"
         }
+
 
 def wallet():
     wallet_data = get_wallet()
