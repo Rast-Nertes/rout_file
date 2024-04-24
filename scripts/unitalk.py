@@ -148,11 +148,9 @@ def get_wallet():
         )
         amount = amount.text.replace(" ", "").replace("USDTTRC20", "")
 
-        address = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div[1]/div[3]/div/div[3]/div[2]/div[2]'))
-        )
-        address = address.text
+        driver.implicitly_wait(40)
+        address_elem = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div[1]/div[3]/div/div[2]/div/div/a')
+        address = address_elem.get_attribute('href').split('address')[1].replace("/", '')
 
         return {
             "address": address,
