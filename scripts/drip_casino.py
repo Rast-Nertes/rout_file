@@ -50,8 +50,11 @@ async def login(driver):
     await asyncio.sleep(1)
     await driver.get(url, timeout=60)
 
+    await asyncio.sleep(7.5)
     try:
-        await click(driver, 30, '//*[@id="user-top__login-link"]')
+        click_login_but = await driver.find_element(By.XPATH, '//*[@id="user-top__login-link"]', timeout=30)
+        await asyncio.sleep(1.5)
+        await click_login_but.click()
         await input_data(driver, 30, '//*[@id="email"]', user_email)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
         await click(driver, 20, '//*[@id="app"]/div[5]/div[1]/div/div/div/div[1]/div/div/div/div/div/div[2]/form/div[2]/button')
