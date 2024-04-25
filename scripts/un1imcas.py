@@ -1,5 +1,4 @@
 import asyncio
-import pyperclip
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -28,8 +27,10 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
+    ext = paths[1].strip()
 
 options.binary_location = chrome_path
+# options.add_extension(ext)
 
 
 async def click(driver, time, XPATH):
@@ -51,14 +52,17 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await click(driver, 20, '//*[@id="vue-integration"]/div/div[2]/div[1]/div/div/div[2]/div/table/tbody/tr[5]/td[6]/div/button')
+        await click(driver, 40, '//*[@id="vue-integration"]/div/div[2]/div[1]/div/div/div[2]/div/table/tbody/tr[5]/td[6]/div/button')
     except Exception as e:
         print(f"ERROR CLICK LOG \n{e}")
 
     try:
         await input_data(driver, 30, '//*[@id="email"]', user_email)
         await input_data(driver, 20, '//*[@id="password"]', user_password)
-        await click(driver, 20, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
+        await asyncio.sleep(2.5)
+        await click(driver, 30, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
+        await asyncio.sleep(2.5)
+        await click(driver, 30, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
     except Exception as e:
         print(f'ERROR LOG \n{e}')
 
@@ -85,7 +89,7 @@ async def get_wallet():
         if log:
             return log
 
-        await asyncio.sleep(8.5)
+        await asyncio.sleep(10.5)
         try:
             address_elem = await driver.find_element(By.XPATH, '//*[@id="personal-container"]/div/div[2]/div[1]/div/div[1]/div/span', timeout=30)
             address = await address_elem.text
