@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -85,14 +85,14 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         log = login(driver)
         if log:
             return log
 
         try:
             sleep(3.5)
-            driver.implicitly_wait(60)
+            driver.implicitly_wait(90)
             address = driver.find_element(By.XPATH, '//*[@id="cdk-step-content-1-1"]/div[2]/div/div[1]/p[2]').text
 
             driver.implicitly_wait(20)
