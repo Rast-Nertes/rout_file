@@ -1,10 +1,7 @@
 import asyncio
-import pickle
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANTS
@@ -36,20 +33,20 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
-    await driver.get(url, timeout=60)
+    await driver.get(url, timeout=90)
 
     try:
         await asyncio.sleep(2.4)
         find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
         await asyncio.sleep(0.6)
         iframe_doc = await find_frame[0].content_document
-        click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input', timeout=20)
+        click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input', timeout=12.5)
         await click_checkbox.click()
     except Exception as e:
         print(f'ERROR CHECKBOX \n{e}')
 
     try:
-        input_email = await driver.find_element(By.XPATH, '//*[@id="login-field"]', timeout=30)
+        input_email = await driver.find_element(By.XPATH, '//*[@id="login-field"]', timeout=60)
         await input_email.write(user_email)
 
         input_password = await driver.find_element(By.XPATH, '//*[@id="form-password"]', timeout=20)
@@ -77,9 +74,6 @@ async def login(driver):
             return {"status": "0", "ext":"Login error. Check script."}
 
     try:
-        input_amount = await driver.find_element(By.NAME, 'depositAmount', timeout=20)
-        await input_amount.clear()
-        await input_amount.write('10')
 
         click_depos_now_but = await driver.find_element(By.XPATH, '/html/body/div[4]/div[3]/div/div[2]/div/div/div[1]/div/button/span', timeout=20)
         await asyncio.sleep(1.5)
@@ -106,7 +100,7 @@ async def get_wallet():
         await asyncio.sleep(10)
         try:
             address_elem = await driver.find_element(By.ID, 'outlined-adornment-password', timeout=30)
-            address = await address_elem.__getattribute__("value")
+            address = await address_elem.get_attribute("value")
 
             amount_elem = await driver.find_element(By.XPATH, '/html/body/div[4]/div[3]/div/div[2]/div/div/div[3]/div/div[3]/h4[1]', timeout=30)
             amount = await amount_elem.text
