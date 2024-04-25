@@ -1,27 +1,19 @@
-import cloudscraper
 from selenium import webdriver
 from time import sleep
 from twocaptcha import TwoCaptcha
-from flask import Flask, jsonify
+from flask import jsonify
 from fake_useragent import UserAgent
-from urllib.parse import urlparse, parse_qs
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
 #NOWPAYMENTS
 
 #CONSTANS
-app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
 user_login = 'kiramira123'
 user_password = 'kiramira1'
-url = 'https://www.seoclerk.com'
-
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
+url = 'https://www.seoclerk.com/login'
+site_key = '6Le1vBMTAAAAAIJzghoHt4Rx99unArJikrCvt-Sn'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -30,132 +22,127 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options= options)
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
 
 
 def login(driver):
-
     driver.get(url)
     driver.maximize_window()
 
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.presence_of_element_located((By.TAG_NAME, 'iframe')))
-
-    iframe_element = driver.find_element(By.TAG_NAME, 'iframe')
-    src = iframe_element.get_attribute('src')
-
-    parsed_url = urlparse(src)
-    query_params = parse_qs(parsed_url.query)
-    recaptcha_key = query_params.get('k', [''])[0]
-
-    print("Ключ reCAPTCHA:", recaptcha_key)
+    try:
+        input_data(driver, 50, '//*[@id="l_username"]', user_login)
+        input_data(driver, 30, '//*[@id="l_password"]', user_password)
+    except Exception as e:
+        print(f"ERROR INPUT DATA \n{e}")
 
     solver = TwoCaptcha(api_key)
 
-    result = solver.solve_captcha(site_key=recaptcha_key, page_url=url)
-    print(f"РЕЗУЛЬТАТ: {str(result)}")
+    print("Start solve captcha...")
+
+    result = solver.recaptcha(sitekey=site_key, url=url)
+    print(f"РЕЗУЛЬТАТ: {str(result['code'])}")
+
+    driver.implicitly_wait(4.5)
+    input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
+    driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result['code'])
 
     try:
-        try:
-            block_delete = driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div[2]/form/div[4]/div/div[1]/div/div')
-            driver.execute_script('arguments[0].parentNode.removeChild(arguments[0]);', block_delete)
-        except Exception as e:
-            print("НЕ УДАЛОСЬ ИЗМЕНИТЬ")
-
-        try:
-            sleep(2)
-            textarea_element = driver.find_element(By.XPATH, '//*[@id="g-recaptcha-response-1"]')
-            driver.execute_script("arguments[0].removeAttribute('style');", textarea_element)
-        except Exception as e:
-            print(f"Block ERROR")
-
+        click(driver, 30, '//*[@id="root"]/div[2]/div/div[1]/form/div[4]/div[2]/input')
     except Exception as e:
-        print("ERROR CAPTCHA")
+        print(f'ERROR LOG BUT \n{e}')
 
-    try:
+    while True:
         try:
-            close_ = WebDriverWait(driver, 4).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="close"]'))
-            )
-            close_.click()
+            driver.implicitly_wait(10)
+            find_error = driver.find_element(By.XPATH, '//div[@role="alert"]').text
+            if "val" in find_error:
+                input_data(driver, 50, '//*[@id="l_username"]', user_login)
+                input_data(driver, 30, '//*[@id="l_password"]', user_password)
+
+                print("Start solve captcha...")
+                result = solver.recaptcha(site_key=site_key, page_url=url)
+                print(f"РЕЗУЛЬТАТ: {str(result)}")
+
+                driver.implicitly_wait(4.5)
+                input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
+                driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result)
+
+                try:
+                    click(driver, 30, '//*[@id="root"]/div[2]/div/div[1]/form/div[4]/div[2]/input')
+                except Exception as e:
+                    print(f'ERROR LOG CLICK \n{e}')
+            else:
+                break
         except:
-            pass
+            break
 
-        sleep(1)
-        button_to_login = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '/html/body/header/div[2]/div/div/a[1]'))
-        )
-        button_to_login.click()
-    except Exception as e:
-        print(f"BUTTON ERROR \n{e}")
+    sleep(2.5)
+    driver.get('https://www.seoclerk.com/order/2239')
 
     try:
-        login_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="l_username"]'))
+        check_button = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="stripeButton"]'))
         )
-        login_input.send_keys(user_login)
-
-        pass_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="l_password"]'))
-        )
-        pass_input.send_keys(user_password)
-
-        textarea_element_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="g-recaptcha-response-1"]'))
-        )
-        textarea_element_input.send_keys(str(result))
-
-        button_log_in = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="loginCheck"]/input[10]'))
-        )
-        sleep(1)
-        button_log_in.click()
-        sleep(1)
+        check_button.click()
     except Exception as e:
-        print(f"INPUT ERROR \n{e}")
+        driver.implicitly_wait(10)
+        find_input_tag = driver.find_element(By.XPATH, '//*[@id="l_username"]')
+        if find_input_tag:
+            return {"status": "0", "ext": "Login error. Check script."}
+        else:
+            print(f"CHECKOUT ERROR \n{e}")
+
+    try:
+        click(driver, 30, '//*[@id="nowPayments-form-btn"]')
+    except Exception as e:
+        print(f'ERROR CHOOSE NOWPAY')
+
+    try:
+        driver.implicitly_wait(60)
+        click_select = driver.find_element(By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[1]')
+        sleep(1.5)
+        click_select.click()
+    except Exception as e:
+        print(f'ERROR SELECT \n{e}')
+
+    try:
+        click(driver, 30, '//img[@alt="Tether USD (Tron)"]')
+        click(driver, 30, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/button')
+    except Exception as e:
+        print(f'ERROR CHOOSE TRC20 \n{e}')
+
+    while True:
+        try:
+            driver.implicitly_wait(7.5)
+            find_error_text = driver.find_element(By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[3]')
+            find_error_text.click()
+        except:
+            break
 
 
 def get_wallet():
     try:
         with webdriver.Chrome(options=options) as driver:
-            login(driver)
-            driver.get('https://www.seoclerk.com/order/499921')
-            try:
-                check_button = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="stripeButton"]'))
-                )
-                check_button.click()
-
-                driver.execute_script("window.scrollBy(0, 700);")
-                sleep(1)
-            except Exception as e:
-                print(f"CHECKOUT ERROR \n{e}")
-
-            try:
-                choose_nowpayments = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="nowPayments-form-btn"]'))
-                )
-                choose_nowpayments.click()
-            except Exception as e:
-                print(f"NOW PAYMENTS ERROR \n{e}")
-
-            try:
-                choose_usdt_tron = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[1]/div'))
-                )
-                choose_usdt_tron.click()
-
-                choose_usdt_tron_step_2 = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/ul/li[2]'))
-                )
-                choose_usdt_tron_step_2.click()
-
-                next_step = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/button'))
-                )
-                next_step.click()
-            except Exception as e:
-                print(f"CHOOSE TRON \n{e}")
+            log = login(driver)
+            if log:
+                return log
 
             amount = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located(
@@ -171,18 +158,15 @@ def get_wallet():
 
             return {
                 "address": address,
-                "amount": amount,
+                "amount": amount.replace("\n", '').replace("TRX", '').replace(' ', ''),
                 "currency": "usdt"
             }
     except Exception as e:
         print(f"GET WALLET ERROR \n{e}")
         return None
 
-@app.route('/api/selenium/seoclerk')
+
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5025)
