@@ -109,20 +109,26 @@ async def login(driver):
         print(f'ERROR CLICK LOG \n{e}')
 
     try:
-        await click(driver, 30, '/html/body/div[2]/header/div/div/div[5]/div/a[2]')
+        await asyncio.sleep(1.5)
+        await click(driver, 60, '/html/body/div[2]/header/div/div/div[5]/div/a[2]')
+        await asyncio.sleep(1.5)
         await click(driver, 30, '//*[@id="cash-in"]/div/div/ul/li[1]/div')
+        await asyncio.sleep(1.5)
         await click(driver, 30, '//*[@id="cash-in"]/div/div/ul/li[11]/div')
     except Exception as e:
         print(f'ERROR CLICK DEPOS BUT \n{e}')
 
     try:
+        await asyncio.sleep(1.5)
         await click(driver, 30, '//*[@id="tab-bonuses"]/div[2]/div/div/div[3]/div/div/div')
+        await asyncio.sleep(1.5)
         await click(driver, 30, '//*[@id="cash-in"]/div/div/div[2]/div/div[2]/div/div/div[3]/button')
     except Exception as e:
         print(f'ERROR CHOOSE NOT BONUS \n{e}')
 
     try:
         await click(driver, 30, '//*[@id="tab-amount"]/div/div[2]/div[1]')
+        await asyncio.sleep(1.5)
         await click(driver, 30, '//*[@id="cash-in"]/div/div/div[2]/div/div[2]/div/div/div[3]/button')
     except Exception as e:
         print(f'ERROR CHOOSE MIN AMOUNT \n{e}')
