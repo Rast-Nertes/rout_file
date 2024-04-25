@@ -32,7 +32,7 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
 
 options.binary_location = chrome_path
-options.add_extension(ext)
+# options.add_extension(ext)
 
 
 async def click(driver, time, XPATH):
@@ -53,60 +53,79 @@ async def login(driver):
     await asyncio.sleep(1)
     await driver.get(url, timeout=60)
 
-    handles = await driver.window_handles
-    for handle in handles:
-        await asyncio.sleep(1)
-        await driver.switch_to.window(handle)
-        title = await driver.title
-        print(title)
-        if "2Cap" in title:
-            break
-
-    try:
-        await asyncio.sleep(2.5)
-        await input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
-        await click(driver, 30, '//*[@id="connect"]')
-    except Exception as e:
-        print(f'ERROR CONNECT \n{e}')
-
-    handles = await driver.window_handles
-    print(handles)
-    for handle in handles:
-        await driver.switch_to.window(handle)
-        title = await driver.title
-        if "Pla" in title:
-            break
+    # input("press")
+    #
+    # handles = await driver.window_handles
+    # for handle in handles:
+    #     await asyncio.sleep(1)
+    #     await driver.switch_to.window(handle)
+    #     title = await driver.title
+    #     print(title)
+    #     if "2Cap" in title:
+    #         break
+    #
+    # try:
+    #     await asyncio.sleep(2.5)
+    #     await input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+    #     await click(driver, 30, '//*[@id="connect"]')
+    # except Exception as e:
+    #     print(f'ERROR CONNECT \n{e}')
+    #
+    # handles = await driver.window_handles
+    # print(handles)
+    # for handle in handles:
+    #     await driver.switch_to.window(handle)
+    #     title = await driver.title
+    #     if "Pla" in title:
+    #         break
 
     try:
         await click(driver, 70, '/html/body/div[2]/header/div/div/div[4]/span')
         await input_data(driver, 30, '//*[@id="login_login"]', user_email)
         await input_data(driver, 30, '//*[@id="login_passwordPlain"]', user_password)
+
+        await asyncio.sleep(10)
+        solver = TwoCaptcha(api_key)
+        print("Start solve captcha...")
+
+        result = solver.recaptcha(sitekey=site_key, url=url)
+        print(f"РЕЗУЛЬТАТ: {str(result['code'])}")
+
+        input_captcha_code = await driver.find_element(By.TAG_NAME, 'textarea', timeout=10)
+        await driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result['code'])
+
     except Exception as e:
         print(f"ERROR INPUT LOG DATA \n{e}")
 
     try:
-        await click(driver, 50, '//*[@id="login-form-js"]/div/div[5]/div')
+        await click(driver, 50, '//*[@id="login-form-js"]/div/div[5]/button')
     except Exception as e:
         print(f'ERROR CLICK SOLVE BUT \n{e}')
 
     while True:
         try:
-            find_text_captha = await driver.find_element(By.XPATH, '//*[@id="login-form-js"]/div/div[5]/div/div[2]', timeout=10)
-            text_capt = await find_text_captha.text
-            await asyncio.sleep(1.5)
-            if "Решается" in text_capt:
-                await asyncio.sleep(3.5)
-                print('Wait 5 sec...')
+            await asyncio.sleep(10)
+            find_error = await driver.find_element(By.XPATH, '//div[@data-error="recaptcha"]', timeout=10)
+            error_text = await find_error.text
+            if "fail" in error_text:
+                await asyncio.sleep(10)
+                solver = TwoCaptcha(api_key)
+                print("Start solve captcha...")
+
+                result = solver.recaptcha(sitekey=site_key, url=url)
+                print(f"РЕЗУЛЬТАТ: {str(result['code'])}")
+
+                input_captcha_code = await driver.find_element(By.TAG_NAME, 'textarea', timeout=10)
+                await driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result['code'])
+
+                try:
+                    await click(driver, 30, '//*[@id="login-form-js"]/div/div[5]/button')
+                except Exception as e:
+                    print(f'ERROR LOG CLICK \n{e}')
             else:
-                print('Solve!')
-                await asyncio.sleep(1.5)
                 break
         except:
             break
-    try:
-        await click(driver, 30, '//*[@id="recaptchaBindedElement0"]')
-    except Exception as e:
-        print(f'ERROR CLICK LOG \n{e}')
 
     try:
         await asyncio.sleep(1.5)
