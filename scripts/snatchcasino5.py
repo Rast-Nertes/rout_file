@@ -60,7 +60,7 @@ async def login(driver):
     await driver.get('https://snatchcasino5.eu/de/wallet/deposit')
 
     try:
-        await click(driver, 40, '//img[@alt="Bitpace"]')
+        await click(driver, 30, '//img[@alt="Bitpace"]')
     except Exception as e:
         find_input_tag = await driver.find_element(By.XPATH, '//*[@id="login"]', timeout=10)
         if find_input_tag:
@@ -109,10 +109,10 @@ async def get_wallet():
         if log:
             return log
 
-        await asyncio.sleep(2.5)
+        await asyncio.sleep(6.5)
         try:
-            copy_address = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[2]/div/div[3]/a', timeout=20)
-            await asyncio.sleep(1.5)
+            copy_address = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[2]/div/div[3]/a', timeout=40)
+            await asyncio.sleep(3.5)
             await copy_address.click()
 
             await asyncio.sleep(3.5)
@@ -121,7 +121,7 @@ async def get_wallet():
             await asyncio.sleep(6.5)
 
             copy_amount = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[1]/div/div[3]/a', timeout=20)
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(3.5)
             await copy_amount.click()
 
             await asyncio.sleep(3.5)
