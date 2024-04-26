@@ -78,11 +78,11 @@ async def login(driver):
     await driver.switch_to.window(wind[0])
 
     await driver.clear_proxy()
-    await asyncio.sleep(2.5)
+    await asyncio.sleep(1.5)
     await driver.set_single_proxy(f"http://WyS1nY:8suHN9@196.19.121.187:8000")
     await asyncio.sleep(1.5)
     await driver.refresh()
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     try:
         choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=60)
