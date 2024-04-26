@@ -60,7 +60,7 @@ async def login(driver):
     await driver.get('https://snatchcasino5.eu/de/wallet/deposit')
 
     try:
-        await click(driver, 30, '//img[@alt="Bitpace"]')
+        await click(driver, 40, '//img[@alt="Bitpace"]')
     except Exception as e:
         find_input_tag = await driver.find_element(By.XPATH, '//*[@id="login"]', timeout=10)
         if find_input_tag:
