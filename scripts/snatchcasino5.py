@@ -112,19 +112,19 @@ async def get_wallet():
         await asyncio.sleep(2.5)
         try:
             copy_address = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[2]/div/div[3]/a', timeout=20)
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(1.5)
             await copy_address.click()
 
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(3.5)
             address = pyperclip.paste()
 
-            await asyncio.sleep(3.5)
+            await asyncio.sleep(6.5)
 
             copy_amount = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div/ul/li[1]/div/div[3]/a', timeout=20)
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(1.5)
             await copy_amount.click()
 
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(3.5)
             amount = pyperclip.paste()
 
             return {
