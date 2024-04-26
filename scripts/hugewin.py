@@ -1,5 +1,5 @@
 from flask import jsonify
-from seleniumwire import webdriver
+from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -85,7 +85,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         log = login(driver)
         if log:
             return log
