@@ -62,13 +62,14 @@ def login(driver):
     actions = ActionChains(driver)
     try:
         click(driver, 40, '//*[@id="root"]/div/div/div[1]/div[1]/div/div[2]/header/div/div[2]/div[1]/div[1]/button')
-        sleep(1.5)
+        sleep(2.5)
         input_data(driver, 30, '//input[@name="username"]', user_email)
-        sleep(1)
+        sleep(1.5)
 
         try:
             driver.implicitly_wait(10)
             elem_delete = driver.find_element(By.XPATH, '//input[@name="password"]')
+            sleep(1.5)
             driver.execute_script("arguments[0].removeAttribute('readonly');", elem_delete)
         except Exception as e:
             print(f'ERROR DELETE \n{e}')
