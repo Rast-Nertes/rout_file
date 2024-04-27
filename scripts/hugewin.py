@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -16,7 +16,7 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_argument("--auto-open-devtools-for-tabs")
+# options.add_argument("--auto-open-devtools-for-tabs")
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -57,7 +57,7 @@ def login(driver):
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
 
-    sleep(2.5)
+    sleep(5.5)
     driver.get('https://hugewin.com/en/deposit')
 
     try:
@@ -85,7 +85,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         log = login(driver)
         if log:
             return log
@@ -104,6 +104,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
+
             print(f"DATA ERROR \n{e}")
 
 
