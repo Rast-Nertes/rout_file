@@ -10,17 +10,16 @@ from twocaptcha import TwoCaptcha
 from selenium import webdriver
 from time import sleep
 
-#driver = webdriver.Chrome()
-app = Flask(__name__)
-
 API_KEY = "7f728c25edca4f4d0e14512d756d6868" # ruCaptcha api-key
 USERNAME = "kiracase34@gmail.com" # username
 PASSWORD = "kiraadpro9" # password
+
 
 def solve_captcha(sitekey: str, url: str) -> str:
     solver = TwoCaptcha(API_KEY)
     result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
     return result["code"]
+
 
 def captcha_and_login(driver):
     url = "https://advertiser.adprofex.com/login"
@@ -29,6 +28,7 @@ def captcha_and_login(driver):
     captcha_code = solve_captcha('6LcbPqMmAAAAAIIZTlt7AwAmV4z32HIst1aix5Gr', url)
     print(captcha_code)
     driver.execute_script(f'var textarea = document.getElementById("g-recaptcha-response-100000"); textarea.style.display = "block"; textarea.innerHTML = "{captcha_code}";')
+
     try:
         input_email = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div/div[2]/div[2]/div/div/form/div[1]/div[1]/label/div/div[1]/div/input'))
@@ -50,6 +50,7 @@ def captcha_and_login(driver):
     except Exception as e:
         print(f"CLICK ERROR \n{e}")
 
+
 def get_wallet():
     with webdriver.Chrome() as driver:
         captcha_and_login(driver)
@@ -69,6 +70,12 @@ def get_wallet():
 
         except Exception as e:
             print(f"ADD FUNDS ERROR \n{e}")
+            driver.implicitly_wait(10)
+            find_input_tag = driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div[2]/div/div/form/div[1]/div[1]/label/div/div[1]/div/input',)
+            if find_input_tag:
+                return {"status": "0", "ext": "Login error. Check script."}
+            else:
+                print(f"ERROR DEPOS BUT \n{e}")
 
         try:
             choose_capitalist_method = WebDriverWait(driver, 10).until(
@@ -91,15 +98,20 @@ def get_wallet():
         except Exception as e:
             print(f"TICKET CHOOSE ERROR \n{e}")
 
-        address = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="order-page"]/div[4]/div/div/div[3]/div[2]/div[2]/div[2]/button/span'))
-        )
-        address = address.text
+        windows = driver.window_handles
+        for window in windows:
+            driver.switch_to.window(window)
+            tittle = driver.title
+            print(tittle)
+            sleep(1)
+            if not("ex" in tittle):
+                break
 
-        amount = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="order-page"]/div[4]/div/div/div[4]/div/div/div[3]/div[2]/strong'))
-        )
-        amount = amount.text
+        driver.implicitly_wait(90)
+        address = driver.find_element(By.XPATH, '//*[@id="order-page"]/div[4]/div/div/div[3]/div[2]/div[2]/div[2]/button').get_attribute('data-clipboard-text')
+
+        driver.implicitly_wait(30)
+        amount = driver.find_element(By.XPATH, '//*[@id="order-page"]/div[4]/div/div/div[3]/div[2]/p/strong').text.replace("USDT (TRC20)", "").replace(" ", "")
 
         return {
             "address": address,
@@ -107,6 +119,8 @@ def get_wallet():
             "currency": "usdt"
         }
 
+
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
