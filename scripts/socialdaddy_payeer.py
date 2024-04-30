@@ -1,12 +1,7 @@
-#https://socialdaddy.net/login.aspx
 from time import sleep
-from flask import Flask
 from flask import jsonify
-#from selenium import webdriver
 from fake_useragent import UserAgent
 from seleniumwire import webdriver
-#import undetected_chromedriver2 as uc2
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -14,8 +9,6 @@ from selenium.webdriver.common.keys import Keys
 
 #CONSTANS
 
-app = Flask(__name__)
-url = 'https://www.hostwinds.com'
 user_login = 'kiracase34@gmail.com'
 user_password = '341854985'
 
@@ -29,7 +22,6 @@ chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 user_agent = UserAgent()
 chrome_options.add_argument(f"user-agent={user_agent.random}")
 
-#driver = webdriver.Chrome(options=chrome_options)
 
 def login(driver):
     try:
@@ -135,6 +127,8 @@ def get_wallet_data():
             print(f"WALLET DATA ERROR -- \n{e}")
             return None
 
+
 def wallet():
     wallet_data = get_wallet_data()
+    print(wallet_data)
     return jsonify(wallet_data)
