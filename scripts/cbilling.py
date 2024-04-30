@@ -1,19 +1,14 @@
 from time import sleep
-from flask import Flask
 from flask import jsonify
-#from selenium import webdriver
 from fake_useragent import UserAgent
 from seleniumwire import webdriver
-#import undetected_chromedriver2 as uc2
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://cbilling.eu/index.php?mode=auth'
 user_login = 'ab662c1'
 user_password = 'a40d37a'
@@ -37,6 +32,7 @@ proxy_options = {
 options = webdriver.ChromeOptions()
 options.headless = False
 options.add_argument("--disable-save-password-bubble")
+
 
 def login(driver):
     try:
@@ -62,6 +58,7 @@ def login(driver):
     except Exception as e:
         print(f"LOGIN ERROR -- {e}")
 
+
 def get_wallet():
     with webdriver.Chrome(seleniumwire_options=proxy_options, options=options) as driver:
         login(driver)
@@ -70,7 +67,7 @@ def get_wallet():
 
             choose_wallet = WebDriverWait(driver, 20).until(
                 EC.visibility_of_element_located(
-                    (By.XPATH, '/html/body/div[2]/div/div/div[1]/form/div[7]/div/label'))
+                    (By.XPATH, '//input[@value="cryptocloud"]'))
             )
             choose_wallet.click()
 
@@ -109,9 +106,8 @@ def get_wallet():
         except Exception as e:
             print(f"WALLET ERROR -- {e}")
 
+
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
-
-
