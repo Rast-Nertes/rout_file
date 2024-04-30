@@ -64,13 +64,19 @@ def get_wallet():
         login(driver)
         try:
             driver.get('https://cbilling.eu/?mode=ballance')
-
-            choose_wallet = WebDriverWait(driver, 20).until(
-                EC.visibility_of_element_located(
-                    (By.XPATH, '//input[@value="cryptocloud"]'))
-            )
-            choose_wallet.click()
-
+            
+            try:
+                choose_wallet = WebDriverWait(driver, 20).until(
+                    EC.visibility_of_element_located(
+                        (By.XPATH, '//input[@value="cryptocloud"]'))
+                )
+                choose_wallet.click()
+            except:
+                driver.implicitly_wait(10)
+                find_input_tag = driver.find_element(By.XPATH, '/html/body/section/div/div/div[1]/div/div[2]/form/div[1]/input')
+                if find_input_tag:
+                    return {"status": "0", "ext": "Login error. Check script."}
+            
             accept_wallet = WebDriverWait(driver, 20).until(
                 EC.visibility_of_element_located(
                     (By.XPATH, '/html/body/div[2]/div/div/div[1]/form/input'))
