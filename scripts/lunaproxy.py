@@ -1,28 +1,17 @@
-import cloudscraper
-import requests
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
-from twocaptcha import TwoCaptcha
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
-from urllib.parse import urlparse, parse_qs
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
 #Paymentmars
 
 #CONSTANS
-app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
 user_login = 'kiracase34@gmail.com'
 user_password = 'kiramira34'
 url = 'https://www.lunaproxy.com/login/'
-
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -31,7 +20,19 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options=options)
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 
 def login(driver):
     driver.get(url)
@@ -60,27 +61,45 @@ def login(driver):
 
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
+        return {"status": "0", "ext": "Login error. Check script."}
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
         driver.get("https://www.lunaproxy.com/buy-proxy/")
         driver.execute_script("window.scrollBy(0, 100);")
 
         try:
-            choose_tariff = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[1]/div[6]/div[1]/div[1]/div[7]'))
-            )
-            choose_tariff.click()
+            driver.implicitly_wait(10)
+            click_accept = driver.find_element(By.XPATH, '//*[@id="allAcceptGoogleSetting"]')
+            sleep(1)
+            driver.execute_script("arguments[0].click();", click_accept)
+        except:
+            pass
+
+        try:
+            driver.implicitly_wait(20)
+            choose_tariff = driver.find_element(By.XPATH, '//div[@class="inline_pay pay_btn " and @name="302"]')
+            sleep(1.2)
+            driver.execute_script("arguments[0].click();", choose_tariff)
         except Exception as e:
-            print(f"CHOOSE TARIFF ERROR \n{e}")
+            try:
+                driver.implicitly_wait(10)
+                find_input_tag = driver.find_element(By.XPATH, '//*[@id="loginbox"]/div/div/div[3]/input')
+
+                if find_input_tag:
+                    return {"status": "0", "ext": "Login error. Check script."}
+
+            except:
+                print(f"CHOOSE TARIFF ERROR \n{e}")
 
         try:
             choose_crypto = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div[1]/div[7]/div[1]/div/div[3]'))
+                EC.visibility_of_element_located((By.XPATH, '//div[@class="li-content" and @data-box="12"]'))
             )
-            choose_crypto.click()
+            sleep(1)
+            driver.execute_script("arguments[0].click();", choose_crypto)
             sleep(2)
 
         except Exception as e:
@@ -88,27 +107,11 @@ def get_wallet():
 
         try:
             continue_to_pay = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[1]'))
+                EC.visibility_of_element_located((By.XPATH, '//div[@class="primary-btn-mini handleToPay"]'))
             )
             continue_to_pay.click()
         except Exception as e:
             print(f"CONTINUE ERROR \n{e}")
-
-        try:
-            choose_usdt = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div[1]/div[7]/div[6]/div[2]'))
-            )
-            choose_usdt.click()
-        except Exception as e:
-            print(f"CHOOSE ERROR \n{e}")
-
-        try:
-            continue_to_pay_2 = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[1]'))
-            )
-            continue_to_pay_2.click()
-        except Exception as e:
-            print(f"CONTINUE_2 ERROR \n{e}")
 
         sleep(5)
         new_window = driver.window_handles[1]
@@ -133,15 +136,12 @@ def get_wallet():
 
         return {
             "address": address,
-            "amount": amount,
+            "amount": amount.replace("$", ''),
             "currency": "usdt"
         }
 
-@app.route('/api/selenium/lunaproxy')
+
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5031)
