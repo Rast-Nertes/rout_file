@@ -101,9 +101,14 @@ async def get_wallet():
         except Exception as e:
             print(f'ERROR AMOUNT \n{e}')
 
-        await asyncio.sleep(10)
-        wind = await driver.window_handles
-        await driver.switch_to.window(wind[0])
+        await asyncio.sleep(7.5)
+        handles = await driver.window_handles
+        print(handles)
+        for handle in handles:
+            await driver.switch_to.window(handle)
+            title = await driver.title
+            if not(("FEZ" in title) or ("about" in title)):
+                break
 
         await asyncio.sleep(4.5)
         try:
