@@ -96,12 +96,12 @@ async def get_wallet():
             amount_elem = await driver.find_element(By.XPATH, '//div[@class="cashbox-qamount__item ng-binding" and contains(text(), "€ 50")]', timeout=30)
             amount = await amount_elem.text
 
-            await click(driver, 10, '//div[@class="cashbox-qamount__item ng-binding" and contains(text(), "€ 50")]')
+            await click(driver, 30, '//div[@class="cashbox-qamount__item ng-binding" and contains(text(), "€ 50")]')
             await click(driver, 10, "//button[contains(@class, 'cashbox-form__btn') and contains(@class, 'btn') and contains(@class, 'btn-60-yellow')]")
         except Exception as e:
             print(f'ERROR AMOUNT \n{e}')
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(10)
         wind = await driver.window_handles
         await driver.switch_to.window(wind[0])
 
