@@ -106,13 +106,14 @@ async def login(driver):
             print("Solve")
             break
 
-    await asyncio.sleep(2.5)
+    await asyncio.sleep(4.5)
     try:
         await click(driver, 30, '//button[@class="xbtn large login-btn acc-btn login-page"]')
     except Exception as e:
         print(f'ERROR CLICK LOG BUT \n{e}')
 
     try:
+        await asyncio.sleep(5.5)
         await click(driver, 30, '//*[@id="content"]/div[6]/div[1]/a')
         await click(driver, 30, '//*[@id="user-action-buttons"]/a[2]')
     except Exception as e:
