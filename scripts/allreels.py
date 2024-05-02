@@ -65,6 +65,7 @@ async def login(driver):
 
     try:
         await click(driver, 30, '//img[@alt="Bitpace"]')
+        await asyncio.sleep(3)
         await click(driver, 30, '//*[@id="walletDepositSubmit"]')
     except Exception as e:
         find_input_tag = await driver.find_element(By.XPATH, '//*[@id="login"]', timeout=10)
@@ -85,7 +86,7 @@ async def login(driver):
     await asyncio.sleep(1)
 
     try:
-        choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=60)
+        choose_tether = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/ul/li[6]/div[1]/div/span', timeout=90)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", choose_tether)
 
@@ -102,8 +103,6 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR PAY BUT \n{e}')
 
-    # input("press")
-
 
 async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
@@ -117,8 +116,9 @@ async def get_wallet():
             await asyncio.sleep(1)
             await copy_address.click()
 
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(3.5)
             address = pyperclip.paste()
+            print(address)
 
             await asyncio.sleep(3.5)
 
