@@ -1,5 +1,5 @@
 from flask import jsonify
-from seleniumwire import webdriver
+from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://www.masonhacks.xyz/product/albion-mason-radar'
+url = 'https://www.masonhacks.xyz/product/cheat-mason-caliber'
 user_email = "kiracase34@gmail.com"
 user_password = "Kiramira000"
 
@@ -22,8 +22,6 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
-    ext = paths[1].strip()
 
 options.binary_location = chrome_path
 # options.add_extension(ext)
@@ -61,7 +59,7 @@ def login(driver):
     actions = ActionChains(driver)
 
     try:
-        click(driver, 30, '//*[@id="select-option-99"]')
+        click(driver, 30, '//*[@id="select-option-77"]')
         sleep(1.5)
         driver.implicitly_wait(10)
         a_href = driver.find_element(By.XPATH, '/html/body/main/div[2]/div/div/div[2]/div/div/a').get_attribute('href')
@@ -70,13 +68,13 @@ def login(driver):
         print(f'ERROR LINK \n{e}')
 
     try:
-        click(driver, 30, '//*[@id="SelectedOption_1096254_msdd"]')
+        click(driver, 30, '//*[@id="SelectedOption_1096208_msdd"]')
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
         sleep(0.2)
 
-        click(driver, 30, '//*[@id="SelectedOption_1096255_msdd"]')
+        click(driver, 30, '//*[@id="SelectedOption_1096209_msdd"]')
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
@@ -87,14 +85,9 @@ def login(driver):
         print(f'ERROR DATA \n{e}')
 
     try:
+        click(driver, 30, '//*[@id="selectLabel_msdd"]')
         driver.implicitly_wait(20)
-        choose_click = driver.find_element(By.XPATH, '//*[@id="TypeCurr_msdd"]')
-        sleep(1.5)
-        choose_click.click()
-
-        driver.implicitly_wait(20)
-        choose_trc20 = driver.find_element(By.XPATH, '//span[@class="ddlabel" and text()="USDT"]')
-        sleep(1.5)
+        choose_trc20 = driver.find_element(By.XPATH, '//*[@id="selectLabel_child"]/ul/li[12]/span')
         choose_trc20.click()
     except Exception as e:
         print(f'ERROR CHOOSE TRC20 \n{e}')
@@ -107,10 +100,8 @@ def login(driver):
         print(f'ERROR PLACE ORDER \n{e}')
 
 
-
-
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         log = login(driver)
         if log:
             return log
@@ -118,10 +109,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(60)
-            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/div/div[1]/div/span').text
+            address = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[7]/div[2]').text
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/p/span').text
+            amount = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[5]/span').text
 
             return {
                 "address": address,
