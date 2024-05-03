@@ -64,8 +64,8 @@ async def login(driver):
     await driver.get('https://raceoption.com/trading/deposit')
 
     try:
-        await click(driver, 30, '/html/body/app-root/app-account-funding/div/div/app-deposit-methods/div[2]/div[3]')
-        await click(driver, 30, '//*[@id="app-scroll"]/ul/li[3]')
+        await click(driver, 30, '//div[@class="pay-method ng-star-inserted" and contains(text(), "Криптовалюты")]')
+        await click(driver, 30, '//li[@class="crypto-list-item ng-star-inserted" and contains(text(), "Tether (USDT) TRC-20")]')
         await click(driver, 30, '/html/body/app-root/app-account-funding/div/div/app-deposit-amount/ul/li[1]/button')
     except Exception as e:
         print(f'ERORR CLICK \n{e}')
