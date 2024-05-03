@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
@@ -27,7 +26,7 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-options.binary_location = chrome_path
+# options.binary_location = chrome_path
 options.add_extension(ext)
 
 proxy_address = "196.19.121.187"
