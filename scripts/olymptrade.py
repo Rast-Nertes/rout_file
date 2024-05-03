@@ -110,7 +110,11 @@ async def login(driver):
         await click(driver, 30, '//*[@id="page-container"]/div/div[7]/div[2]/div/div[2]/div/div/div[2]/div[2]/button[8]')
         await click(driver, 30, '//*[@id="page-container"]/div/div[7]/div[2]/div/div[2]/div/div/div[2]/div[5]/button/div/div/div/div')
     except Exception as e:
-        print(f'ERROR DEPOS MIN AMOUNT \n{e}')
+        find_input_tag = await driver.find_element(By.XPATH, '//input[@name="email"]', timeout=10)
+        if find_input_tag:
+            return {"status": "0", "ext": "Login error. Check script."}
+        else:
+            print(f'ERROR DEPOS MIN AMOUNT \n{e}')
 
     try:
         await click(driver, 30, '//*[@id="page-container"]/div/div[7]/div[2]/div/div[2]/div/div/div[3]/button/div/div/div/div')
