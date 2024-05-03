@@ -62,13 +62,21 @@ async def login(driver):
 
     await asyncio.sleep(2.5)
     await driver.get('https://raceoption.com/trading/deposit')
-
+    await asyncio.sleep(3.5)
+    
     try:
         await click(driver, 30, '//div[@class="pay-method ng-star-inserted" and contains(text(), "Криптовалюты")]')
+    except Exception as e:
+        print(f'ERROR CHOOSE CRYPTOPAY \n{e}')
+        return "ERROR CLICK"
+    
+    try:
+        await asyncio.sleep(1)
         await click(driver, 30, '//li[@class="crypto-list-item ng-star-inserted" and contains(text(), "Tether (USDT) TRC-20")]')
+        await asyncio.sleep(1)
         await click(driver, 30, '/html/body/app-root/app-account-funding/div/div/app-deposit-amount/ul/li[1]/button')
     except Exception as e:
-        print(f'ERORR CLICK \n{e}')
+        print(f'ERORR CLICKs \n{e}')
 
 
 async def get_wallet():
