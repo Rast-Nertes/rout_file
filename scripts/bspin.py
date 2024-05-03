@@ -85,11 +85,9 @@ def login(driver):
         driver.switch_to.window(handle)
         title = driver.title
         if ("коин" in title) or ("bspin" in title):
-            if "bspin" in title:
-                driver.refresh()
-                break
+            break
 
-    sleep(4.5)
+    sleep(3.5)
     try:
         input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[1]/input', user_email)
         input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[2]/input', user_password)
