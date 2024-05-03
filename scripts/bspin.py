@@ -89,6 +89,7 @@ def login(driver):
                 driver.refresh()
                 break
 
+    sleep(4.5)
     try:
         input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[1]/input', user_email)
         input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[2]/input', user_password)
@@ -137,6 +138,7 @@ def login(driver):
 
     try:
         click(driver, 30, '//*[@id="desktop-header-container"]/div/div/div/div[2]/div')
+        sleep(1.5)
         click(driver, 30, '//*[@id="desktop-header-container"]/div/div/div/div[2]/div[2]/div[2]')
     except Exception as e:
         print(f'ERROR CLICK \n{e}')
