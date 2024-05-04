@@ -106,14 +106,14 @@ def get_wallet():
             print(f"CHOOSE CRYPTO ERROR \n{e}")
 
         try:
-            continue_to_pay = WebDriverWait(driver, 10).until(
+            continue_to_pay = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '//div[@class="primary-btn-mini handleToPay"]'))
             )
             continue_to_pay.click()
         except Exception as e:
             print(f"CONTINUE ERROR \n{e}")
 
-        sleep(5)
+        sleep(7.5)
         new_window = driver.window_handles[1]
         driver.switch_to.window(new_window)
 
