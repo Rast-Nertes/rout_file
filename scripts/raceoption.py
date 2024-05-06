@@ -28,10 +28,10 @@ with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
     api_key = paths[3].strip()
-    ext = paths[1].strip()
+    ext = paths[4].strip()
 
 options.binary_location = chrome_path
-# options.add_extension(ext)
+options.add_extension(ext)
 
 
 async def click(driver, time, XPATH):
@@ -55,7 +55,9 @@ async def login(driver):
 
     try:
         await input_data(driver, 30, '//*[@id="email"]', user_email)
+        await asyncio.sleep(3.5)
         await input_data(driver, 30, '//*[@id="pass"]', user_password)
+        await asyncio.sleep(3.5)
         await click(driver, 30, '/html/body/div[1]/main/section/div/div/div/div[2]/div[2]/form/div[3]/div[2]/button')
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
@@ -63,13 +65,13 @@ async def login(driver):
     await asyncio.sleep(2.5)
     await driver.get('https://raceoption.com/trading/deposit')
     await asyncio.sleep(3.5)
-    
+
     try:
         await click(driver, 30, '//div[@class="pay-method ng-star-inserted" and contains(text(), "Криптовалюты")]')
     except Exception as e:
         print(f'ERROR CHOOSE CRYPTOPAY \n{e}')
         return "ERROR CLICK"
-    
+
     try:
         await asyncio.sleep(1)
         await click(driver, 30, '//li[@class="crypto-list-item ng-star-inserted" and contains(text(), "Tether (USDT) TRC-20")]')
