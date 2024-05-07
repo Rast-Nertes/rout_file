@@ -82,6 +82,7 @@ async def login(driver):
 
     await api_connect()
 
+    await asyncio.sleep(2.5)
     await driver.get(url, timeout=60)
     await asyncio.sleep(2.5)
     await driver.refresh()
