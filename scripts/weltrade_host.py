@@ -84,6 +84,10 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
+
+    await api_connect()
+
+    await asyncio.sleep(1.5)
     await driver.get(url, timeout=60)
 
     try:
