@@ -25,8 +25,8 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-options.binary_location = chrome_path
-# options.add_extension(ext)
+# options.binary_location = chrome_path
+options.add_extension(ext)
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -55,9 +55,39 @@ def input_data(driver, time, XPATH, data):
     elem_input.send_keys(data)
 
 
+def api_connect(driver):
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        print(driver.title)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+        click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        print(driver.title)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
 def login(driver):
-    driver.get(url)
+    api_connect(driver)
     driver.maximize_window()
+    driver.get(url)
     actions = ActionChains(driver)
 
     try:
