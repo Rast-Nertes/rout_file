@@ -23,10 +23,8 @@ options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
     paths = file.readlines()
-    chrome_path = paths[0].strip()
-    api_anti = paths[2].strip()
-    api_key_solver = paths[5].strip()
-    ext = paths[4].strip()
+    api_key = paths[3].strip()
+    ext = paths[1].strip()
 
 # options.binary_location = chrome_path
 options.add_extension(ext)
@@ -58,39 +56,37 @@ def input_data(driver, time, XPATH, data):
     elem_input.send_keys(data)
 
 
-def api_connect():
-    sleep(0.4)
-    pyautogui.moveTo(1730, 75)
-    pyautogui.click()
+def api_connect(driver):
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        print(driver.title)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
 
-    sleep(1)
+    try:
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+        click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
 
-    for _ in range(2):
-        pyautogui.press('down')
-        sleep(0.15)
-    pyautogui.press('enter')
-
-    sleep(1.5)
-
-    for _ in range(4):
-        pyautogui.press('tab')
-        sleep(0.15)
-
-    sleep(2.5)
-    pyautogui.typewrite("CAP-3ED09723412F61BCD677E166EC9189AC", 0.075)
-    sleep(3)
-
-    pyautogui.moveTo(1540, 500)
-    # input("Press")
-    pyautogui.click()
-    sleep(2)
-    pyautogui.moveTo(1730, 75)
-    pyautogui.click()
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        print(driver.title)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
 
 
 def login(driver):
     driver.maximize_window()
-    api_connect()
+    api_connect(driver)
     sleep(2.5)
     driver.get(url)
     sleep(1.5)
@@ -104,7 +100,7 @@ def login(driver):
     try:
         while True:
             driver.implicitly_wait(10)
-            find_check = driver.find_element(By.XPATH, '//*[@id="capsolver-solver-tip-button"]/div[2]').text
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
             if "ена" in find_check:
                 click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
                 break
