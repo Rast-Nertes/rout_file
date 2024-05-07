@@ -83,6 +83,8 @@ async def login(driver):
     await api_connect()
 
     await driver.get(url, timeout=60)
+    await asyncio.sleep(2.5)
+    await driver.refresh()
 
     try:
         await input_data(driver, 30, '//*[@id="email"]', user_email)
@@ -93,10 +95,25 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
 
+    await asyncio.sleep(3.5)
+
+    try:
+        find_input = await driver.find_element(By.XPATH, '//*[@id="email"]', timeout=20)
+        if find_input:
+            await input_data(driver, 30, '//*[@id="email"]', user_email)
+            await asyncio.sleep(3.5)
+            await input_data(driver, 30, '//*[@id="pass"]', user_password)
+            await asyncio.sleep(3.5)
+            await click(driver, 30, '/html/body/div[1]/main/section/div/div/div/div[2]/div[2]/form/div[3]/div[2]/button')
+    except Exception as e:
+        pass
+
     await asyncio.sleep(2.5)
     await driver.get('https://raceoption.com/trading/deposit')
     await asyncio.sleep(3.5)
+    await driver.refresh()
 
+    await asyncio.sleep(2.5)
     try:
         await click(driver, 30, '//div[@class="pay-method ng-star-inserted" and contains(text(), "Криптовалюты")]')
     except Exception as e:
