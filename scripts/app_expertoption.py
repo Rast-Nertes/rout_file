@@ -59,7 +59,6 @@ def api_connect(driver):
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
-        print(driver.title)
         sleep(1.5)
         if "2Cap" in driver.title:
             break
@@ -67,7 +66,7 @@ def api_connect(driver):
     try:
         input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
         click(driver, 30, '//*[@id="connect"]')
-        sleep(4.5)
+        sleep(3.5)
         driver.switch_to.alert.accept()
         click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
         click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
@@ -78,7 +77,6 @@ def api_connect(driver):
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
-        print(driver.title)
         sleep(1.5)
         if not("2Cap" in driver.title):
             break
@@ -88,30 +86,30 @@ def login(driver):
     api_connect(driver)
     driver.maximize_window()
     driver.get(url)
-    actions = ActionChains(driver)
 
     try:
-        click(driver, 30, '//*[@id="app"]/div/div/div/div/div/div[1]/div[4]/div[1]/div[3]/div[2]')
+        click(driver, 60, '//*[@id="app"]/div/div/div/div/div/div[1]/div[4]/div[1]/div[3]/div[2]')
         input_data(driver, 30, '//input[@placeholder="Email"]', user_email)
         input_data(driver, 30, '//input[@placeholder="Пароль"]', user_password)
         click(driver, 30, '//div[@data-testid="at_login_button"]')
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
+        return {"status": "0", "ext": f"Login error \n{e}"}
 
     try:
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(60)
         get_href = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div/div[1]/div[5]/div[2]/div[1]/div/div/div/div[1]/div[2]/div[2]/div[2]/div/div/div/div[1]/div/div/div[2]/iframe').get_attribute('src')
         driver.get(get_href)
     except Exception as e:
-        print(f'ERROR GET SRC \n{e}')
+        return {"status": "0", "ext": f"GET SRC \n{e}"}
 
     try:
-        click(driver, 30, '//*[@id="root"]/div/div/div[1]/div/div[2]/div/button[6]')
+        click(driver, 60, '//*[@id="root"]/div/div/div[1]/div/div[2]/div/button[6]')
         click(driver, 30, '//*[@id="root"]/div/div/div[1]/div[1]/div[8]/button')
         click(driver, 30, '//*[@id="root"]/div/div/div[1]/div[6]/div/div/button')
         click(driver, 30, '//*[@id="root"]/div/div/div[1]/div/div[2]/div/button')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO \n{e}')
+        return {"status": "0", "ext": f"CHOOSE CRYPTO \n{e}"}
 
 
 def get_wallet():
