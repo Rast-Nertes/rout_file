@@ -53,9 +53,9 @@ async def api_connect():
         pyautogui.press('tab')
         await asyncio.sleep(0.15)
 
-    await asyncio.sleep(1.5)
-    pyautogui.typewrite(api_key_solver, 0.1)
     await asyncio.sleep(3.5)
+    pyautogui.typewrite(api_key_solver, 0.1)
+    await asyncio.sleep(1.5)
 
     pyautogui.moveTo(1730, 15)
     pyautogui.click()
