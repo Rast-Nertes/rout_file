@@ -1,4 +1,5 @@
 import asyncio
+import pyautogui
 from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
@@ -28,17 +29,45 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[2].strip()
+    api_anti = paths[2].strip()
+    api_key_solver = paths[5].strip()
     ext = paths[4].strip()
 
 options.binary_location = chrome_path
 options.add_extension(ext)
 
 
+async def api_connect():
+    await asyncio.sleep(0.4)
+    pyautogui.moveTo(1730, 75)
+    pyautogui.click()
+
+    await asyncio.sleep(1)
+
+    for _ in range(2):
+        pyautogui.press('down')
+        await asyncio.sleep(0.15)
+    pyautogui.press('enter')
+
+    await asyncio.sleep(1.5)
+
+    for _ in range(4):
+        pyautogui.press('tab')
+        await asyncio.sleep(0.15)
+
+    # await asyncio.sleep(1)
+    pyautogui.typewrite(api_key_solver, 0.05)
+    await asyncio.sleep(1)
+
+    pyautogui.moveTo(1730, 15)
+    pyautogui.click()
+    await asyncio.sleep(2)
+
+
 def captcha_solver():
     solver = imagecaptcha()
     solver.set_verbose(1)
-    solver.set_key(api_key)
+    solver.set_key(api_anti)
 
     captcha_text = solver.solve_and_return_solution("captcha.png")
     time.sleep(1)
@@ -74,6 +103,8 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
+
+    connect = await api_connect()
     await driver.get(url, timeout=60)
 
     try:
@@ -90,7 +121,6 @@ async def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
-        await asyncio.sleep(5.4)
         find_frame = await driver.find_element(By.XPATH, '//iframe[@title="текущую проверку reCAPTCHA можно пройти в течение ещё двух минут"]', timeout=10)
         await asyncio.sleep(0.6)
         iframe_doc = await find_frame.content_document
