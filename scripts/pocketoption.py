@@ -1,5 +1,5 @@
 import asyncio
-import pyperclip
+import pyautogui
 from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
@@ -27,11 +27,39 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
+    api_anti = paths[2].strip()
+    api_key_solver = paths[5].strip()
     ext = paths[4].strip()
 
 options.binary_location = chrome_path
 options.add_extension(ext)
+
+
+async def api_connect():
+    await asyncio.sleep(0.4)
+    pyautogui.moveTo(1730, 75)
+    pyautogui.click()
+
+    await asyncio.sleep(1)
+
+    for _ in range(2):
+        pyautogui.press('down')
+        await asyncio.sleep(0.15)
+    pyautogui.press('enter')
+
+    await asyncio.sleep(1.5)
+
+    for _ in range(4):
+        pyautogui.press('tab')
+        await asyncio.sleep(0.15)
+
+    await asyncio.sleep(1.5)
+    pyautogui.typewrite(api_key_solver, 0.05)
+    await asyncio.sleep(3.5)
+
+    pyautogui.moveTo(1730, 15)
+    pyautogui.click()
+    await asyncio.sleep(2)
 
 
 async def click(driver, time, XPATH):
@@ -51,10 +79,13 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
+
+    await api_connect()
+
     await driver.get(url, timeout=60)
 
     try:
-        await asyncio.sleep(5.4)
+        await asyncio.sleep(1.4)
         find_frame = await driver.find_element(By.XPATH, '//iframe[@title="текущую проверку reCAPTCHA можно пройти в течение ещё двух минут"]', timeout=10)
         await asyncio.sleep(0.6)
         iframe_doc = await find_frame.content_document
@@ -105,7 +136,7 @@ async def get_wallet():
             address = await address_elem.text
 
             return {
-                "address": address.replace(' ', ''),
+                "address": address.replace('\n', '').replace(" ", ''),
                 "amount": amount.replace("USDT", '').replace("\n", '').replace(" ", ''),
                 "currency": "usdt"
             }
