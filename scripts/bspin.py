@@ -78,7 +78,6 @@ def api_connect(driver):
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
-        print(driver.title)
         sleep(1.5)
         if not("2Cap" in driver.title):
             break
@@ -98,6 +97,7 @@ def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
+        time_loop = 0
         while True:
             driver.implicitly_wait(10)
             find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
@@ -105,6 +105,9 @@ def login(driver):
                 click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
                 break
             else:
+                if time_loop > 150:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
                 sleep(5)
                 print("Wait 5 seconds, captcha solving...")
     except Exception as e:
