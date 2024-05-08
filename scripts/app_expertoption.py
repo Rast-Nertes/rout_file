@@ -89,8 +89,8 @@ def login(driver):
 
     try:
         click(driver, 90, '//div[@data-testid="at_login_tab"]')
-        input_data(driver, 90, '//input[@placeholder="Email"]', user_email)
-        input_data(driver, 60, '//input[@placeholder="Пароль"]', user_password)
+        input_data(driver, 90, '//*[@id="app"]/div/div/div/div/div/div[1]/div[5]/div[2]/div[1]/div/div/div/div[1]/div[2]/div[2]/div[2]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[1]/div[1]/div/input', user_email)
+        input_data(driver, 60, '//*[@id="app"]/div/div/div/div/div/div[1]/div[5]/div[2]/div[1]/div/div/div/div[1]/div[2]/div[2]/div[2]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[1]/div[3]/div/input', user_password)
         click(driver, 30, '//div[@data-testid="at_login_button"]')
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
