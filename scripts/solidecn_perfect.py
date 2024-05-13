@@ -171,7 +171,7 @@ def login(driver):
         return {"status": "0", "ext": f"DEPOS BUT \n{e}"}
 
     try:
-        click(driver, 30, '//*[@id="r_crypto"]')
+        click(driver, 80, '//*[@id="r_crypto"]')
         click(driver, 30, '//input[@name="action"]')
     except Exception as e:
         return {"status":"0", "ext":f"ERROR CHOOSE CRYPTO \n{e} "}
@@ -208,7 +208,7 @@ def login(driver):
         pass
 
     try:
-        click(driver, 30, '//label[@for="USDTTRC"]')
+        click(driver, 60, '//label[@for="USDTTRC"]')
         click(driver, 30, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/form/table[2]/tbody/tr[2]/td[1]/input')
     except Exception as e:
         return {"status": "0", "ext": f"ERROR MAKE PAYMENT \n{e}"}
