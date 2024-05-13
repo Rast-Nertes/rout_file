@@ -1,6 +1,5 @@
-import pyautogui
 from flask import jsonify
-from seleniumwire import webdriver
+from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -13,7 +12,6 @@ url = 'https://instantplayusd.casinomidas.com:3072/lobby?skinid=1&downloadid=134
 user_email = "rwork8755"
 user_password = "123kaHq72j"
 
-#123kaHq72j
 # CHROME CONSTANS
 
 options = webdriver.ChromeOptions()
@@ -27,18 +25,11 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-# options.add_extension(ext)
-# options.binary_location = chrome_path
-
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
-#
-# proxy_address = "196.19.121.187"
-# proxy_login = 'WyS1nY'
-# proxy_password = '8suHN9'
-# proxy_port = 8000
+
 
 proxy_options = {
     "proxy":{
@@ -46,34 +37,6 @@ proxy_options = {
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
-
-
-def api_connect(driver):
-    sleep(1.5)
-    windows = driver.window_handles
-    for win in windows:
-        driver.switch_to.window(win)
-        sleep(1.5)
-        if "2Cap" in driver.title:
-            break
-
-    try:
-        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
-        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
-        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
-        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
-        click(driver, 30, '//*[@id="connect"]')
-        sleep(4.5)
-        driver.switch_to.alert.accept()
-    except Exception as e:
-        print(f'ERROR CLICK \n{e}')
-
-    windows = driver.window_handles
-    for win in windows:
-        driver.switch_to.window(win)
-        sleep(1.5)
-        if not("2Cap" in driver.title):
-            break
 
 
 def click(driver, time, XPATH):
@@ -100,7 +63,6 @@ def input_data(driver, time, XPATH, data):
 def login(driver):
     actions = ActionChains(driver)
     driver.maximize_window()
-    # api_connect(driver)
     driver.get(url)
 
     try:
@@ -111,24 +73,11 @@ def login(driver):
     except Exception as e:
         return {"status": "0", "ext": f"Login error \n{e}"}
 
-    # sleep(4.5)
-    #
-    # current_url = driver.current_url
-    # print(current_url)
-    #
     try:
         click(driver, 30, '//*[@id="mainViewCashierBtn"]')
     except Exception as e:
         return {"status": "0", "ext": f"DEPOS BUT \n{e}"}
 
-    # windows = driver.window_handles
-    # for win in windows:
-    #     driver.switch_to.window(win)
-    #     urls = driver.current_url
-    #     print(urls)
-    #     sleep(1.5)
-    #     if current_url != urls:
-    #         break
     sleep(3.5)
     driver.get('https://securentplayusd.casinomidas.com:2100/midusd/Mobile.WebSite/Handlers/Router.ashx?route=CashierHome&skinId=1#/cashier')
 
@@ -142,7 +91,7 @@ def login(driver):
         driver.switch_to.frame(find_frame)
         click(driver, 30, '//*[@id="depositoptions"]/div[7]/a[2]')
     except Exception as e:
-        print(f'ERROR CLICK USDT \n{e}')
+        return {"status": "0", "ext": f"ERROR FIND FRAME \n{e}"}
 
     try:
         click(driver, 80, '//*[@id="CryptoNetwork"]')
@@ -154,11 +103,11 @@ def login(driver):
         input_data(driver, 30, '//*[@id="chargeamount"]', "1")
         click(driver, 30, '//*[@id="SubmitBtn"]')
     except Exception as e:
-        print(f'ERROR INPUT AMOUNT \n{e}')
+        return {"status": "0", "ext": f"ERROR INPUT MIN AMOUNT \n{e}"}
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         log = login(driver)
         if log:
             return log
@@ -179,7 +128,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"ERROR DATA \n{e}"}
 
 
 def wallet():
