@@ -108,7 +108,7 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await input_data(driver, 30, '//*[@id="email"]', user_email)
+        await input_data(driver, 80, '//*[@id="email"]', user_email)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
     except Exception as e:
         print(f'ERROR INPUT DATA \n{e}')
@@ -118,7 +118,7 @@ async def login(driver):
     try:
         await click(driver, 30, '//*[@id="sign-in"]')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status": "0", "ext": f"Login error \n{e}"}
 
     try:
         find_frame = await driver.find_element(By.XPATH, '//iframe[@title="текущую проверку reCAPTCHA можно пройти в течение ещё двух минут"]', timeout=10)
@@ -148,15 +148,11 @@ async def login(driver):
 
 
     try:
-        choose_crypto = await driver.find_element(By.XPATH, '//*[@id="ps-Perfect Money"]', timeout=20)
+        choose_crypto = await driver.find_element(By.XPATH, '//*[@id="ps-Perfect Money"]', timeout=50)
         await asyncio.sleep(1.5)
         await driver.execute_script("arguments[0].click();", choose_crypto)
     except Exception as e:
-        find_input_tag = await driver.find_element(By.XPATH, '//*[@id="email"]', timeout=10)
-        if find_input_tag:
-            return {"status": "0", "ext": "Login error. Check script."}
-        else:
-            print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status": "0", "ext": f"ERROR CHOOSE PERFECT \n{e}"}
 
     try:
         await input_data(driver, 30, '//*[@id="amount"]', '10')
@@ -167,13 +163,13 @@ async def login(driver):
 
         await js_click(driver, 30, '//*[@id="deposit-confirm-btn"]')
     except Exception as e:
-        print(f"ERROR INPUT AMOUNT \n{e}")
+        return {"status": "0", "ext": f"ERROR INPUT MIN AMOUNT \n{e}"}
 
     try:
         await click(driver, 30, '//*[@id="r_crypto"]')
         await click(driver, 30, '//input[@name="action"]')
     except Exception as e:
-        print(f'ERROR LOGIN PERFECT \n{e}')
+        return {"status": "0", "ext": f"ERROR PERFECT LOGIN \n{e}"}
 
     try:
         while True:
@@ -186,7 +182,7 @@ async def login(driver):
             await asyncio.sleep(2.5)
 
             try:
-                await input_data(driver, 30, '//input[@name="Login"]', perfect_id)
+                await input_data(driver, 60, '//input[@name="Login"]', perfect_id)
                 await input_data(driver, 30, '//*[@id="keyboardInputInitiator0"]', perfect_pass)
             except Exception as e:
                 print(f'ERROR CLICK \n{e}')
