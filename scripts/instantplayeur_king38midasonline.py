@@ -66,6 +66,7 @@ def login(driver):
     driver.get(url)
 
     try:
+        sleep(4.5)
         js_click(driver, 80, '//*[@id="mainViewLoginBtn"]')
         input_data(driver, 30, '//*[@id="loginFormloginFld"]', user_email)
         input_data(driver, 30, '//*[@id="loginFormPasswordFld"]', user_password)
