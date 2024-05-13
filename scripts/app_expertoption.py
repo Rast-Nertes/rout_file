@@ -41,6 +41,13 @@ proxy_options = {
 }
 
 
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
@@ -56,6 +63,7 @@ def input_data(driver, time, XPATH, data):
 
 
 def api_connect(driver):
+    sleep(1.5)
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
@@ -64,13 +72,13 @@ def api_connect(driver):
             break
 
     try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
         input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
         click(driver, 30, '//*[@id="connect"]')
-        sleep(5.5)
+        sleep(4.5)
         driver.switch_to.alert.accept()
-        click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
-        click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
-        click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
     except Exception as e:
         print(f'ERROR CLICK \n{e}')
 

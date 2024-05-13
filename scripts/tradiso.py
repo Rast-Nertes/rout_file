@@ -1,5 +1,4 @@
 import pyautogui
-import pyperclip
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
@@ -10,9 +9,9 @@ from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://metaspins.com/#sign-in'
-user_email = "kiracase34@gmail.com"
-user_password = "Pxs6*FW9s.M2jy!"
+url = 'https://my.tradiso.com/en/login'
+user_email = "kejokan542@haislot.com"
+user_password = "Qwerty17."
 
 # CHROME CONSTANS
 
@@ -28,7 +27,6 @@ with open('config.txt') as file:
     ext = paths[1].strip()
 
 options.add_extension(ext)
-# options.binary_location = chrome_path
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -58,15 +56,19 @@ def api_connect(driver):
             break
 
     try:
-        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
-        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 60, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 60, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
         js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    try:
         input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
         click(driver, 30, '//*[@id="connect"]')
         sleep(4.5)
         driver.switch_to.alert.accept()
     except Exception as e:
-        print(f'ERROR CLICK \n{e}')
+        print(f'ERROR INPUT API KEY \n{e}')
 
     windows = driver.window_handles
     for win in windows:
@@ -104,40 +106,17 @@ def login(driver):
     driver.get(url)
 
     try:
-        input_data(driver, 30, '//input[@data-testid="input-email-login"]', user_email)
-        sleep(0.5)
-        input_data(driver, 30, '//input[@data-testid="input-password-login"]', user_password)
-        sleep(0.5)
+        input_data(driver, 65, '//*[@id="mat-input-0"]', user_email)
+        input_data(driver, 30, '//*[@id="mat-input-1"]', user_password)
+        click(driver, 30, '/html/body/app-root/div/app-external-layout/div/div/main/app-login/app-default-login/app-wizard/app-view/app-auth-card/div/app-auth-card-content/app-form/form/div[1]/button')
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
+        return {"status": "0", "ext": f"Login error \n{e}"}
 
     try:
-        time_loop = 0
-        while True:
-            driver.implicitly_wait(15)
-            find_check = driver.find_element(By.XPATH, '//*[@id="signin-recaptcha"]/div/div[2]/div[2]').text
-            if ("ена" in find_check) or ("lve" in find_check):
-                sleep(2.5)
-                click(driver, 30, '//button[@data-testid="final-login-button"]')
-                print("Complete")
-                break
-            else:
-                if time_loop > 120:
-                    return {"status": "0", "ext": "CAPTCHA ERROR"}
-                time_loop += 5
-                sleep(5)
-                print("Wait 5 seconds, captcha solving...")
+        click(driver, 50, '//button[@title="Funds"]')
+        js_click(driver, 30, '//a[@title="Deposit"]')
     except Exception as e:
-        print(f'ERROR CHECKBOX \n{e}')
-
-    sleep(6.5)
-    driver.get('https://metaspins.com/casino#deposit')
-
-    try:
-        click(driver, 30, '//*[@id="modal"]/div/div/div/div[2]/div[1]/div[2]/div/div[1]')
-        click(driver, 30, '//*[@id="modal"]/div/div/div/div[2]/div[1]/div[2]/div/div[2]/p')
-    except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status": "0", "ext": f"DEPOS BUT ERROR \n{e}"}
 
 
 def get_wallet():
@@ -146,20 +125,28 @@ def get_wallet():
         if log:
             return log
 
-        sleep(1.5)
-        try:
-            click(driver, 30, '//button[@data-testid="currency-address"]')
-            sleep(2.5)
-            address = pyperclip.paste()
-            # input("press")
+        depos_amount = "100"
 
+        try:
+            click(driver, 30, '//img[@alt="usdt-trx"]')
+            sleep(2.5)
+            input_data(driver, 30,
+                       '/html/body/app-root/div/app-internal-layout/app-full-layout/mat-sidenav-container/mat-sidenav-content/div/main/div[2]/app-conversion/app-payment-wrapper/app-conversion-page/div/app-payment/app-form/form/div/section[4]/app-currency-exchange/div/app-currency-exchange-common/div[2]/form/div[1]/div[1]/div[2]/input',
+                       depos_amount)
+            click(driver, 30,
+                  '/html/body/app-root/div/app-internal-layout/app-full-layout/mat-sidenav-container/mat-sidenav-content/div/main/div[2]/app-conversion/app-payment-wrapper/app-conversion-page/div/app-payment/app-form/form/div/section[6]/button')
+        except Exception as e:
+            return {"status": "0", "ext": f"ERROR CHOOSE TRC OR INPUT AMOUNT \n{e}"}
+
+        sleep(4.5)
+        try:
             driver.implicitly_wait(30)
-            amount_elem = driver.find_element(By.XPATH, '//*[@id="modal"]/div/div/div/div[2]/div[2]/p[1]')
-            amount = amount_elem.text.replace("USDT", '').replace("(5 USD)", '').replace("", '').replace(" ", '')
+            address_elem = driver.find_element(By.XPATH, '/html/body/app-root/div/app-internal-layout/app-full-layout/mat-sidenav-container/mat-sidenav-content/div/main/div[2]/app-conversion/app-payment-wrapper/app-conversion-page/div/app-payment-qr/mat-card/mat-card-content/div/div[2]/div[2]/span')
+            address = address_elem.text
 
             return {
                 "address": address,
-                "amount": amount[-1],
+                "amount": depos_amount,
                 "currency": "usdt"
             }
         except Exception as e:

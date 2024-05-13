@@ -206,7 +206,7 @@ async def login(driver):
 
     try:
         await click(driver, 30, '//label[@for="USDTTRC"]')
-        await click(driver, 30, '//input[@value="Сделать платеж"]')
+        await click(driver, 30, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/form/table[2]/tbody/tr[2]/td[1]/input')
     except Exception as e:
         print(f'ERROR MAKE PAYMENT \n{e}')
 
