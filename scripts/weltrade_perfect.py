@@ -107,6 +107,7 @@ async def login(driver):
     connect = await api_connect()
     await driver.get(url, timeout=60)
 
+    await asyncio.sleep(3.5)
     try:
         await input_data(driver, 80, '//*[@id="email"]', user_email)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
@@ -138,7 +139,14 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR CHECKBOX \n{e}')
 
-    await asyncio.sleep(2.5)
+    try:
+        await input_data(driver, 10, '//*[@id="email"]', user_email)
+        await input_data(driver, 30, '//*[@id="password"]', user_password)
+        await click(driver, 30, '//*[@id="sign-in"]')
+    except Exception as e:
+        print('next step')
+
+    await asyncio.sleep(6.5)
     await driver.get('https://secure.weltrade.com/cashbox/operations/deposit')
 
     try:
