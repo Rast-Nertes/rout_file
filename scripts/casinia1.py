@@ -152,13 +152,13 @@ def login(driver):
         sleep(4.5)
         driver.execute_script("document.querySelector('#widget').shadowRoot.querySelector('button[data-testid=\"expand-list-button\"]').click();")
     except Exception as e:
-        print(f"ERROR CLICK \n{e}")
+        return {"status": "0", "ext":f"error see al but \n{e}"}
 
     try:
         sleep(5.5)
         driver.execute_script("document.querySelector('#widget').shadowRoot.querySelector('img[alt=\"USDTTRONTRC20\"]').click();")
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status": "0", "ext": f"choose trc20 \n{e}"}
 
 
 def get_wallet():
@@ -182,7 +182,7 @@ def get_wallet():
 
             driver.get(find_src)
         except Exception as e:
-            print(f'ERROR SHADOW ELEMENT \n{e}')
+            return {"status": "0", "ext": f"find src error /n{e}"}
 
         try:
             driver.implicitly_wait(30)
