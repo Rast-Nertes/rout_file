@@ -1,4 +1,6 @@
 import asyncio
+import pyautogui
+from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -86,11 +88,17 @@ async def get_wallet():
 
             try:
                 await asyncio.sleep(6.5)
+                # input("press")
                 await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
+            except Exception as e:
+                # return {"status": "0", "ext": f"amount error \n{e}"}
+                print(f"")
+            
+            try:
                 await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/button')
             except Exception as e:
-                return {"status": "0", "ext": f"amount error \n{e}"}
-
+                return {"status": "0", "ext": f"Depos click error \n{e}"}
+            
             await asyncio.sleep(5)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[3]/button/span[1]', timeout=30)
             address = await address_elem.text
