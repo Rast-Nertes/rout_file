@@ -1,3 +1,4 @@
+import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
@@ -47,7 +48,7 @@ def api_connect(driver):
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
-        sleep(1.5)
+        sleep(0.5)
         if "2Cap" in driver.title:
             break
 
@@ -67,7 +68,7 @@ def api_connect(driver):
     windows = driver.window_handles
     for win in windows:
         driver.switch_to.window(win)
-        sleep(1.5)
+        sleep(0.5)
         if not("2Cap" in driver.title):
             break
 
