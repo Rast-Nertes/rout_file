@@ -74,14 +74,24 @@ async def get_wallet():
         log = await login(driver)
         if log:
             return log
+
         try:
             await asyncio.sleep(3.5)
-            await click(driver, 30, '//*[@id="root"]/div/div[4]/div/div[2]/div[2]/div/button')
+
+            try:
+                await click(driver, 30, '//*[@id="root"]/div/div[4]/div/div[2]/div[2]/div/button')
+            except Exception as e:
+                return {"status": "0", "ext": f"depos but error \n{e}"}
+
             find_frame = await driver.find_element(By.XPATH, '//*[@id="billing-wrapper"]/iframe', timeout=20)
             await driver.switch_to.frame(find_frame)
-            await asyncio.sleep(4)
-            await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
-            await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/button')
+
+            try:
+                await asyncio.sleep(4)
+                await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
+                await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/button')
+            except Exception as e:
+                return {"status": "0", "ext": f"amount error \n{e}"}
 
             await asyncio.sleep(5)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[3]/button/span[1]', timeout=30)
@@ -96,7 +106,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"error data \n{e}"}
 
 
 def wallet():
