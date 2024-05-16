@@ -1,4 +1,3 @@
-import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
@@ -102,7 +101,7 @@ def login(driver):
 
     while True:
         try:
-            js_click(driver, 30, '//button[@data-testid="headerLoginBtnMobile"]')
+            js_click(driver, 80, '/html/body/stb-root/stb-base-layout/stb-header/header/div[2]/button[1]')
             input_data(driver, 30, '//*[@id="email"]', user_email)
             input_data(driver, 30, '//*[@id="current-password"]', user_password)
             click(driver, 30, '//button[@data-testid="btnLogin"]')
@@ -118,7 +117,7 @@ def login(driver):
                     print("skip")
                     break
                 else:
-                    if time_loop > 40:
+                    if time_loop > 80:
                         break
                     time_loop += 5
                     sleep(5)
