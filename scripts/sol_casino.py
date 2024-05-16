@@ -59,20 +59,17 @@ async def login(driver):
     await driver.get(url, timeout=90)
 
     try:
-        # await click(driver, 30, '//*[@id="user-top__login-link"]')
         await input_data(driver, 30, '//*[@id="email"]', user_email)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
         await click(driver, 30, '//*[@id="app"]/div[5]/div/div/div[1]/div/div/div/div/div[2]/form/div[1]/div[2]/button')
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
-        # return {"status": "0", "ext": f"error login \n{e}"}
+        return {"status": "0", "ext": f"error login \n{e}"}
 
     try:
         await click(driver, 30, '//*[@id="app"]/div[6]/div/div/div/div/div[1]/div[2]/div/div[3]/div/div/div[2]/div[6]')
         await click(driver, 30, '//*[@id="app"]/div[6]/div/div/div/div/div[1]/div[2]/div/div[4]/div/div[2]/div[3]')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
-        # return {"status": "0", "ext": f"error choose trc20 \n{e}"}
+        return {"status": "0", "ext": f"error choose trc20 \n{e}"}
 
 
 async def get_wallet():
@@ -95,7 +92,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"error login \n{e}"}
 
 
 def wallet():
