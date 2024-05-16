@@ -1,6 +1,4 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -56,7 +54,7 @@ async def input_data(driver, time, XPATH, data):
 async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
     await driver.get(url, timeout=60)
 
     try:
@@ -87,7 +85,7 @@ async def get_wallet():
             await driver.switch_to.frame(find_frame)
 
             try:
-                await asyncio.sleep(4)
+                await asyncio.sleep(6.5)
                 await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
                 await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/button')
             except Exception as e:
