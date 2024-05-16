@@ -102,7 +102,7 @@ def login(driver):
 
     while True:
         try:
-            js_click(driver, 30, '//button[@data-testid="headerLoginBtnMobile"]')
+            js_click(driver, 80, '//button[@data-testid="headerLoginBtnMobile"]')
             input_data(driver, 30, '//*[@id="email"]', user_email)
             input_data(driver, 30, '//*[@id="current-password"]', user_password)
             click(driver, 30, '//button[@data-testid="btnLogin"]')
