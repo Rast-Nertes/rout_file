@@ -67,7 +67,7 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="login-modal"]/div/div/div[2]/div/form/div[3]/input', user_password)
         await click(driver, 30, '//*[@id="login-modal"]/div/div/div[2]/div/form/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login \n{e}"}
 
     await asyncio.sleep(4.5)
     await driver.get('https://www.fatbossonline.com/de/deposit-modal/')
@@ -76,7 +76,7 @@ async def login(driver):
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/div/div/div[2]/span')
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/div/div/div[1]/div[7]')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 \n{e}"}
 
 
 async def get_wallet():
