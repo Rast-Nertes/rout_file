@@ -1,4 +1,6 @@
 import asyncio
+import pyautogui
+from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -58,21 +60,32 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
-        await asyncio.sleep(3.5)
-        await click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+        await js_click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+        await asyncio.sleep(2.5)
+        await js_click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
     except:
         pass
 
+    await asyncio.sleep(4.5)
+    
     try:
-        await asyncio.sleep(4.5)
         await js_click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div/button')
+    except Exception as e:
+        return {"status":'0', "ext":f"error log button \n{e}"}
+    
+    try:
         await input_data(driver, 30, '//*[@id="username"]', user_email)
         await input_data(driver, 30, '//*[@id="username-password"]', user_password)
+    except Exception as e:
+        return {"status": '0', "ext": f"error input log data \n{e}"}
+    
+    await asyncio.sleep(1.5)
+    
+    try:
         await click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div[2]/div/div/div/form/button')
     except Exception as e:
-        return {"status": "0", "ext":f"login error \n{e}"}
-
+        return {"status": '0', "ext": f"error login finish button \n{e}"}
+    
     await asyncio.sleep(5)
     await driver.get('https://betandyou.com/en/office/recharge')
 
