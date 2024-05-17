@@ -149,10 +149,10 @@ def login(driver):
             break
 
     try:
-        sleep(3.5)
+        sleep(4.5)
         js_click(driver, 70, '//button[@class="balance-info balance-info--m"]')
     except Exception as e:
-        print(f'ERROR CLICK DEPOS BUT \n{e}')
+        return {"status":"0", "ext":f"error depos but \n{e}"}
 
     sleep(8.5)
     driver.implicitly_wait(30)
