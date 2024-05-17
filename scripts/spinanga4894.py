@@ -1,11 +1,8 @@
-import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
-from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
@@ -103,7 +100,12 @@ def login(driver):
     api_connect(driver)
     driver.get(url)
 
+    attempt = 0
+
     while True:
+        if attempt > 3:
+            return {"error login. reload script"}
+
         try:
             click(driver, 60, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]')
             input_data(driver, 30, '//*[@id="email"]', user_email)
@@ -138,6 +140,7 @@ def login(driver):
 
                 click(driver, 10, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-request-failed-dialog/div/div/div[2]/button')
                 sleep(2.5)
+                attempt += 1
                 continue
             else:
                 print("Succesfull")
