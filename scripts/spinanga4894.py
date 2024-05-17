@@ -118,7 +118,7 @@ def login(driver):
             time_loop = 0
             while True:
                 driver.implicitly_wait(10)
-                find_check = driver.find_element(By.XPATH, '//button[@data-analytics-action="Balance"]').text
+                find_check = driver.find_element(By.XPATH, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-login-dialog/stb-login-options/stb-stepper/div/stb-login-state-form/stb-login-steps/stb-stepper/stb-login-form/div/div[2]').text
                 if ("ена" in find_check) or ("lve" in find_check):
                     print("skip")
                     break
@@ -149,7 +149,7 @@ def login(driver):
 
     try:
         sleep(2.5)
-        js_click(driver, 70, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]/span[2]')
+        js_click(driver, 70, '//button[@data-analytics-action="Balance"]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
 
