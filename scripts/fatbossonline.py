@@ -1,6 +1,4 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -61,7 +59,7 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await click(driver, 30, '//*[@id="side-menu"]/div/div[2]/div/span[2]/a')
+        await click(driver, 60, '//*[@id="side-menu"]/div/div[2]/div/span[2]/a')
         await asyncio.sleep(3.5)
         await input_data(driver, 60, '//*[@id="login-modal"]/div/div/div[2]/div/form/div[1]/input', user_email)
         await input_data(driver, 30, '//*[@id="login-modal"]/div/div/div[2]/div/form/div[3]/input', user_password)
@@ -73,7 +71,7 @@ async def login(driver):
     await driver.get('https://www.fatbossonline.com/de/deposit-modal/')
 
     try:
-        await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/div/div/div[2]/span')
+        await click(driver, 60, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/div/div/div[2]/span')
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/div/div/div[1]/div[7]')
     except Exception as e:
         return {"status":"0", "ext":f"error choose trc20 \n{e}"}
@@ -89,7 +87,7 @@ async def get_wallet():
         amount = await amount_elem.text
         print(amount)
 
-        await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[1]/button[1]')
+        await click(driver, 45, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[1]/button[1]')
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[3]/button')
 
         await asyncio.sleep(4.5)
@@ -97,6 +95,7 @@ async def get_wallet():
             find_frame = await driver.find_element(By.XPATH, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/iframe', timeout=20)
             await driver.switch_to.frame(find_frame)
 
+            await asyncio.sleep(3)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div/div/div[3]/img', timeout=30)
             src = await address_elem.get_attribute('src')
 
@@ -108,7 +107,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data \n{e}"}
 
 
 def wallet():
