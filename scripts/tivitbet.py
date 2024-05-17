@@ -83,23 +83,16 @@ async def get_wallet():
 
             await asyncio.sleep(5)
 
-            find_frame = await driver.find_element(By.XPATH, '//*[@id="billing-wrapper"]/iframe', timeout=20)
-            await driver.switch_to.frame(find_frame)
-
-            try:
-                await asyncio.sleep(3.5)
-                await js_click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
-            except Exception as e:
-                print(f"error choose min amount \n{e}")
-
-            try:
-                await click(driver, 30, '/html/body/div/div/div/div[3]/div[2]/div/button')
-            except Exception as e:
-                try:
-                    depos_but_click = await driver.find_element(By.CSS_SELECTOR, '#billing-widget-wrapper > div > div.flex.flex-col.gap-6 > div > div > button', timeout=10)
-                    await depos_but_click.click()
-                except Exception as e:
-                    return {"status": "0", "ext": f"error depos click \n{e}"}
+            find_frame = await driver.find_elements(By.XPATH, '//*[@id="billing-wrapper"]/iframe')
+            iframe_doc = await find_frame[0].content_document
+            
+            click_min_amoun = await iframe_doc.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]', timeout=10)
+            await asyncio.sleep(0.5)
+            await click_min_amoun.click()
+            
+            click_depos_but = await iframe_doc.find_element(By.XPATH, '/html/body/div/div/div/div[3]/div[2]/div/button')
+            await asyncio.sleep(0.5)
+            await click_depos_but.click()
 
             await asyncio.sleep(5)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[3]/button/span[1]', timeout=30)
