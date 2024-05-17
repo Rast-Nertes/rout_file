@@ -67,25 +67,25 @@ async def login(driver):
         pass
 
     await asyncio.sleep(4.5)
-    
+
     try:
         await js_click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div/button')
     except Exception as e:
         return {"status":'0', "ext":f"error log button \n{e}"}
-    
+
     try:
         await input_data(driver, 30, '//*[@id="username"]', user_email)
         await input_data(driver, 30, '//*[@id="username-password"]', user_password)
     except Exception as e:
         return {"status": '0', "ext": f"error input log data \n{e}"}
-    
+
     await asyncio.sleep(1.5)
-    
+
     try:
         await click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div[2]/div/div/div/form/button')
     except Exception as e:
         return {"status": '0', "ext": f"error login finish button \n{e}"}
-    
+
     await asyncio.sleep(5)
     await driver.get('https://betandyou.com/en/office/recharge')
 
@@ -104,7 +104,6 @@ async def login(driver):
         await click_confirm.click()
     except Exception as e:
         print(f'ERROR FRAME \n')
-        input("press")
 
 
 async def get_wallet():
