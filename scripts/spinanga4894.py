@@ -1,3 +1,4 @@
+import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
@@ -111,7 +112,7 @@ def login(driver):
         except Exception as e:
             print(f"ERROR LOGIN \n{e}")
             break
-            
+
         try:
             time_loop = 0
             while True:
@@ -170,7 +171,7 @@ def get_wallet():
             return log
 
         try:
-            sleep(2.5)
+            sleep(8.5)
             shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
 
             driver.implicitly_wait(10)
