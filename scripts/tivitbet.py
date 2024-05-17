@@ -1,4 +1,6 @@
 import asyncio
+import pyautogui
+from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -81,24 +83,24 @@ async def get_wallet():
             except Exception as e:
                 return {"status": "0", "ext": f"depos but error \n{e}"}
 
-            await asyncio.sleep(5)
-
+            await asyncio.sleep(6.4)
             find_frame = await driver.find_elements(By.XPATH, '//*[@id="billing-wrapper"]/iframe')
+            await asyncio.sleep(0.6)
             iframe_doc = await find_frame[0].content_document
-            
+
             click_min_amoun = await iframe_doc.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]', timeout=10)
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1.5)
             await click_min_amoun.click()
-            
+
             click_depos_but = await iframe_doc.find_element(By.XPATH, '/html/body/div/div/div/div[3]/div[2]/div/button')
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1.5)
             await click_depos_but.click()
 
             await asyncio.sleep(5)
-            address_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[3]/button/span[1]', timeout=30)
+            address_elem = await iframe_doc.find_element(By.XPATH, '/html/body/div/div/div/div[3]/div[3]/button/span[1]', timeout=30)
             address = await address_elem.text
 
-            amount_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/p[1]/span', timeout=30)
+            amount_elem = await iframe_doc.find_element(By.XPATH, '/html/body/div/div/div/div[3]/p[1]/span', timeout=30)
             amount = await amount_elem.text
 
             return {
