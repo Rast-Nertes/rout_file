@@ -93,18 +93,16 @@ async def get_wallet():
         await asyncio.sleep(2)
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[3]/button')
 
-        await asyncio.sleep(4.5)
         try:
-            find_frame = await driver.find_element(By.XPATH, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/iframe', timeout=20)
-            await driver.switch_to.frame(find_frame)
+            await asyncio.sleep(6.4)
+            find_frame = await driver.find_elements(By.XPATH, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/iframe')
+            await asyncio.sleep(0.6)
+            iframe_doc = await find_frame[0].content_document
 
-            try:
-                await asyncio.sleep(10)
-                address_elem = await driver.find_element(By.CSS_SELECTOR, 'div > div > div > div > div:nth-child(3) > img', timeout=30)
-                src = await address_elem.get_attribute('src')
-                address = src.split('trc20')[1].split("&")[0]
-            except Exception as e:
-                return {"status": "0", "ext": f"error address \n{e}"}
+            address_elem = await iframe_doc.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div[3]/img', timeout=30)
+            src = await address_elem.get_attribute('src')
+            await asyncio.sleep(4.5)
+            address = src.split('trc20')[1].split("&")[0]
 
             return {
                 "address": address.replace(":", ""),
