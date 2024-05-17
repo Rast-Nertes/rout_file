@@ -149,12 +149,13 @@ def login(driver):
             break
 
     try:
-        sleep(2.5)
+        sleep(3.5)
         js_click(driver, 70, '//button[@class="balance-info balance-info--m"]')
     except Exception as e:
         print(f'ERROR CLICK DEPOS BUT \n{e}')
 
     sleep(8.5)
+    driver.implicitly_wait(30)
     shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
 
     sleep(2.5)
