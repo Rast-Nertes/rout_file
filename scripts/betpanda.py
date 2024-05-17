@@ -1,6 +1,4 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -8,9 +6,10 @@ from fake_useragent import UserAgent
 
 # CONSTANTS
 
-url = 'https://betpanda.io/en/?type=login&modal=user'
-user_email = "kiracase34@gmail.com"
-user_password = "uE5FLwPj!mfjK6e"
+url = 'https://betandyou.com/en'
+user_email = "869260631"
+user_password = "wbUvNDDbLVSsD2e"
+
 
 # CHROME CONSTANTS
 
@@ -20,19 +19,17 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
+# user_agent = UserAgent()
+# options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key_solver = paths[5].strip()
-    api_anti = paths[2].strip()
-    ext = paths[4].strip()
+    api_key = paths[3].strip()
+    ext = paths[1].strip()
 
 options.binary_location = chrome_path
-options.add_extension(ext)
 
 
 async def js_click(driver, time, XPATH):
@@ -58,34 +55,43 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
-
     await driver.get(url, timeout=60)
 
     try:
-        await asyncio.sleep(2.4)
-        find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
-        await asyncio.sleep(0.6)
-        iframe_doc = await find_frame[0].content_document
-        click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input', timeout=20)
-        await click_checkbox.click()
-    except Exception as e:
-        print(f'ERROR CHECKBOX \n{e}')
+        await click(driver, 10, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+        await asyncio.sleep(1.5)
+        await click(driver, 5, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+    except:
+        pass
 
     try:
-        await input_data(driver, 30, '//input[@name="email"]', user_email)
-        await input_data(driver, 30, '//input[@name="password"]', user_password)
-        await click(driver, 30, '/html/body/div[4]/div/div/div/div/div[2]/form/button')
-        await click(driver, 5, '/html/body/div[4]/div/div/div/div/div[2]/form/button')
+        await asyncio.sleep(4.5)
+        await js_click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div/button')
+        await input_data(driver, 30, '//*[@id="username"]', user_email)
+        await input_data(driver, 30, '//*[@id="username-password"]', user_password)
+        await click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div[2]/div/div/div/form/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status": "0", "ext":f"login error \n{e}"}
+
+    await asyncio.sleep(5)
+    await driver.get('https://betandyou.com/en/office/recharge')
+
+    await asyncio.sleep(3)
+    find_frame = await driver.find_elements(By.XPATH, '//*[@id="payments_frame"]')
+    await asyncio.sleep(0.5)
+    frame = await find_frame[0].content_document
 
     try:
-        await click(driver, 30, '//*[@id="currency-selector-button"]')
-        await click(driver, 30, '//*[@id="currencyDropdown"]/div/div[1]/div[5]/div')
-        await click(driver, 30, '//a[@class="btn btn-cta small top-deposit"]')
-        await click(driver, 30, '/html/body/div[6]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div/div[2]/div')
+        click_trc20 = await frame.find_element(By.XPATH, '//div[@data-method="usdttrx"]', timeout=20)
+        await asyncio.sleep(1.5)
+        await click_trc20.click()
+
+        click_confirm = await frame.find_element(By.XPATH, '//*[@id="payment_modal_container"]/div[2]/form/div[3]/div/div[1]/button', timeout=20)
+        await asyncio.sleep(1.5)
+        await click_confirm.click()
     except Exception as e:
-        return {"status": "0", "ext": f"ERROR CHOOSE TRC20 \n{e}"}
+        print(f'ERROR FRAME \n')
+        input("press")
 
 
 async def get_wallet():
@@ -94,17 +100,22 @@ async def get_wallet():
         if log:
             return log
 
+        await asyncio.sleep(3)
+        find_frame = await driver.find_elements(By.XPATH, '//*[@id="payments_frame"]')
+        await asyncio.sleep(0.5)
+        frame = await find_frame[0].content_document
+
         await asyncio.sleep(4.5)
         try:
-            address_elem = await driver.find_element(By.XPATH, '//*[@id="cryptoAddress"]', timeout=30)
+            address_elem = await frame.find_element(By.XPATH, '//*[@id="crypto_wallet"]', timeout=30)
             address = await address_elem.text
-            #
-            # amount_elem = await driver.find_element(By.XPATH, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr[3]/td/table/tbody/tr[3]/td[2]', timeout=30)
-            # amount = await amount_elem.text
+
+            amount_elem = await frame.find_element(By.XPATH, '//*[@id="payment_modal_container"]/div[2]/form/div[4]/div/div[1]/div[1]/span', timeout=30)
+            amount = await amount_elem.text
 
             return {
                 "address": address,
-                "amount": "0.01",
+                "amount": amount.replace("Minimum deposit amount", "").replace("USDT", '').replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
