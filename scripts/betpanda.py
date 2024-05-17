@@ -58,9 +58,9 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await click(driver, 10, '//*[@id="modals-container"]/div/div/div[2]/div/button')
-        await asyncio.sleep(1.5)
-        await click(driver, 5, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+        await click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
+        await asyncio.sleep(3.5)
+        await click(driver, 6, '//*[@id="modals-container"]/div/div/div[2]/div/button')
     except:
         pass
 
