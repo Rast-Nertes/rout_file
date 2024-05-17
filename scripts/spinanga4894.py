@@ -159,40 +159,22 @@ def login(driver):
     try:
         sleep(4.5)
 
-        # Используем явное ожидание для элемента shadow root
         shadow_host = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="widget"]'))
         )
         shadow_root = shadow_host.shadow_root
 
-        try:
-            sleep(1.5)
-
-            # Повторно находим элемент shadow root перед взаимодействием
-            shadow_host = WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="widget"]'))
-            )
-            shadow_root = shadow_host.shadow_root
-
-            # Явное ожидание для кнопки внутри shadow DOM
-            show_all_button = WebDriverWait(shadow_root, 20).until(
-                EC.element_to_be_clickable(
-                    (By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button'))
-            )
-            show_all_button.click()
-        except Exception as e:
-            return {"status": "0", "ext": f"Ошибка при клике на 'показать все':\n{e}"}
-
-        try:
-            # Явное ожидание для элемента TRC20 внутри shadow DOM
-            choose_trc20 = WebDriverWait(shadow_root, 20).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]'))
-            )
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_trc20)
-        except Exception as e:
-            return {"status": "0", "ext": f"Ошибка при выборе TRC20:\n{e}"}
-
+        show_all_button = WebDriverWait(shadow_root, 20).until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button'))
+        )
+        show_all_button.click()
+        
+        choose_trc20 = WebDriverWait(shadow_root, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]'))
+        )
+        sleep(1.5)
+        driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
         return {"status":"0", "ext":f"error shadow \n{e}"}
 
@@ -230,7 +212,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data \n{e}"}
 
 
 def wallet():
