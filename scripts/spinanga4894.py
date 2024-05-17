@@ -150,22 +150,22 @@ def login(driver):
 
     try:
         sleep(2.5)
-        js_click(driver, 70, '//button[@class="balance-info balance-info--m"]')
+        js_click(driver, 70, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]/span[2]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
-    
+
     try:
         sleep(8.5)
         driver.implicitly_wait(30)
         shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
-        
+
         try:
             sleep(2.5)
             driver.implicitly_wait(20)
             shadow_root.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button').click()
         except Exception as e:
             return {"status": "0", "ext": f"error click 'show all' but\n{e}"}
-        
+
         try:
             driver.implicitly_wait(20)
             choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
@@ -215,4 +215,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
