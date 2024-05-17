@@ -1,4 +1,3 @@
-import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
@@ -107,11 +106,12 @@ def login(driver):
         try:
             click(driver, 60, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]')
             input_data(driver, 30, '//*[@id="email"]', user_email)
-            input_data(driver, 30, '//*[@id="current-password"]', user_password)
-            click(driver, 30, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-login-dialog/stb-login-options/stb-stepper/div/stb-login-state-form/stb-login-steps/stb-stepper/stb-login-form/form/div[2]/button')
+            input_data(driver, 10, '//*[@id="current-password"]', user_password)
+            click(driver, 10, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-login-dialog/stb-login-options/stb-stepper/div/stb-login-state-form/stb-login-steps/stb-stepper/stb-login-form/form/div[2]/button')
         except Exception as e:
-            return {"status": "0", "ext": f"ERROR LOGIN \n{e}"}
-
+            print(f"ERROR LOGIN \n{e}")
+            break
+            
         try:
             time_loop = 0
             while True:
@@ -201,4 +201,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
