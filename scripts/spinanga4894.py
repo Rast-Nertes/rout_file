@@ -17,7 +17,7 @@ user_password = "Vbu7PsRg3a8K2Hf"
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-save-password-bubble")
-# options.add_argument("--auto-open-devtools")
+options.add_argument("--auto-open-devtools-for-tabs")
 
 with open('config.txt') as file:
     paths = file.readlines()
@@ -110,7 +110,7 @@ def login(driver):
             return {"error login. reload script"}
 
         try:
-            click(driver, 60, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]')
+            click(driver, 60, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[1]/span')
             input_data(driver, 30, '//*[@id="email"]', user_email)
             input_data(driver, 20, '//*[@id="current-password"]', user_password)
             click(driver, 20, '//button[@data-testid="btnLogin"]')
@@ -164,17 +164,12 @@ def login(driver):
         )
         shadow_root = shadow_host.shadow_root
 
-        show_all_button = WebDriverWait(shadow_root, 20).until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button'))
-        )
-        show_all_button.click()
-        
-        choose_trc20 = WebDriverWait(shadow_root, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]'))
-        )
-        sleep(1.5)
-        driver.execute_script("arguments[0].click();", choose_trc20)
+        sleep(10.5)
+        shadow_root.find_element(By.CSS_SELECTOR, 'button[data-testid="expand-list-button"]').click()
+
+        sleep(2.5)
+        find_trc20_image = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
+        driver.execute_script("arguments[0].click();", find_trc20_image)
     except Exception as e:
         return {"status":"0", "ext":f"error shadow \n{e}"}
 
