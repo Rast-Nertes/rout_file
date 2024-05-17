@@ -1,6 +1,4 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -82,14 +80,15 @@ async def get_wallet():
                 await click(driver, 30, '//*[@id="root"]/div/div[4]/div/div[2]/div[2]/div/button')
             except Exception as e:
                 return {"status": "0", "ext": f"depos but error \n{e}"}
-            
+
+            await asyncio.sleep(5)
+
             find_frame = await driver.find_element(By.XPATH, '//*[@id="billing-wrapper"]/iframe', timeout=20)
-            await asyncio.sleep(3)
             await driver.switch_to.frame(find_frame)
 
             try:
                 await asyncio.sleep(3.5)
-                await click(driver, 30, '/html/body/div/div/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
+                await js_click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/div[2]/div[2]/button[1]')
             except Exception as e:
                 print(f"error choose min amount \n{e}")
 
