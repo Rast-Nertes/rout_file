@@ -91,9 +91,14 @@ async def get_wallet():
                 return {"status": "0", "ext": f"amount error \n{e}"}
 
             try:
-                await click(driver, 30, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[2]/div/button')
+                await click(driver, 30, '/html/body/div/div/div/div[3]/div[2]/div/button')
             except Exception as e:
-                return {"status": "0", "ext": f"Depos click error \n{e}"}
+                try:
+                    depos_but_click = await driver.find_element(By.CSS_SELECTOR, '#billing-widget-wrapper > div > div.flex.flex-col.gap-6 > div > div > button', timeout=10)
+                    await depos_but_click.click()
+                except Exception as e:
+                    return {"status": "0", "ext": f"error depos click \n{e}"}
+                    
 
             await asyncio.sleep(5)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="billing-widget-wrapper"]/div/div[3]/div[3]/button/span[1]', timeout=30)
