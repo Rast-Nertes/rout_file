@@ -2,6 +2,8 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
 # CONSTANS
@@ -155,25 +157,41 @@ def login(driver):
         return {"status":"0", "ext":f"error depos but \n{e}"}
 
     try:
-        sleep(8.5)
-        driver.implicitly_wait(30)
-        shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
+        sleep(4.5)
+
+        # Используем явное ожидание для элемента shadow root
+        shadow_host = WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="widget"]'))
+        )
+        shadow_root = shadow_host.shadow_root
 
         try:
-            sleep(2.5)
-            driver.implicitly_wait(20)
-            shadow_root.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button').click()
+            sleep(1.5)
+
+            # Повторно находим элемент shadow root перед взаимодействием
+            shadow_host = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="widget"]'))
+            )
+            shadow_root = shadow_host.shadow_root
+
+            # Явное ожидание для кнопки внутри shadow DOM
+            show_all_button = WebDriverWait(shadow_root, 20).until(
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button'))
+            )
+            show_all_button.click()
         except Exception as e:
-            return {"status": "0", "ext": f"error click 'show all' but\n{e}"}
+            return {"status": "0", "ext": f"Ошибка при клике на 'показать все':\n{e}"}
 
         try:
-            driver.implicitly_wait(20)
-            sleep(2.5)
-            choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
+            # Явное ожидание для элемента TRC20 внутри shadow DOM
+            choose_trc20 = WebDriverWait(shadow_root, 20).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]'))
+            )
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
-            return {"status": "0", "ext": f"error choose trc20 \n{e}"}
+            return {"status": "0", "ext": f"Ошибка при выборе TRC20:\n{e}"}
 
     except Exception as e:
         return {"status":"0", "ext":f"error shadow \n{e}"}
