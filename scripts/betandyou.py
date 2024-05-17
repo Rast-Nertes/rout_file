@@ -1,6 +1,4 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -66,7 +64,7 @@ async def login(driver):
     except:
         pass
 
-    await asyncio.sleep(4.5)
+    await asyncio.sleep(1.5)
 
     try:
         await js_click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[3]/div/div/button')
@@ -74,6 +72,7 @@ async def login(driver):
         return {"status":'0', "ext":f"error log button \n{e}"}
 
     try:
+        await asyncio.sleep(3)
         await input_data(driver, 30, '//*[@id="username"]', user_email)
         await input_data(driver, 30, '//*[@id="username-password"]', user_password)
     except Exception as e:
