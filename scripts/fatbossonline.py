@@ -90,6 +90,7 @@ async def get_wallet():
         print(amount)
 
         await click(driver, 45, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[1]/button[1]')
+        await asyncio.sleep(2)
         await click(driver, 30, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/form/div[3]/button')
 
         await asyncio.sleep(4.5)
@@ -98,7 +99,7 @@ async def get_wallet():
             await driver.switch_to.frame(find_frame)
 
             try:
-                await asyncio.sleep(12)
+                await asyncio.sleep(10)
                 address_elem = await driver.find_element(By.CSS_SELECTOR, 'div > div > div > div > div:nth-child(3) > img', timeout=30)
                 src = await address_elem.get_attribute('src')
                 address = src.split('trc20')[1].split("&")[0]
