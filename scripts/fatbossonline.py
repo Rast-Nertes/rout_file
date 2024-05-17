@@ -1,4 +1,6 @@
 import asyncio
+import pyautogui
+from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -92,15 +94,20 @@ async def get_wallet():
 
         await asyncio.sleep(4.5)
         try:
-            find_frame = await driver.find_element(By.XPATH, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/iframe', timeout=20)
-            await driver.switch_to.frame(find_frame)
-
-            await asyncio.sleep(3)
-            address_elem = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div/div/div[3]/img', timeout=30)
-            src = await address_elem.get_attribute('src')
-
-            address = src.split('trc20')[1].split("&")[0]
-
+            try:
+                find_frame = await driver.find_element(By.XPATH, '//*[@id="deposit-modal"]/div/div/div[2]/div/div/iframe', timeout=20)
+                await driver.switch_to.frame(find_frame)
+            except Exception as e:
+                return {"status": "0", "ext": f"error iframe \n{e}"}
+            
+            try:
+                await asyncio.sleep(3)
+                address_elem = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div/div/div[3]/img', timeout=30)
+                src = await address_elem.get_attribute('src')
+                address = src.split('trc20')[1].split("&")[0]
+            except Exception as e:
+                return {"status": "0", "ext": f"error address \n{e}"}
+            
             return {
                 "address": address.replace(":", ""),
                 "amount": amount.replace("\xa0", '').replace("€", '').replace(" ", ''),
