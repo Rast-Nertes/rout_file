@@ -109,17 +109,16 @@ def login(driver):
         try:
             click(driver, 60, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[2]')
             input_data(driver, 30, '//*[@id="email"]', user_email)
-            input_data(driver, 10, '//*[@id="current-password"]', user_password)
-            click(driver, 10, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-login-dialog/stb-login-options/stb-stepper/div/stb-login-state-form/stb-login-steps/stb-stepper/stb-login-form/form/div[2]/button')
+            input_data(driver, 20, '//*[@id="current-password"]', user_password)
+            click(driver, 20, '//button[@data-testid="btnLogin"]')
         except Exception as e:
             print(f"ERROR LOGIN \n{e}")
-            break
 
         try:
             time_loop = 0
             while True:
                 driver.implicitly_wait(10)
-                find_check = driver.find_element(By.XPATH, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-login-dialog/stb-login-options/stb-stepper/div/stb-login-state-form/stb-login-steps/stb-stepper/stb-login-form/div/div[2]').text
+                find_check = driver.find_element(By.XPATH, '//button[@data-analytics-action="Balance"]').text
                 if ("ена" in find_check) or ("lve" in find_check):
                     print("skip")
                     break
@@ -184,7 +183,8 @@ def get_wallet():
             return log
 
         try:
-            sleep(8.5)
+            sleep(4.5)
+            driver.implicitly_wait(10)
             shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
 
             driver.implicitly_wait(10)
