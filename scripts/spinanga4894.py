@@ -149,23 +149,32 @@ def login(driver):
             break
 
     try:
-        sleep(4.5)
+        sleep(2.5)
         js_click(driver, 70, '//button[@class="balance-info balance-info--m"]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
-
-    sleep(8.5)
-    driver.implicitly_wait(30)
-    shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
-
-    sleep(2.5)
-    driver.implicitly_wait(20)
-    shadow_root.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button').click()
-
-    driver.implicitly_wait(20)
-    choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
-    sleep(2.5)
-    driver.execute_script("arguments[0].click();", choose_trc20)
+    
+    try:
+        sleep(8.5)
+        driver.implicitly_wait(30)
+        shadow_root = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
+        
+        try:
+            sleep(2.5)
+            driver.implicitly_wait(20)
+            shadow_root.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > button').click()
+        except Exception as e:
+            return {"status": "0", "ext": f"error click 'show all' but\n{e}"}
+        
+        try:
+            driver.implicitly_wait(20)
+            choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
+            sleep(2.5)
+            driver.execute_script("arguments[0].click();", choose_trc20)
+        except Exception as e:
+            return {"status": "0", "ext": f"error choose trc20 \n{e}"}
+    except Exception as e:
+        return {"status":"0", "ext":f"error shadow \n{e}"}
 
 
 def get_wallet():
@@ -206,3 +215,4 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
