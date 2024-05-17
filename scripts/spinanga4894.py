@@ -15,6 +15,7 @@ user_password = "Vbu7PsRg3a8K2Hf"
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-save-password-bubble")
+# options.add_argument("--auto-open-devtools")
 
 with open('config.txt') as file:
     paths = file.readlines()
@@ -167,11 +168,13 @@ def login(driver):
 
         try:
             driver.implicitly_wait(20)
-            choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
             sleep(2.5)
+            choose_trc20 = shadow_root.find_element(By.CSS_SELECTOR, 'img[alt="USDTTRONTRC20"]')
+            sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
             return {"status": "0", "ext": f"error choose trc20 \n{e}"}
+
     except Exception as e:
         return {"status":"0", "ext":f"error shadow \n{e}"}
 
@@ -192,6 +195,7 @@ def get_wallet():
             print(amount)
 
             driver.implicitly_wait(10)
+            sleep(1.5)
             shadow_root.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > div > button').click()
 
             driver.implicitly_wait(10)
