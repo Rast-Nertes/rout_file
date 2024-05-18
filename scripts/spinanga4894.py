@@ -162,8 +162,10 @@ def login(driver):
             break
 
     try:
-        sleep(2.5)
-        js_click(driver, 30, '//button[@class="cover-button"]')
+        sleep(1.5)
+        click_depos_but = web_wait(driver, 35).until(EC.presence_of_element_located((By.XPATH, '//button[@class="cover-button"]')))
+        click_depos_but.click()
+        print("click")
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
 
@@ -175,7 +177,8 @@ def get_wallet():
             return log
 
         sleep(12.5)
-        shadow = driver.find_element(By.XPATH, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-pgw-dialog/div/div/stb-pgw/div').shadow_root
+        driver.implicitly_wait(50)
+        shadow = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
 
         try:
             sleep(6.5)
