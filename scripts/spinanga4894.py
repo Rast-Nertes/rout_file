@@ -160,13 +160,12 @@ def login(driver):
                 break
         except:
             break
-
+            
     try:
         sleep(2.5)
-        js_click(driver, 30, '//button[@data-analytics-action="Balance"]')
+        js_click(driver, 30, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[1]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
-
 
 
 def get_wallet():
@@ -197,7 +196,7 @@ def get_wallet():
             sleep(2.5)
             depos_but = shadow.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > div > button')
             depos_but.click()
-            
+
             sleep(3)
             get_src = shadow.find_element(By.CSS_SELECTOR, '#react-root-container > div > div:nth-child(4) > div > iframe')
             src = get_src.get_attribute('src')
