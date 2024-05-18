@@ -164,7 +164,7 @@ def login(driver):
     try:
         sleep(1.5)
         click_depos_but = web_wait(driver, 35).until(EC.presence_of_element_located((By.XPATH, '//button[@class="cover-button"]')))
-        click_depos_but.click()
+        driver.execute_script("arguments[0].click();", click_depos_but)
         print("click")
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
