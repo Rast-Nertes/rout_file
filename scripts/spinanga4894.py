@@ -160,10 +160,10 @@ def login(driver):
                 break
         except:
             break
-            
+
     try:
         sleep(2.5)
-        js_click(driver, 30, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[1]')
+        js_click(driver, 30, '//button[@class="cover-button"]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos but \n{e}"}
 
@@ -173,6 +173,8 @@ def get_wallet():
         log = login(driver)
         if log:
             return log
+
+        # input("press")
 
         sleep(12.5)
         shadow = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
@@ -213,7 +215,6 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            input("press 2")
             return {"status":"0", "ext":f"error data \n{e}"}
 
 
