@@ -174,10 +174,8 @@ def get_wallet():
         if log:
             return log
 
-        # input("press")
-
         sleep(12.5)
-        shadow = driver.find_element(By.CSS_SELECTOR, 'div[id="widget"]').shadow_root
+        shadow = driver.find_element(By.XPATH, '/html/body/div[1]/stb-overlay-container/div[2]/div/stb-pgw-dialog/div/div/stb-pgw/div').shadow_root
 
         try:
             sleep(6.5)
