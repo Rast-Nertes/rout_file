@@ -19,6 +19,9 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+options.add_argument('--disable-notifications')
+options.add_argument('--log-level=3')
+options.add_argument('--disable-remote-fonts')
 options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
 
 with open('config.txt') as file:
@@ -27,18 +30,10 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-# options.add_extension(ext)
-# options.binary_location = chrome_path
-
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
-#
-# proxy_address = "196.19.121.187"
-# proxy_login = 'WyS1nY'
-# proxy_password = '8suHN9'
-# proxy_port = 8000
 
 proxy_options = {
     "proxy":{
@@ -74,7 +69,7 @@ def login(driver):
     driver.get(url)
 
     try:
-        click(driver, 60, '//*[@id="app"]/div[3]/header/div[2]/span[2]/div/div/button')
+        click(driver, 45, '//*[@id="app"]/div[3]/header/div[2]/span[2]/div/div/button')
         click(driver, 30, '//*[@id="app"]/div[3]/header/div[2]/span[2]/div/div[2]/div/div/div/form/div[4]/div/button')
     except Exception as e:
         return {"status": "0", "ext": f"error click to log \n{e}"}
