@@ -25,6 +25,7 @@ options.add_argument('--disable-remote-fonts')
 
 prefs = {"profile.managed_default_content_settings.images": 2}
 options.add_experimental_option("prefs", prefs)
+options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
 
 with open('config.txt') as file:
     paths = file.readlines()
@@ -33,17 +34,11 @@ with open('config.txt') as file:
     ext = paths[1].strip()
 
 options.add_extension(ext)
-# options.binary_location = chrome_path
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
-#
-# proxy_address = "196.19.121.187"
-# proxy_login = 'WyS1nY'
-# proxy_password = '8suHN9'
-# proxy_port = 8000
 
 proxy_options = {
     "proxy":{
@@ -163,7 +158,7 @@ def login(driver):
 
     try:
         sleep(1.5)
-        click_depos_but = web_wait(driver, 35).until(EC.presence_of_element_located((By.XPATH, '//button[@class="cover-button"]')))
+        click_depos_but = web_wait(driver, 35).until(EC.presence_of_element_located((By.XPATH, '/html/body/stb-root/stb-base-layout/stb-header/header/div/button[1]')))
         driver.execute_script("arguments[0].click();", click_depos_but)
         print("click")
     except Exception as e:
