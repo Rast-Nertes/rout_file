@@ -69,11 +69,12 @@ def login(driver):
     except Exception as e:
         return {"status":"0", "ext":f"error login \n{e}"}
 
+    sleep(5.5)
+    driver.get('https://ethplay.io/profile/wallet/deposit?currency=usdt')
+
     try:
-        sleep(8.5)
-        click(driver, 30, '//*[@id="__next"]/div/div[1]/main/header/nav/section[3]/div[1]/button')
-        sleep(2)
-        click(driver, 30, '/html/body/div[5]/section/section/div[2]/div/button[2]')
+        sleep(7.5)
+        js_click(driver, 30, '//button[@data-protocol="TRC20"]')
     except Exception as e:
         return {"status":"0", "ext":f"error choose trc20 \n{e}"}
 
@@ -87,16 +88,16 @@ def get_wallet():
         sleep(4.5)
         try:
             driver.implicitly_wait(30)
-            address_elem = driver.find_element(By.XPATH, '/html/body/div[5]/section/section/div[2]/div[2]/input')
-            address = address_elem.get_attribute('value')
+            address_elem = driver.find_element(By.XPATH, '//*[@id="root"]/div[3]/div[3]/main/div/div/div[2]/div[3]/div/div/div/div[5]')
+            address = address_elem.text
 
             driver.implicitly_wait(30)
-            amount_elem = driver.find_element(By.XPATH, '/html/body/div[5]/section/section/div[2]/p[2]')
-            amount = amount_elem.text
+            amount_elem = driver.find_element(By.XPATH, '//*[@id="payment_limits"]').text.replace("Min:", '')
+            amount = ''.join(char for char in amount_elem if char.isdigit())
 
             return {
                 "address": address,
-                "amount": amount.replace("USDT", '').replace("min", '').replace(" ", ''),
+                "amount": amount,
                 "currency": "usdt"
             }
         except Exception as e:
