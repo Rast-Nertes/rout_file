@@ -69,7 +69,6 @@ def login(driver):
     driver.get(url)
 
     try:
-        input("press")
         js_click(driver, 30, '/html/body/div[1]/div[1]/div[1]/header/div/div/div[2]/div[1]/span')
         input_data(driver, 30, '/html/body/div[1]/div[2]/div/div/div/div[4]/div/input', user_email)
         input_data(driver, 30, '//*[@id="app"]/div[2]/div/div/div/div[5]/div/input', user_password)
@@ -117,4 +116,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
