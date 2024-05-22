@@ -1,5 +1,4 @@
 import asyncio
-import pyautogui
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -124,7 +123,7 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="password"]', user_password)
         await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/form/div[2]/button')
     except Exception as e:
-        print(f'ERROR LOG CLICK \n{e}')
+        return {"status":"0", "ext":f"error login:  \n{e}"}
 
     await solve_captcha(driver)
 
@@ -146,7 +145,7 @@ async def login(driver):
         await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[1]')
         await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[2]/div/div[3]/p')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error trc20:  \n{e}"}
 
 
 async def get_wallet():
@@ -169,7 +168,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data:  \n{e}"}
 
 
 def wallet():
