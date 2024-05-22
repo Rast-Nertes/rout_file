@@ -69,7 +69,12 @@ def login(driver):
     driver.get(url)
 
     try:
-        click(driver, 30, '//*[@id="page"]/header/div/div/div[2]/div[1]')
+        # input("press")
+        driver.implicitly_wait(30)
+        click_log_but = driver.find_element(By.CSS_SELECTOR, 'div.d-flex.justify-end.align-center.v-sheet.theme--light.transparent > div.v-card--flat.v-sheet.theme--light.transparent.btn_base.base_border')
+        sleep(1.5)
+        click_log_but.click()
+        # click(driver, 30, '//*[@id="page"]/header/div/div/div[2]/div[1]')
         input_data(driver, 30, '/html/body/div[1]/div[2]/div/div/div/div[4]/div/input', user_email)
         input_data(driver, 30, '//*[@id="app"]/div[2]/div/div/div/div[5]/div/input', user_password)
         click(driver, 30, '//*[@id="app"]/div[2]/div/div/div/button/span')
