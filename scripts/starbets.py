@@ -1,4 +1,5 @@
 import asyncio
+import pyautogui
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
