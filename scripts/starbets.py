@@ -117,6 +117,8 @@ async def login(driver):
     await asyncio.sleep(1)
     await api_connect()
     await driver.get(url, timeout=60)
+    await asyncio.sleep(5)
+    await driver.get('https://starbets.io/')
 
     try:
         await click(driver, 30, '//*[@id="root"]/div/div/div[1]/div[3]/div[1]/button')
