@@ -70,11 +70,11 @@ def login(driver):
 
     try:
         click(driver, 30, '//*[@id="page"]/header/div/div/div[2]/div[1]')
-        input_data(driver, 30, '//*[@id="component-2"]', user_email)
+        input_data(driver, 30, '/html/body/div[1]/div[2]/div/div/div/div[4]/div/input', user_email)
         input_data(driver, 30, '//*[@id="app"]/div[2]/div/div/div/div[5]/div/input', user_password)
         click(driver, 30, '//*[@id="app"]/div[2]/div/div/div/button/span')
     except Exception as e:
-        return {"status":"0", "ext":"error"}
+        return {"status":"0", "ext":f"error login \n{e}"}
 
     sleep(3.5)
     driver.get('https://96.com/en/page_recharge/#/')
