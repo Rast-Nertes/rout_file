@@ -8,15 +8,15 @@ from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://96.com/en/#/'
+url = 'https://96.com/#/'
 user_email = "kiracase34"
 user_password = "vYN94@RKgd23"
 
 # CHROME CONSTANS
 
 options = webdriver.ChromeOptions()
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-options.add_argument(f"user-agent={user_agent}")
+# user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+# options.add_argument(f"user-agent={user_agent}")
 options.add_argument("--disable-save-password-bubble")
 options.add_argument('--log-level=3')
 options.add_argument('--disable-remote-fonts')
@@ -69,12 +69,13 @@ def login(driver):
     driver.get(url)
 
     try:
+        input("press")
         js_click(driver, 30, '/html/body/div[1]/div[1]/div[1]/header/div/div/div[2]/div[1]/span')
         input_data(driver, 30, '/html/body/div[1]/div[2]/div/div/div/div[4]/div/input', user_email)
         input_data(driver, 30, '//*[@id="app"]/div[2]/div/div/div/div[5]/div/input', user_password)
         click(driver, 30, '//*[@id="app"]/div[2]/div/div/div/button/span')
     except Exception as e:
-        return {"status":"0", "ext":f"error login \n{e}"}
+        return {"status":"0", "ext":f"error login:  {e}"}
 
     sleep(3.5)
     driver.get('https://96.com/en/page_recharge/#/')
@@ -84,7 +85,7 @@ def login(driver):
         sleep(4.5)
         js_click(driver, 30, '//*[@id="animbtn"]/div')
     except Exception as e:
-        return {"status":"0", "ext":f"error depos \n{e}"}
+        return {"status":"0", "ext":f"error depos:  {e}"}
 
 
 def get_wallet():
@@ -116,3 +117,4 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
