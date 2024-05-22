@@ -1,6 +1,5 @@
 import asyncio
 import pyautogui
-from hcaptcha_solver import hcaptcha_solver
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
