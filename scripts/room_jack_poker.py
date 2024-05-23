@@ -68,14 +68,16 @@ def login(driver):
     driver.get(url)
 
     try:
-        click(driver, 90, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/div[1]')
+        sleep(4.5)
+        js_click(driver, 90, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/div[1]')
     except Exception as e:
         return {"status":"0", "ext":f"error login click:  {e}"}
 
     try:
+        sleep(5)
         input_data(driver, 60, '//input[@name="username"]', user_email)
         input_data(driver, 40, '//input[@name="password"]', user_password)
-        click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/div[2]')
+        js_click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/div[2]')
     except Exception as e:
         return {"status":"0", "ext":f"error login input:  {e}"}
 
