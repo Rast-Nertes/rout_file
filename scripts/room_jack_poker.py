@@ -73,7 +73,7 @@ def login(driver):
         return {"status":"0", "ext":f"error login click:  {e}"}
 
     try:
-        input_data(driver, 40, '//input[@name="username"]', user_email)
+        input_data(driver, 60, '//input[@name="username"]', user_email)
         input_data(driver, 40, '//input[@name="password"]', user_password)
         click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/div[2]')
     except Exception as e:
@@ -95,7 +95,7 @@ def login(driver):
         return {"status":"0", "ext":f"error find src:  {e}"}
 
     try:
-        click(driver, 30, '//div[@class="logo-container USDTT "]')
+        click(driver, 50, '//div[@class="logo-container USDTT "]')
         input_data(driver, 30, '//*[@id="cashier"]/section/div/div[1]/div[2]/div/input', '10')
         sleep(2.5)
         click(driver, 30, '//*[@id="cashier"]/section/div/div[2]/button')
@@ -120,7 +120,7 @@ def get_wallet():
 
         sleep(4.5)
         try:
-            driver.implicitly_wait(30)
+            driver.implicitly_wait(50)
             address_elem = driver.find_element(By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[4]/a')
             address = address_elem.text
 
