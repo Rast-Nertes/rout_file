@@ -28,24 +28,10 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-# options.add_extension(ext)
-# options.binary_location = chrome_path
-#
-# proxy_address = "168.80.203.135"
-# proxy_login = 'zRspV7'
-# proxy_password = 'KEwj3U'
-# proxy_port = 8000
-
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
 proxy_password = 'uw7RQ3'
 proxy_port = 8000
-
-# proxy_address = "196.19.121.187"
-# proxy_login = 'WyS1nY'
-# proxy_password = '8suHN9'
-# proxy_port = 8000
-
 
 proxy_options = {
     "proxy":{
@@ -95,7 +81,12 @@ def login(driver):
         sleep(8.5)
         click(driver, 45, '//*[@id="deposit-button"]')
     except Exception as e:
-        return {"status":"0", "ext":f"error depos but \n{e}"}
+        driver.refresh()
+        sleep(4.5)
+        try:
+            click(driver, 45, '//*[@id="deposit-button"]')
+        except:
+            return {"status":"0", "ext":f"error depos but:  {e}"}
 
 
 def get_wallet():
