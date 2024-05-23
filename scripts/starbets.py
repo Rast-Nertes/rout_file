@@ -118,7 +118,7 @@ async def login(driver):
     await api_connect()
     await driver.get(url, timeout=60)
     await asyncio.sleep(5)
-    await driver.get('https://starbets.io/')
+    await driver.get('https://starbets.io/', timeout=60)
 
     try:
         await click(driver, 30, '//*[@id="root"]/div/div/div[1]/div[3]/div[1]/button')
@@ -142,13 +142,21 @@ async def login(driver):
     await asyncio.sleep(3.5)
 
     try:
-        await click(driver, 30, '//*[@id="root"]/div/div/div[1]/div[3]/div[1]/div[2]')
-        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[1]/div/div[1]/div')
-        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[1]/div/div[2]/div/div[5]')
-        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[1]')
-        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[2]/div/div[3]/p')
+        await asyncio.sleep(4.5)
+        await click(driver, 50, '//img[@alt="wallet"]')
     except Exception as e:
-        return {"status":"0", "ext":f"error trc20:  \n{e}"}
+        return {"status":"0", "ext":f"error depos but \n{e}"}
+    try:
+        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[1]/div/div[1]/div')
+        await click(driver, 30, "//p[contains(@class, 'drop__body-title') and text()='USDT']")
+    except Exception as e:
+        return {"status":"0", "ext":f"error choose trc20 \n{e}"}
+
+    try:
+        await click(driver, 30, '//*[@id="root"]/div/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[1]')
+        await click(driver, 30, "//p[contains(@class, 'drop__body-title') and text()='TRC20']")
+    except Exception as e:
+        return {"status":"0", "ext":f"error choose network \n{e}"}
 
 
 async def get_wallet():
@@ -178,3 +186,4 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
+
