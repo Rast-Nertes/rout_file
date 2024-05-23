@@ -70,21 +70,21 @@ def login(driver):
     try:
         click(driver, 90, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/div[1]')
     except Exception as e:
-        print(f'ERROR CLICK LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login click:  {e}"}
 
     try:
         input_data(driver, 40, '//input[@name="username"]', user_email)
         input_data(driver, 40, '//input[@name="password"]', user_password)
         click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/div[2]')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login input:  {e}"}
 
     try:
         sleep(4.5)
         click(driver, 40, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div[1]')
         click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/div[5]/div/div/div[2]/div/div/div/div/div')
     except Exception as e:
-        print(f'ERROR PATH TO DATA \n{e}')
+        return {"status":"0", "ext":f"error path to trc20:  {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -92,7 +92,7 @@ def login(driver):
         src = find_frame_src.get_attribute('src')
         driver.get(src)
     except Exception as e:
-        print(f'ERROR SRC IN FRAME \n{e}')
+        return {"status":"0", "ext":f"error find src:  {e}"}
 
     try:
         click(driver, 30, '//div[@class="logo-container USDTT "]')
@@ -100,7 +100,7 @@ def login(driver):
         sleep(2.5)
         click(driver, 30, '//*[@id="cashier"]/section/div/div[2]/button')
     except Exception as e:
-        print(f'ERROR INPUT AMOUNT \n{e}')
+        return {"status":"0", "ext":f"error input amount:  {e}"}
 
     sleep(4)
     windows = driver.window_handles
@@ -134,7 +134,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data:  {e}"}
 
 
 def wallet():
