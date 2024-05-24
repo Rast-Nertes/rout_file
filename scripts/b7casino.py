@@ -73,8 +73,6 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await click(driver, 30, '//button[@form="login"]')
     except Exception as e:
-        print(f'error login \n{e}')
-        input('pres')
         return {"status":"0", "ext":f"error login {e}"}
 
     try:
@@ -83,24 +81,17 @@ async def login(driver):
         await click(driver, 30, '//button[@class="cashier-payment-methods-expand-btn"]')
         await click(driver, 30, '//img[@alt="Cryptocurrency"]')
     except Exception as e:
-        print(f'error choose crypto methdo \n{e}')
-        input("prs crypto")
         return {"status": "0", "ext": f"error choose crypto method {e}"}
 
     try:
-        # await input_data(driver, 30, '//input[@class="cashier-amount__input"]', '15')
         await click(driver, 30, '(//input[@class="has-value"])[1]')
         await click(driver, 30, '/html/body/div[4]/ul/li[4]')
     except Exception as e:
-        print(f'ERROR CLICK TRC20 \n{e}')
-        input("prs trc20")
         return {"status": "0", "ext": f"error TRC20  {e}"}
 
     try:
         await click(driver, 30, '//button[@class="m-button m-gradient-border m-button--success m-button--medium cashier-submit"]')
     except Exception as e:
-        print(f'ERROR depos but \n{e}')
-        input("prs depos")
         return {"status": "0", "ext": f"error depos but  {e}"}
 
 
@@ -124,7 +115,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
