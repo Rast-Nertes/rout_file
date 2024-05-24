@@ -65,7 +65,7 @@ async def login(driver):
     try:
         await asyncio.sleep(2.5)
         await click(driver, 30, '//*[@id="header"]/div/div[2]/div/div[1]/div/button')
-        await click(driver, 30, "//button[@type='button' and @value='withdraw' and contains(text(), 'Cryptocurrency')]")
+        await click(driver, 30, '(//button[@value="withdraw"])[2]')
     except Exception as e:
         return {"status":"0", "ext":f"error cryptocurrency  {e}"}
 
