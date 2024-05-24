@@ -15,8 +15,6 @@ user_password = "MXLaS7P2BSkXE2i"
 # CHROME CONSTANS
 
 options = webdriver.ChromeOptions()
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-options.add_argument(f"user-agent={user_agent}")
 options.add_argument("--disable-save-password-bubble")
 options.add_argument('--log-level=3')
 options.add_argument('--disable-remote-fonts')
@@ -68,23 +66,19 @@ def login(driver):
     driver.get(url)
 
     try:
-        sleep(4.5)
-        js_click(driver, 90, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/div[1]')
-    except Exception as e:
-        return {"status":"0", "ext":f"error login click:  {e}"}
-
-    try:
         sleep(5)
+        js_click(driver, 30, "//div[@class='SimpleButton__text' and text()='Log In']")
         input_data(driver, 60, '//input[@name="username"]', user_email)
         input_data(driver, 40, '//input[@name="password"]', user_password)
-        js_click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/div[2]')
+        sleep(1.5)
+        click(driver, 30, '//div[@class="panel button SimpleButton SimpleButton_v_flat SimpleButton_c_success_blue SimpleButton_use_text LoginContainer__action LoginContainer__sign_in_action SimpleButton_interactive"]')
     except Exception as e:
         return {"status":"0", "ext":f"error login input:  {e}"}
 
     try:
         sleep(4.5)
-        click(driver, 40, '//*[@id="rootUI"]/div/div[1]/div/div[1]/div/div/div/div[1]/div/div/div[2]/div[1]')
-        click(driver, 30, '//*[@id="rootUI"]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/div[5]/div/div/div[2]/div/div/div/div/div')
+        js_click(driver, 40, "//div[@class='SimpleButton__text' and text()='Cashier']")
+        js_click(driver, 30, "//div[@class='simple-button-content' and text()='Next']")
     except Exception as e:
         return {"status":"0", "ext":f"error path to trc20:  {e}"}
 
