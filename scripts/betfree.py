@@ -90,7 +90,7 @@ def login(driver):
 
     try:
         sleep(5)
-        click(driver, 40, '(//button[@aria-haspopup="listbox"])[5]')
+        click(driver, 40, '/html/body/div[3]/div/div/section/div[2]/div/div/div/div[2]/div[2]/div[1]/button')
         click(driver, 30, '//li[@data-key="USDTT"]')
     except Exception as e:
         return {"status": "0", "ext":f"error choose trc20 {e}"}
