@@ -72,8 +72,8 @@ def login(driver):
 
     try:
         sleep(4.5)
-        input_data(driver, 60, '//input[@type="text"]', user_email)
-        input_data(driver, 30, '//input[@type="password"]', user_password)
+        input_data(driver, 60, '/html/body/div[7]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/input', user_email)
+        input_data(driver, 30, '/html/body/div[7]/div/div[2]/div[2]/div[1]/div[1]/div[2]/div[2]/input', user_password)
         click(driver, 30, '//*[@id="login"]/div[2]/button[1]')
         sleep(2)
     except Exception as e:
