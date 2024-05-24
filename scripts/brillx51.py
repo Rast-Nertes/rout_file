@@ -60,19 +60,19 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="inputPassword"]', user_password)
         await click(driver, 30, '/html/body/div[5]/div/div[1]/div/div/div/div[2]/div/div[4]/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login: {e}"}
 
     try:
         await asyncio.sleep(2.5)
         await click(driver, 30, '//*[@id="header"]/div/div[2]/div/div[1]/div/button')
         await click(driver, 30, "//button[@type='button' and @value='withdraw' and contains(text(), 'Cryptocurrency')]")
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTUCURRENCY')
+        return {"status":"0", "ext":f"error cryptocurrency  {e}"}
 
     try:
         await click(driver, 30, "//button[@type='button' and .//span[text()='TRC20']]")
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20:  {e}"}
 
 
 async def get_wallet():
@@ -95,7 +95,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
