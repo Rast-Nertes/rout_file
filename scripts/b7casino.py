@@ -111,7 +111,7 @@ async def get_wallet():
 
             return {
                 "address": address,
-                "amount": amount.replace("USDT", '').replace(" ", ''),
+                "amount": amount.replace("USDT", '').replace("0", '', 1).replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
