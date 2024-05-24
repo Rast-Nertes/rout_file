@@ -78,7 +78,7 @@ def login(driver):
     driver.get(url)
 
     try:
-        sleep(1.5)
+        sleep(3.5)
         input_data(driver, 60, '//input[@name="email"]', user_email)
         input_data(driver, 30, '//input[@name="password"]', user_password)
         click(driver, 30, '//*[@id="root"]/div/div/div/div/div[2]/div/form/div[2]/button')
@@ -89,7 +89,7 @@ def login(driver):
     driver.get('https://betfree.pro/en?modal_type=payment_deposit&modal_params=%7B%22paymentSystem%22%3A%22cryptocurrencies%22%2C%22value%22%3A%22USDT%22%7D')
 
     try:
-        sleep(2.5)
+        sleep(5)
         click(driver, 40, '(//button[@aria-haspopup="listbox"])[5]')
         click(driver, 30, '//li[@data-key="USDTT"]')
     except Exception as e:
