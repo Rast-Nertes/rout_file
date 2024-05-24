@@ -72,7 +72,7 @@ def login(driver):
 
     try:
         sleep(4.5)
-        input_data(driver, 60, '//*[@id="login"]/div[1]/div[1]/div[2]/input', user_email)
+        input_data(driver, 60, '//input[@type="text"]', user_email)
         input_data(driver, 30, '//input[@type="password"]', user_password)
         click(driver, 30, '//*[@id="login"]/div[2]/button[1]')
         sleep(2)
