@@ -68,13 +68,13 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="password"]', user_password)
         await click(driver, 30, '//button[@class="btn registration-form__btn btn--shadow"]')
     except Exception as e:
-        print(f'ERROR CLICK \n{e}')
+        return {"status":"0", "ext":f"error input log {e}"}
 
     try:
         await click(driver, 30, '(//div[@class="payment-providers__item"])')
         await click(driver, 30, '//img[@alt="Tether TRC-20"]')
     except Exception as e:
-        print(f'ERROR CLICK TRC20 \n{e}')
+        return {"status":"0", "ext":f"error click trc20 {e}"}
 
 
 async def get_wallet():
@@ -97,7 +97,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
