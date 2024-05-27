@@ -70,7 +70,7 @@ def login(driver):
         input_data(driver, 30, '//input[@type="password"]', user_password)
         js_click(driver, 30,'//*[@id="__layout"]/div/div[3]/div/section/section/section[1]/section/div[2]/button/span[3]')
     except Exception as e:
-        print(f'error \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     sleep(5)
     driver.get('https://bo11ywoodvictory.top/payment/deposit?step=2&nameComponent=RequisitesFillOut&paymentSystemId=177')
@@ -81,7 +81,7 @@ def login(driver):
         js_click(driver, 30,'//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[3]/div[1]/label')
         js_click(driver, 30,'//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/div/button/span[3]')
     except Exception as e:
-        print(f'ERROR INPUT MIN AMOUNT \n{e}')
+        return {"status":"0", "ext":f"error input amount {e}"}
 
     sleep(10)
     handles = driver.window_handles
@@ -102,12 +102,12 @@ def login(driver):
         sleep(1)
         js_click(driver, 39,'//*[@id="root"]/div/div/div[2]/div/div/div[2]/form/div[5]/div/div/div/div/label/span[1]/input')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
     try:
         js_click(driver, 30, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form/div[6]/div/div/div/button')
     except Exception as e:
-        print(f'ERROR SUBMIT BUT \n{e}')
+        return {"status":"0", "ext":f"error submit button {e}"}
 
 
 def get_wallet():
@@ -132,7 +132,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
