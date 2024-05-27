@@ -2,6 +2,8 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -76,8 +78,11 @@ def login(driver):
     driver.get('https://bo11ywoodvictory.top/payment/deposit?step=2&nameComponent=RequisitesFillOut&paymentSystemId=177')
 
     try:
-        sleep(15.5)
-        input_data(driver, 30, '(//input[@class="the-input-sample__input"])[1]', user_email)
+        WebDriverWait(driver, 40).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[1]/div[2]/div/input'))
+        )
+        sleep(5)
+        input_data(driver, 30, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[1]/div[2]/div/input', user_email)
         js_click(driver, 30,'//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[3]/div[1]/label')
         js_click(driver, 30,'//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/div/button/span[3]')
     except Exception as e:
