@@ -76,7 +76,7 @@ async def login(driver):
         return {"status":"0", "ext":f"error login {e}"}
 
     await asyncio.sleep(5)
-    await driver.get('https://kent.casino/en/profile/cash')
+    await driver.get('https://kent.casino/en/profile/cash', timeout=90)
 
     try:
         await click(driver, 30, '//img[@alt="USDT TRC-20"]')
