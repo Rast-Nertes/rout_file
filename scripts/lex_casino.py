@@ -71,8 +71,8 @@ async def login(driver):
         return {"status":"0", "ext":f"error input log {e}"}
 
     try:
-        await click(driver, 30, '(//div[@class="payment-providers__item"])')
-        await click(driver, 30, '//img[@alt="Tether TRC-20"]')
+        await js_click(driver, 30, '//div[@class="payment-providers__item"]')
+        await js_click(driver, 30, '//img[@alt="Tether TRC-20"]')
     except Exception as e:
         return {"status":"0", "ext":f"error click trc20 {e}"}
 
