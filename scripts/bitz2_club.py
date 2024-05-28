@@ -2,6 +2,8 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -53,6 +55,13 @@ proxy_options = {
 }
 
 
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
@@ -80,6 +89,10 @@ def login(driver):
     driver.get(url)
 
     try:
+        WebDriverWait(driver, 60).until(
+            EC.visibility_of_element_located((By.XPATH, '//input[@name="login"]'))
+        )
+        sleep(2.5)
         input_data(driver, 59, '//input[@name="login"]', user_email)
         input_data(driver, 30, '//input[@name="password"]', user_password)
         click(driver, 30, '//*[@id="contentWrapper"]/div[1]/div/div/section/div/form/div/button')
@@ -90,10 +103,10 @@ def login(driver):
     driver.get('https://bitz2.club/en/deposit')
 
     try:
+        wait_visibility(driver, 30, '//*[@id="leftColumn"]/div[2]/div/div[1]')
         click(driver, 30, '//*[@id="leftColumn"]/div[2]/div/div[1]')
     except Exception as e:
         return {"status": "0", "ext": f"error choose trc20 {e}"}
-
 
 
 def get_wallet():
