@@ -110,7 +110,7 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="login_password"]', user_password)
         await click(driver, 30, '//*[@id="login_submit"]')
     except Exception as e:
-        print(f'ERROR LOGIN INPUT \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         time_loop = 0
@@ -135,24 +135,15 @@ async def login(driver):
         await click(driver, 30, '(//a[@class="button button--s2 button--t2 transactions__item-button"])[2]')
         await input_data(driver, 30, '//*[@id="deposit_amount"]', '10')
         await click(driver, 30, '//*[@id="deposit_submit"]')
+        print('complete')
     except Exception as e:
-        print(f'ERROR AMOUNT \n{e}')
-
-    try:
-        await asyncio.sleep(2.4)
-        find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
-        await asyncio.sleep(0.6)
-        iframe_doc = await find_frame[0].content_document
-        click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input', timeout=10)
-        await click_checkbox.click()
-    except Exception as e:
-        print(f'ERROR CHECKBOX 2')
+        return {"status":"0", "ext":f"error min amount input:   {e}"}
 
     try:
         await asyncio.sleep(5)
-        await click(driver, 120, '(//div[@class="payment__details__instruction__open-wallet"])[1]')
+        await click(driver, 30, '//*[@id="info"]/form/div[3]/button')
     except Exception as e:
-        print(f'error accept \n{e}')
+        return {"status":"0", "ext":f"error amount:   {e}"}
 
 
 async def get_wallet():
@@ -165,7 +156,8 @@ async def get_wallet():
         try:
             address_elem = await driver.find_element(By.XPATH, '(//a[@target="_blank"])[1]', timeout=60)
             address_href = await address_elem.get_attribute('href')
-            address = address_href.split('address').replace("/", '')
+            print(address_href)
+            address = address_href.split('address')[1].replace("/", '')
 
             amount_elem = await driver.find_element(By.XPATH, '//*[@id="copy"]/nav/div[2]/div/span', timeout=30)
             amount = await amount_elem.text
@@ -176,7 +168,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
