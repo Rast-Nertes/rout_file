@@ -18,15 +18,14 @@ user_password = "KAiW6ev3wiDhfFy"
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-save-password-bubble")
+options.add_argument('--disable-popup-blocking')
+options.add_argument('--disable-notifications')
 options.add_argument('--log-level=3')
 options.add_argument('--disable-remote-fonts')
-options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
 
-with open('config.txt') as file:
-    paths = file.readlines()
-    chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
-    ext = paths[1].strip()
+prefs = {"profile.managed_default_content_settings.images": 2}
+options.add_experimental_option("prefs", prefs)
+options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
