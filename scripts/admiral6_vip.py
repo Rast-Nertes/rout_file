@@ -1,6 +1,8 @@
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -53,6 +55,13 @@ proxy_options = {
 }
 
 
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
@@ -80,7 +89,8 @@ def login(driver):
     driver.get(url)
 
     try:
-        click(driver, 50, '//*[@id="user-panel"]/div[1]/div/div[1]')
+        wait_visibility(driver, 60, '//*[@id="user-panel"]/div[1]/div/div[1]')
+        click(driver, 30, '//*[@id="user-panel"]/div[1]/div/div[1]')
         input_data(driver, 30, '//*[@id="log_email"]', user_email)
         input_data(driver, 30, '//*[@id="log_pass"]', user_password)
         click(driver, 30, '//*[@id="log_button"]')
@@ -93,9 +103,11 @@ def login(driver):
         pass
 
     try:
+        wait_visibility(driver, 30, '//*[@id="kassa"]')
         click(driver, 30, '//*[@id="kassa"]')
         click(driver, 30, '//img[@data-depositway="crp"]')
         input_data(driver, 30, '//*[@id="depamount"]', '11')
+        sleep(2.5)
         click(driver, 30, '//*[@id="submitdeposit"]')
     except Exception as e:
         return {"status":"0", "ext":f"error choose trc20 and input min amount \n{e}"}
@@ -116,7 +128,8 @@ def get_wallet():
             return log
 
         try:
-            click(driver, 70, '//img[@alt="Tether"]')
+            wait_visibility(driver, 70, '//img[@alt="Tether"]')
+            click(driver, 30, '//img[@alt="Tether"]')
             click(driver, 30, '//img[@alt="Tether TRC-20"]')
         except Exception as e:
             return {"status": "0", "ext": f"error choose trc20 {e}"}
