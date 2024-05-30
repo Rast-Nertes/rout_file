@@ -60,13 +60,15 @@ def login(driver):
             print(f"LOG IN BUTTON ERROR \n{e}")
 
     except Exception as e:
-        print(f"INPUT ERROR \n{e}")
-        return {"status": "0", "ext": "Login error. Check script."}
+        return {"status": "0", "ext": f"Login error. Check script. {e}"}
 
 
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
-        login(driver)
+        log = login(driver)
+        if log:
+            return log
+
         driver.get("https://www.lunaproxy.com/buy-proxy/")
         driver.execute_script("window.scrollBy(0, 100);")
 
@@ -92,7 +94,7 @@ def get_wallet():
                     return {"status": "0", "ext": "Login error. Check script."}
 
             except:
-                print(f"CHOOSE TARIFF ERROR \n{e}")
+                return {"status": "0", "ext": f"error choose tariff {e}"}
 
         try:
             choose_crypto = WebDriverWait(driver, 30).until(
@@ -103,7 +105,7 @@ def get_wallet():
             sleep(2)
 
         except Exception as e:
-            print(f"CHOOSE CRYPTO ERROR \n{e}")
+            return {"status": "0", "ext": f"Choose crypto error {e}"}
 
         try:
             continue_to_pay = WebDriverWait(driver, 30).until(
@@ -111,34 +113,37 @@ def get_wallet():
             )
             continue_to_pay.click()
         except Exception as e:
-            print(f"CONTINUE ERROR \n{e}")
+            return {"status": "0", "ext": f"continue error  {e}"}
 
-        sleep(7.5)
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
+        try:
+            sleep(7.5)
+            new_window = driver.window_handles[1]
+            driver.switch_to.window(new_window)
 
-        trc_20 = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[2]/div/div[1]')
-        driver.execute_script("arguments[0].click();", trc_20)
+            trc_20 = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[2]/div/div[1]')
+            driver.execute_script("arguments[0].click();", trc_20)
 
-        driver.execute_script("window.scrollBy(0, 300);")
+            driver.execute_script("window.scrollBy(0, 300);")
 
-        amount = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[2]/div[1]/p/i'))
-        )
-        amount = amount.text.replace("USDT", "")
+            amount = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[2]/div[1]/p/i'))
+            )
+            amount = amount.text.replace("USDT", "")
 
-        address = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[1]/div[1]/p'))
-        )
-        address = address.text
+            address = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[1]/div[1]/p'))
+            )
+            address = address.text
 
-        return {
-            "address": address,
-            "amount": amount.replace("$", ''),
-            "currency": "usdt"
-        }
+            return {
+                "address": address,
+                "amount": amount.replace("$", ''),
+                "currency": "usdt"
+            }
+        except Exception as e:
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
