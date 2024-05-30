@@ -98,8 +98,9 @@ def login(driver):
 
     try:
         wait_visibility(driver, 50, '//*[@id="TypeCurr_msdd"]')
-        js_click(driver, 10, '//*[@id="TypeCurr_msdd"]')
-        js_click(driver, 10, "//span[@class='ddlabel' and text()='USDT']")
+        click(driver, 10, '//*[@id="TypeCurr_msdd"]')
+        sleep(1.5)
+        click(driver, 10, "//span[@class='ddlabel' and text()='USDT']")
     except Exception as e:
         return {"status":"0", "ext":f"error choose usdt {e}"}
 
