@@ -1,13 +1,12 @@
 import asyncio
-import pyperclip
-from twocaptcha import TwoCaptcha
+import pyautogui
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from fake_useragent import UserAgent
 
 # CONSTANTS
-# url = 'https://www.tg.casino/'
+
 url = 'https://secure.weltrade.com/login/authorization'
 user_email = "leonidstakanov11@gmail.com"
 user_password = "Qwerty17"
@@ -27,11 +26,39 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
+    api_anti = paths[2].strip()
+    api_key_solver = paths[5].strip()
     ext = paths[4].strip()
 
 options.binary_location = chrome_path
 options.add_extension(ext)
+
+
+async def api_connect():
+    await asyncio.sleep(0.4)
+    pyautogui.moveTo(1730, 75)
+    pyautogui.click()
+
+    await asyncio.sleep(1)
+
+    for _ in range(2):
+        pyautogui.press('down')
+        await asyncio.sleep(0.15)
+    pyautogui.press('enter')
+
+    await asyncio.sleep(1.5)
+
+    for _ in range(4):
+        pyautogui.press('tab')
+        await asyncio.sleep(0.15)
+
+    await asyncio.sleep(2.5)
+    pyautogui.typewrite(api_key_solver, 0.05)
+    await asyncio.sleep(1)
+
+    pyautogui.moveTo(1730, 15)
+    pyautogui.click()
+    await asyncio.sleep(2)
 
 
 async def js_click(driver, time, XPATH):
@@ -57,6 +84,10 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
+
+    await api_connect()
+
+    await asyncio.sleep(1.5)
     await driver.get(url, timeout=60)
 
     try:

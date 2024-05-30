@@ -1,4 +1,5 @@
 import asyncio
+import pyautogui
 from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
@@ -28,17 +29,45 @@ options.add_argument("--disable-save-password-bubble")
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[2].strip()
+    api_key_solver = paths[5].strip()
+    api_anti = paths[2].strip()
     ext = paths[4].strip()
 
 options.binary_location = chrome_path
 options.add_extension(ext)
 
 
+async def api_connect():
+    await asyncio.sleep(0.4)
+    pyautogui.moveTo(1730, 75)
+    pyautogui.click()
+
+    await asyncio.sleep(1)
+
+    for _ in range(2):
+        pyautogui.press('down')
+        await asyncio.sleep(0.15)
+    pyautogui.press('enter')
+
+    await asyncio.sleep(1.5)
+
+    for _ in range(4):
+        pyautogui.press('tab')
+        await asyncio.sleep(0.15)
+
+    await asyncio.sleep(2.5)
+    pyautogui.typewrite(api_key_solver, 0.05)
+    await asyncio.sleep(1)
+
+    pyautogui.moveTo(1730, 15)
+    pyautogui.click()
+    await asyncio.sleep(2)
+
+
 def captcha_solver():
     solver = imagecaptcha()
     solver.set_verbose(1)
-    solver.set_key(api_key)
+    solver.set_key(api_anti)
 
     captcha_text = solver.solve_and_return_solution("captcha.png")
     time.sleep(1)
@@ -74,10 +103,13 @@ async def login(driver):
     await driver.maximize_window()
     await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
+
+    connect = await api_connect()
     await driver.get(url, timeout=60)
 
+    await asyncio.sleep(3.5)
     try:
-        await input_data(driver, 30, '//*[@id="email"]', user_email)
+        await input_data(driver, 80, '//*[@id="email"]', user_email)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
     except Exception as e:
         print(f'ERROR INPUT DATA \n{e}')
@@ -87,10 +119,9 @@ async def login(driver):
     try:
         await click(driver, 30, '//*[@id="sign-in"]')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status": "0", "ext": f"Login error \n{e}"}
 
     try:
-        await asyncio.sleep(5.4)
         find_frame = await driver.find_element(By.XPATH, '//iframe[@title="текущую проверку reCAPTCHA можно пройти в течение ещё двух минут"]', timeout=10)
         await asyncio.sleep(0.6)
         iframe_doc = await find_frame.content_document
@@ -108,7 +139,14 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR CHECKBOX \n{e}')
 
-    await asyncio.sleep(2.5)
+    try:
+        await input_data(driver, 10, '//*[@id="email"]', user_email)
+        await input_data(driver, 30, '//*[@id="password"]', user_password)
+        await click(driver, 30, '//*[@id="sign-in"]')
+    except Exception as e:
+        print('next step')
+
+    await asyncio.sleep(6.5)
     await driver.get('https://secure.weltrade.com/cashbox/operations/deposit')
 
     try:
@@ -118,15 +156,11 @@ async def login(driver):
 
 
     try:
-        choose_crypto = await driver.find_element(By.XPATH, '//*[@id="ps-Perfect Money"]', timeout=20)
+        choose_crypto = await driver.find_element(By.XPATH, '//*[@id="ps-Perfect Money"]', timeout=50)
         await asyncio.sleep(1.5)
         await driver.execute_script("arguments[0].click();", choose_crypto)
     except Exception as e:
-        find_input_tag = await driver.find_element(By.XPATH, '//*[@id="email"]', timeout=10)
-        if find_input_tag:
-            return {"status": "0", "ext": "Login error. Check script."}
-        else:
-            print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status": "0", "ext": f"ERROR CHOOSE PERFECT \n{e}"}
 
     try:
         await input_data(driver, 30, '//*[@id="amount"]', '10')
@@ -137,18 +171,18 @@ async def login(driver):
 
         await js_click(driver, 30, '//*[@id="deposit-confirm-btn"]')
     except Exception as e:
-        print(f"ERROR INPUT AMOUNT \n{e}")
+        return {"status": "0", "ext": f"ERROR INPUT MIN AMOUNT \n{e}"}
 
     try:
         await click(driver, 30, '//*[@id="r_crypto"]')
         await click(driver, 30, '//input[@name="action"]')
     except Exception as e:
-        print(f'ERROR LOGIN PERFECT \n{e}')
+        return {"status": "0", "ext": f"ERROR PERFECT LOGIN \n{e}"}
 
     try:
         while True:
             try:
-                find_captcha = await driver.find_element(By.XPATH, '//*[@id="f_log"]/table[1]/tbody/tr/td/table/tbody/tr[3]/td[2]/input', timeout=7.5)
+                find_captcha = await driver.find_element(By.XPATH, '//*[@id="cpt_img"]', timeout=10.5)
             except Exception as e:
                 print(f"ERROR \n{e}")
                 break
@@ -156,7 +190,7 @@ async def login(driver):
             await asyncio.sleep(2.5)
 
             try:
-                await input_data(driver, 30, '//input[@name="Login"]', perfect_id)
+                await input_data(driver, 60, '//input[@name="Login"]', perfect_id)
                 await input_data(driver, 30, '//*[@id="keyboardInputInitiator0"]', perfect_pass)
             except Exception as e:
                 print(f'ERROR CLICK \n{e}')
@@ -165,18 +199,18 @@ async def login(driver):
             await image_captcha.screenshot('captcha.png')
 
             result = captcha_solver()
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(2.5)
 
             await input_data(driver, 30, '//*[@id="f_log"]/table[1]/tbody/tr/td/table/tbody/tr[3]/td[2]/input', result)
             await click(driver, 30, '//*[@id="f_log"]/table[2]/tbody/tr[2]/td[1]/input')
 
-            await asyncio.sleep(5.5)
+            await asyncio.sleep(8.5)
     except:
         pass
 
     try:
         await click(driver, 30, '//label[@for="USDTTRC"]')
-        await click(driver, 30, '//input[@value="Сделать платеж"]')
+        await click(driver, 30, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/form/table[2]/tbody/tr[2]/td[1]/input')
     except Exception as e:
         print(f'ERROR MAKE PAYMENT \n{e}')
 

@@ -1,18 +1,18 @@
+import pyautogui
+import pyperclip
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
-import pyautogui
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://bspin.io/ru/login'
+url = 'https://metaspins.com/#sign-in'
 user_email = "kiracase34@gmail.com"
-user_password = "Kiramira123!"
+user_password = "Pxs6*FW9s.M2jy!"
 
 # CHROME CONSTANS
 
@@ -23,16 +23,22 @@ options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
     paths = file.readlines()
+    chrome_path = paths[0].strip()
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-# options.binary_location = chrome_path
 options.add_extension(ext)
+# options.binary_location = chrome_path
 
-proxy_address = "196.19.121.187"
-proxy_login = 'WyS1nY'
-proxy_password = '8suHN9'
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
 proxy_port = 8000
+#
+# proxy_address = "196.19.121.187"
+# proxy_login = 'WyS1nY'
+# proxy_password = '8suHN9'
+# proxy_port = 8000
 
 proxy_options = {
     "proxy":{
@@ -42,7 +48,42 @@ proxy_options = {
 }
 
 
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
 def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def js_click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
     sleep(1.5)
@@ -56,53 +97,29 @@ def input_data(driver, time, XPATH, data):
     elem_input.send_keys(data)
 
 
-def api_connect(driver):
-    windows = driver.window_handles
-    for win in windows:
-        driver.switch_to.window(win)
-        print(driver.title)
-        sleep(1.5)
-        if "2Cap" in driver.title:
-            break
-
-    try:
-        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
-        click(driver, 30, '//*[@id="connect"]')
-        sleep(4.5)
-        driver.switch_to.alert.accept()
-        click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
-        click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
-    except Exception as e:
-        print(f'ERROR CLICK \n{e}')
-
-    windows = driver.window_handles
-    for win in windows:
-        driver.switch_to.window(win)
-        sleep(1.5)
-        if not("2Cap" in driver.title):
-            break
-
-
 def login(driver):
+    actions = ActionChains(driver)
     driver.maximize_window()
     api_connect(driver)
-    sleep(2.5)
     driver.get(url)
-    sleep(1.5)
 
     try:
-        input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[1]/input', user_email)
-        input_data(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[2]/input', user_password)
+        input_data(driver, 30, '//input[@data-testid="input-email-login"]', user_email)
+        sleep(0.5)
+        input_data(driver, 30, '//input[@data-testid="input-password-login"]', user_password)
+        sleep(0.5)
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        print(f'ERROR INPUT DATA \n{e}')
 
     try:
         time_loop = 0
         while True:
-            driver.implicitly_wait(10)
-            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            driver.implicitly_wait(15)
+            find_check = driver.find_element(By.XPATH, '//*[@id="signin-recaptcha"]/div/div[2]/div[2]').text
             if ("ена" in find_check) or ("lve" in find_check):
-                click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
+                sleep(2.5)
+                click(driver, 30, '//button[@data-testid="final-login-button"]')
+                print("Complete")
                 break
             else:
                 if time_loop > 120:
@@ -113,24 +130,14 @@ def login(driver):
     except Exception as e:
         print(f'ERROR CHECKBOX \n{e}')
 
-    try:
-        sleep(3.5)
-        click(driver, 30, '//*[@id="content"]/div[6]/div[1]/a')
-        click(driver, 30, '//*[@id="user-action-buttons"]/a[2]')
-    except Exception as e:
-        driver.implicitly_wait(20)
-        find_input_tag = driver.find_element(By.XPATH, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[1]/input')
-        if find_input_tag:
-            return {"status": "0", "ext": "Login error. Check script."}
-        else:
-            print(f"ERROR DEPOS BUT \n{e}")
+    sleep(6.5)
+    driver.get('https://metaspins.com/casino#deposit')
 
     try:
-        click(driver, 30, '//*[@id="desktop-header-container"]/div/div/div/div[2]/div')
-        sleep(1.5)
-        click(driver, 30, '//*[@id="desktop-header-container"]/div/div/div/div[2]/div[2]/div[2]')
+        click(driver, 30, '//*[@id="modal"]/div/div/div/div[2]/div[1]/div[2]/div/div[1]')
+        click(driver, 30, '//*[@id="modal"]/div/div/div/div[2]/div[1]/div[2]/div/div[2]/p')
     except Exception as e:
-        print(f'ERROR CLICK \n{e}')
+        print(f'ERROR CHOOSE TRC20 \n{e}')
 
 
 def get_wallet():
@@ -139,19 +146,20 @@ def get_wallet():
         if log:
             return log
 
-        sleep(4.5)
+        sleep(1.5)
         try:
-            driver.implicitly_wait(30)
-            address_elem = driver.find_element(By.XPATH, '//*[@id="desktop-header-container"]/div/div/div/div[4]/button/div/span[2]')
-            address = address_elem.text
+            click(driver, 30, '//button[@data-testid="currency-address"]')
+            sleep(2.5)
+            address = pyperclip.paste()
+            # input("press")
 
             driver.implicitly_wait(30)
-            amount_elem = driver.find_element(By.XPATH, '//*[@id="desktop-header-container"]/div/div/div/div[3]/div[1]/span')
-            amount = amount_elem.text
+            amount_elem = driver.find_element(By.XPATH, '//*[@id="modal"]/div/div/div/div[2]/div[2]/p[1]')
+            amount = amount_elem.text.replace("USDT", '').replace("(5 USD)", '').replace("", '').replace(" ", '')
 
             return {
                 "address": address,
-                "amount": amount.replace('Мин. депозит', '').replace("USDT", '').replace(" ", ''),
+                "amount": amount[-1],
                 "currency": "usdt"
             }
         except Exception as e:

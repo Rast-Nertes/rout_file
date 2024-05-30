@@ -16,7 +16,7 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-# options.add_argument("--auto-open-devtools-for-tabs")
+options.add_argument("--auto-open-devtools-for-tabs")
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -57,7 +57,7 @@ def login(driver):
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
 
-    sleep(5.5)
+    sleep(7.5)
     driver.get('https://hugewin.com/en/deposit')
 
     try:
@@ -72,14 +72,13 @@ def login(driver):
             print(f"ERROR DEPOS BUT \n{e}")
 
     try:
-        click(driver, 80 , '//*[@id="cdk-step-content-1-0"]/div[6]/button[3]')
-        click(driver, 20, '//*[@id="cdk-step-content-1-0"]/div[7]/button')
+        click(driver, 80 , '/html/body/app-root/layout/empty-layout/div/div/checkouts/div/div[2]/div/fuse-card/mat-horizontal-stepper/div[2]/div[1]/div[6]/button[3]')
     except Exception as e:
         print(f"ERROR CHOOSE TRC20 \n{e}")
 
     try:
         input_data(driver, 20, '//*[@id="mat-input-1"]', '1')
-        click(driver, 20, '//*[@id="cdk-step-content-1-0"]/div[7]/button')
+        click(driver, 20, '/html/body/app-root/layout/empty-layout/div/div/checkouts/div/div[2]/div/fuse-card/mat-horizontal-stepper/div[2]/div[1]/div[7]/button')
     except Exception as e:
         print(f'ERROR INPUT AMOUNT \n{e}')
 
@@ -93,10 +92,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(90)
-            address = driver.find_element(By.XPATH, '//*[@id="cdk-step-content-1-1"]/div[2]/div/div[1]/p[2]').text
+            address = driver.find_element(By.XPATH, '/html/body/app-root/layout/empty-layout/div/div/checkouts/div/div[2]/div/fuse-card/mat-horizontal-stepper/div[2]/div[2]/div[2]/div/div[1]/p[2]').text
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="cdk-step-content-1-1"]/div[3]/div/div[1]/p[2]').text
+            amount = driver.find_element(By.XPATH, '/html/body/app-root/layout/empty-layout/div/div/checkouts/div/div[2]/div/fuse-card/mat-horizontal-stepper/div[2]/div[2]/div[3]/div/div[1]/p[2]').text
 
             return {
                 "address": address,
@@ -112,3 +111,4 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
