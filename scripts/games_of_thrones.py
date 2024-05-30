@@ -120,7 +120,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", log_but)
     except Exception as e:
-        print(f'ERROR LOG \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         click(driver, 20, '//*[@id="btu-prompt-login_required"]/div/div[2]/div/div[1]/div/button/div[1]')
@@ -130,12 +130,12 @@ def login(driver):
     try:
         click(driver,20, '/html/body/div[7]/div[4]/div[1]/div/div[17]')
     except Exception as e:
-        print(f"ERROR ADD BALANCE \n{e}")
+        return {"status":"0", "ext":f"error add balance {e}"}
 
     try:
         click(driver, 20, '//button[@class="psusdt"]')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO PAYMENT \n{e}')
+        return {"status":"0", "ext":f"error choose crypto payment {e}"}
 
 
 def get_wallet():
@@ -153,7 +153,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
