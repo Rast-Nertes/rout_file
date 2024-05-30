@@ -1,5 +1,5 @@
 from flask import jsonify
-from seleniumwire import webdriver
+from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -64,7 +64,7 @@ def login(driver):
         click(driver, 30, '//*[@id="priceContainer0"]')
         click(driver, 30, '//*[@id="priceButton"]')
     except Exception as e:
-        print(f'ERROR MAKE ACTIONS \n{e}')
+        return {"status": "0", "ext": f"error actions{e}"}
 
     sleep(5.5)
     handles = driver.window_handles
@@ -86,18 +86,18 @@ def login(driver):
         sleep(1.5)
         choose_trc20.click()
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status": "0", "ext": f"error choose trc20{e}"}
 
     try:
         input_data(driver, 30, '//*[@id="email"]', user_email)
         input_data(driver, 30, '//*[@id="Re_Enter_Email"]', user_email)
         click(driver, 30, '//*[@id="pay_btn"]')
     except Exception as e:
-        print(f'ERROR PLACE ORDER \n{e}')
+        return {"status": "0", "ext": f"error place order {e}"}
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         log = login(driver)
         if log:
             return log
@@ -116,7 +116,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
