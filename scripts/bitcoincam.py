@@ -109,7 +109,7 @@ def input_data(driver, time, XPATH, data):
 
 def login(driver):
     actions = ActionChains(driver)
-    driver.maximize_window()
+    # driver.maximize_window()
     api_connect(driver)
     driver.get(url)
 
