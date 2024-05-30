@@ -12,7 +12,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://my.gctransfer.info/user/login'
 user_login = 'kiracase34@gmail.com'
 user_password = 'L7RzGZDNXnF4J2Y'
@@ -30,7 +29,6 @@ options.add_argument("--disable-browser-side-navigation")
 options.add_argument("--disable-gpu")
 options.add_experimental_option("detach", True)
 
-#driver = webdriver.Chrome(options=options)
 
 def login(driver):
     driver.get(url)
@@ -45,19 +43,22 @@ def login(driver):
         input_password = driver.find_element(By.ID, '__BVID__20')
         input_password.send_keys(user_password)
     except Exception as e:
-        print(f"DATA ERROR \n{e}")
+        return {"status":"0", "ext":f"error input login data {e}"}
 
     try:
         driver.implicitly_wait(20)
-        button_login = driver.find_element(By.CSS_SELECTOR, '#app > div > div:nth-child(2) > div > div > div > div > span > form > button')
+        button_login = driver.find_element(By.CSS_SELECTOR, 'div > div > div > div > span > form > button')
         driver.execute_script("arguments[0].click();", button_login)
     except Exception as e:
-        print(f"BUTTON LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error button login {e}"}
 
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
-        login(driver)
+        log = login(driver)
+        if log:
+            return log
+
         actions = ActionChains(driver)
 
         try:
@@ -68,16 +69,15 @@ def get_wallet():
             #На анимацию
             sleep(3)
         except Exception as e:
-            print(f"BUY BUTTON ERROR \n{e}")
+            return {"status":"0", "ext":f"error buy button {e}"}
 
-        #sleep(1000)
         try:
             choose_ = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div[2]/div/div/form/fieldset[1]/div'))
             )
             choose_.click()
         except Exception as e:
-            print(f"CHOOSE ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose {e}"}
 
         for _ in range(2):
             actions.send_keys(Keys.ARROW_DOWN).perform()
@@ -91,7 +91,7 @@ def get_wallet():
             sleep(2)
             driver.execute_script("arguments[0].click();", accept_choose)
         except Exception as e:
-            print(f"ACCEPT ERROR \n{e}")
+            return {"status":"0", "ext":f"error accept {e}"}
 
         try:
             driver.implicitly_wait(20)
@@ -100,10 +100,10 @@ def get_wallet():
             sleep(1.5)
             driver.get(pay_last_step)
         except Exception as e:
-            print(f'LAST STEP ERROR \n{e}')
+            return {"status":"0", "ext":f"error last step {e}"}
 
         try:
-            driver.refresh()
+            # driver.refresh()
             sleep(5)
             buy_with_trc_20 = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div[2]/div[1]/div[3]/button'))
@@ -111,26 +111,23 @@ def get_wallet():
             sleep(3.5)
             driver.execute_script("arguments[0].click();", buy_with_trc_20)
         except Exception as e:
-            print(f"BUY WITH TRC20 ERROR \n{e}")
+            return {"status":"0", "ext":f"error buy with trc20 error  {e}"}
 
         try:
             driver.implicitly_wait(30)
-            address = driver.find_element(By.CSS_SELECTOR,
-                                          'div.col-span-9.ms-16 > div > div.data-info.pt-12 > div.data-info__address.flex.items-center.justify-between > div > span').text
+            address = driver.find_element(By.CSS_SELECTOR, 'div.col-span-9.ms-16 > div > div.data-info.pt-12 > div.data-info__address.flex.items-center.justify-between > div > span').text
 
             driver.implicitly_wait(30)
-            amount = driver.find_element(By.CSS_SELECTOR,
-                                         'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > div:nth-child(1) > span:nth-child(2)').text
+            amount = driver.find_element(By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > div:nth-child(1) > span:nth-child(2)').text
 
             return {
                 "address": address,
-                "amount": amount,
+                "amount": amount.replace('USDT', '').replace(" ", ''),
                 "currency": "usdt"
             }
-
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
