@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://fruit-tree.one/login'
+url = 'https://s1.fruit-tree.lol/login'
 user_email = "kiracase34@gmail.com"
 user_password = "E9nvJLtnYzSr296"
 
@@ -60,12 +60,12 @@ def login(driver):
         sleep(1)
         click(driver, 20 ,'/html/body/div/div/div[2]/form/span/input')
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
+        return {"status":"0", "ext":f"error input data {e}"}
 
     try:
         click(driver, 20, '/html/body/div[3]/div[2]/div/div[2]/a')
     except Exception as e:
-        print(f"error next step \n{e}")
+        return {"status":"0", "ext":f"error next step {e}"}
 
     try:
         driver.implicitly_wait(20)
@@ -73,19 +73,19 @@ def login(driver):
         sleep(2.5)
         click_pay.click()
     except Exception as e:
-        print(f'ERROR CHOOSE PAY \n{e}')
+        return {"status":"0", "ext":f"error choose pay {e}"}
 
     try:
         input_data(driver, 30, '//*[@id="psevdo"]', '650')
         sleep(1)
         click(driver, 20, '//*[@id="submit"]')
     except Exception as e:
-        print(f'ERROR INPUT AMOUNT \n{e}')
+        return {"status":"0", "ext":f"error input amount {e}"}
 
     try:
         click(driver, 20, '/html/body/div[3]/div[3]/b/center/form/input[7]')
     except Exception as e:
-        print(f'ERROR NEXT \n{e}')
+        return {"status":"0", "ext":f"error next {e}"}
 
 
 def get_wallet():
@@ -94,7 +94,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            choose_usdt = driver.find_element(By.CSS_SELECTOR, 'div.slist > ul:nth-child(3) > li:nth-child(3)')
+            choose_usdt = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[4]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
 
@@ -108,7 +108,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", place_order)
         except Exception as e:
-            print(f'ERROR CHOOSE USDT \n{e}')
+            return {"status":"0", "ext":f"error choose usdt {e}"}
 
         try:
             sleep(2.5)
@@ -124,7 +124,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
