@@ -87,21 +87,21 @@ def login(driver):
         href = driver.find_element(By.XPATH, '/html/body/div[6]/div[2]/div[2]/a[2]').get_attribute('href')
         driver.get(href)
     except Exception as e:
-        print(f'ERROR GET HREF \n{e}')
+        return {"status":"0", "ext":f"error get href {e}"}
 
     try:
         wait_visibility(driver, 30, '//*[@id="fPay"]/div/label/label')
         click(driver, 10, '//*[@id="fPay"]/div/label/label')
         click(driver, 10, '//*[@id="btn_next"]')
     except Exception as e:
-        print(f'ERROR PROCEED BUTTON ERROR \n{e}')
+        return {"status":"0", "ext":f"error proceed button error {e}"}
 
     try:
         wait_visibility(driver, 50, '//*[@id="TypeCurr_msdd"]')
         click(driver, 10, '//*[@id="TypeCurr_msdd"]')
         click(driver, 10, "//span[@class='ddlabel' and text()='USDT']")
     except Exception as e:
-        print(f'ERROR CHOOSE USDT \n{e}')
+        return {"status":"0", "ext":f"error choose usdt {e}"}
 
     try:
         wait_visibility(driver, 20, '//*[@id="email"]')
@@ -109,7 +109,7 @@ def login(driver):
         input_data(driver, 10, '//*[@id="Re_Enter_Email"]', user_email)
         click(driver, 10, '//*[@id="pay_btn"]')
     except Exception as e:
-        print(f'error depos \n{e}')
+        return {"status":"0", "ext":f"error depos {e}"}
 
 
 def get_wallet():
@@ -134,7 +134,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():

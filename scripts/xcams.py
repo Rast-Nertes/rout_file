@@ -117,13 +117,13 @@ def login(driver):
         wait_visibility(driver, 30, '//*[@id="disclaimer"]/div/div[1]/div[5]/div/div[2]')
         click(driver, 10, '//*[@id="disclaimer"]/div/div[1]/div[5]/div/div[2]')
     except Exception as e:
-        print(f'ERROR CLOSE \n{e}')
+        return {"status":"0", "ext":f"error close popup {e}"}
 
     try:
         wait_visibility(driver, 30, '//*[@id="header"]/div[1]/nav/a[1]')
         js_click(driver, 10, '//*[@id="header"]/div[1]/nav/a[1]')
     except Exception as e:
-        print(f'ERROR BUTTON TO LOGIN error \n{e}')
+        return {"status":"0", "ext":f"error path to login {e}"}
 
     try:
         wait_visibility(driver, 30, '//input[@name="_username"]')
@@ -132,7 +132,7 @@ def login(driver):
         sleep(2.5)
         js_click(driver, 20, '//*[@id="loginFormHeader"]/div[2]/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     time__ = 0
 
@@ -161,7 +161,7 @@ def login(driver):
         sleep(2)
         click(driver, 10, '//*[@id="app"]/div[2]/div/div/div[2]/section[2]/div[2]/div[3]/ul/li[5]/ul/li[1]/div[3]/div[2]/form/button')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO \n{e}')
+        return {"status":"0", "ext":f"error choose crypto {e}"}
 
     try:
         wait_visibility(driver, 60, '//img[@alt="USDT"]')
@@ -170,7 +170,7 @@ def login(driver):
         click(driver, 30, '//img[@alt="Tron"]')
         click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
     except Exception as e:
-        print(f'error choose trc20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
     try:
         wait_visibility(driver, 50, '//input[@name="email"]')
@@ -178,7 +178,7 @@ def login(driver):
         sleep(1.5)
         click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
     except Exception as e:
-        print(f'ERROR INPUT EMAIL \n{e}')
+        return {"status":"0", "ext":f"error input email {e}"}
 
 
 def get_wallet():
@@ -205,7 +205,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():

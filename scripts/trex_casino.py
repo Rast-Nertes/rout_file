@@ -67,14 +67,13 @@ def input_data(driver, time, XPATH, data):
 def login(driver):
     actions = ActionChains(driver)
     driver.maximize_window()
-    # api_connect(driver)
     driver.get(url)
 
     try:
         wait_visibility(driver, 40, '/html/body/header/nav/div[2]/a[2]')
         click(driver, 10, '/html/body/header/nav/div[2]/a[2]')
     except Exception as e:
-        print(f'ERROR PATH TO LOGIN \n{e}')
+        return {"status":"0", "ext":f"error path to login {e}"}
 
     try:
         wait_visibility(driver, 30, '//*[@id="username"]')
@@ -82,20 +81,20 @@ def login(driver):
         input_data(driver, 10, '//*[@id="password"]', user_password)
         click(driver, 30, '//*[@id="signin"]/div/div/form/div[2]/input')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         wait_visibility(driver, 30, '(//input[@class="btn btn-success"])[1]')
         sleep(2)
         js_click(driver, 10, '(//input[@class="btn btn-success"])[1]')
     except Exception as e:
-        print(f'ERROR sign in button \n{e}')
+        return {"status":"0", "ext":f"error sign in button {e}"}
 
     try:
         wait_visibility(driver, 30, '//div[@class="cash"]')
         click(driver, 10, '//div[@class="cash"]')
     except Exception as e:
-        print(f'ERROR CLICK DEPOS BUT \n{e}')
+        return {"status":"0", "ext":f"error click depos but {e}"}
 
     try:
         wait_visibility(driver, 30, '(//select)[1]')
@@ -104,7 +103,7 @@ def login(driver):
         select.select_by_value('Crypto')
         click(driver, 10, '//input[@class="btn btn-success _btn-deposit cashin_but"]')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO')
+        return {"status":"0", "ext":f"error choose crypto {e}"}
 
     try:
         wait_visibility(driver, 30, '(//img[@alt="Tether USDT"])[1]')
@@ -112,7 +111,7 @@ def login(driver):
         sleep(1.5)
         click(driver, 10, '//button[@type="button"]')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
 
 def get_wallet():
@@ -137,7 +136,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():

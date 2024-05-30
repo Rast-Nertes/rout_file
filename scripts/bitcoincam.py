@@ -118,7 +118,7 @@ def login(driver):
         input_data(driver, 10, '//*[@id="login_login_or_email"]', user_email)
         input_data(driver, 10, '//*[@id="login_password"]', user_password)
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         time_loop = 0
@@ -140,14 +140,14 @@ def login(driver):
         wait_visibility(driver, 30, '//button[@type="submit"]')
         click(driver, 10, '//button[@type="submit"]')
     except Exception as e:
-        print(f'ERROR CLICK LOG BUTTON \n{e}')
+        return {"status":"0", "ext":f"error click log button {e}"}
 
     try:
         wait_visibility(driver, 30, '//a[@class="dropdown-link"]')
         click(driver, 10, '//a[@class="dropdown-link"]')
         click(driver, 20, '//*[@id="body"]/div[2]/div/header/div/div/nav[2]/div[3]/div/div/ul/li[1]/button')
     except Exception as e:
-        print(f'ERROR APPEND TOKENS \n{e}')
+        return {"status":"0", "ext":f"error append button {e}"}
 
     try:
         wait_visibility(driver, 30, '//li[@class="cryptocoin"]')
@@ -155,7 +155,7 @@ def login(driver):
         click(driver, 10, '//*[@id="body"]/div[2]/div[1]/div[2]/div/div/div/div[1]/div[1]/div/div[2]/div[1]/ul/li[1]')
         click(driver, 10, '//*[@id="continue_button_id"]')
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        return {"status":"0", "ext":f"error depos but {e}"}
 
     wait_visibility(driver, 30, '//iframe[@class="tokens-wizard-billing-iframe"]')
     find_frame = driver.find_element(By.XPATH, '//iframe[@class="tokens-wizard-billing-iframe"]')
@@ -168,7 +168,7 @@ def login(driver):
         click(driver, 30, '//img[@alt="Tron"]')
         click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
     except Exception as e:
-        print(f'error choose trc20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
     try:
         wait_visibility(driver, 50, '//input[@name="email"]')
@@ -176,7 +176,7 @@ def login(driver):
         sleep(1.5)
         click(driver, 10 , '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
     except Exception as e:
-        print(f'ERROR INPUT EMAIL \n{e}')
+        return {"status":"0", "ext":f"error input email {e}"}
 
 
 def get_wallet():
@@ -201,7 +201,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
