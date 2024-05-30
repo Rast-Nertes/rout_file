@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://blankpsd.com/product/ohio-drivers-license-template/?doing_wp_cron=1709210338.6194310188293457031250'
+url = 'https://blankpsd.com/product/cameroon-passport-psd-template/'
 user_login = "kiracase34@gmail.com"
 user_password = "ErJYGKiG7w2fGTF"
 
@@ -30,73 +30,60 @@ def get_wallet():
         driver.maximize_window()
 
         try:
-            driver.implicitly_wait(15)
-            add_to_cart_button = driver.find_element(By.CSS_SELECTOR, 'div.product-info.summary.col-fit.col.entry-summary.product-summary > form > button')
+            driver.implicitly_wait(30)
+            sleep(6)
+            add_to_cart_button = driver.find_element(By.XPATH, '(//button[@type="submit"])[2]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", add_to_cart_button)
         except Exception as e:
-            print(f"ADD TO CART ERROR \n{e}")
+            return {"status":"0", "ext":f"error add to cart {e}"}
 
+        sleep(5)
         driver.get('https://blankpsd.com/checkout/')
 
-        try:
-            sleep(5)
-            driver.implicitly_wait(10)
-            place_order_button = driver.find_element(By.CSS_SELECTOR, '#payment > ul > li.wc_payment_method.payment_method_wapg_altcoin_payment > label')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", place_order_button)
-        except Exception as e:
-            print(f"PLACE ORDER ERROR \n{e}")
+        while True:
+            try:
+                sleep(3.5)
+                driver.implicitly_wait(10)
+                place_order_button = driver.find_element(By.CSS_SELECTOR, '#payment > ul > li.wc_payment_method.payment_method_wapg_altcoin_payment > label')
+                sleep(1.5)
+                driver.execute_script("arguments[0].click();", place_order_button)
+            except Exception as e:
+                return {"status":"0", "ext":f"error place order {e}"}
 
-        try:
-            driver.implicitly_wait(15)
-            input_first_name = driver.find_element(By.ID, 'billing_first_name')
-            input_first_name.clear()
-            input_first_name.send_keys("Kira")
+            try:
+                sleep(5)
+                driver.implicitly_wait(20)
+                select_coin = driver.find_element(By.ID, 'CsaltCoin')
+                sleep(5)
+                select_coin.click()
 
-            driver.implicitly_wait(15)
-            input_last_name = driver.find_element(By.ID, 'billing_last_name')
-            input_last_name.clear()
-            input_last_name.send_keys("Ivanova")
+                sleep(1.5)
+                for _ in range(2):
+                    actions.send_keys(Keys.ARROW_DOWN).perform()
+                    sleep(0.5)
 
-            driver.implicitly_wait(10)
-            input_email = driver.find_element(By.ID, 'billing_email')
-            input_email.clear()
-            input_email.send_keys(user_login)
-        except Exception as e:
-            print(f"INPUT DATA ERROR \n{e}")
+                actions.send_keys(Keys.ENTER).perform()
+            except Exception as e:
+                return {"status": "0", "ext":f"error select {e}"}
 
-        try:
-            driver.implicitly_wait(10)
-            select_coin = driver.find_element(By.ID, 'CsaltCoin')
-            sleep(5)
-            #driver.execute_script("arguments[0].click();", select_coin)
-            select_coin.click()
+            try:
 
-            sleep(1.5)
-            for _ in range(2):
-                actions.send_keys(Keys.ARROW_DOWN).perform()
-                sleep(0.5)
+                driver.implicitly_wait(10)
+                amount = driver.find_element(By.CSS_SELECTOR, '#wapg_order_review > table > tfoot > tr.cart-subtotal > td > span').text.replace("-", "").replace(" ", '').replace("Tether(USDT)", "")
 
-            actions.send_keys(Keys.ENTER).perform()
-        except Exception as e:
-            print(f"SELECT ERROR \n{e}")
+                driver.implicitly_wait(10)
+                address = driver.find_element(By.ID, 'alt-coinAddress').get_attribute('value')
 
-        try:
-            driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR, '#wapg_order_review > table > tfoot > tr.cart-subtotal > td > span').text.replace("-", "").replace(" ", '').replace("Tether(USDT)", "")
-
-
-            driver.implicitly_wait(10)
-            address = driver.find_element(By.ID, 'alt-coinAddress').get_attribute('value')
-
-            return {
-                "address": address,
-                "amount": amount,
-                "currency": "usdt"
-            }
-        except Exception as e:
-            print(f"DATA ERROR \n{e}")
+                return {
+                    "address": address,
+                    "amount": amount,
+                    "currency": "usdt"
+                }
+            except Exception as e:
+                print(f"DATA ERROR ")
+                driver.refresh()
+                continue
 
 
 def wallet():
