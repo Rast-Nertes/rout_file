@@ -91,15 +91,15 @@ def login(driver):
 
     try:
         wait_visibility(driver, 30, '//*[@id="fPay"]/div/label/label')
-        click(driver, 10, '//*[@id="fPay"]/div/label/label')
-        click(driver, 10, '//*[@id="btn_next"]')
+        js_click(driver, 10, '//*[@id="fPay"]/div/label/label')
+        js_click(driver, 10, '//*[@id="btn_next"]')
     except Exception as e:
         return {"status":"0", "ext":f"error proceed button error {e}"}
 
     try:
         wait_visibility(driver, 50, '//*[@id="TypeCurr_msdd"]')
-        click(driver, 10, '//*[@id="TypeCurr_msdd"]')
-        click(driver, 10, "//span[@class='ddlabel' and text()='USDT']")
+        js_click(driver, 10, '//*[@id="TypeCurr_msdd"]')
+        js_click(driver, 10, "//span[@class='ddlabel' and text()='USDT']")
     except Exception as e:
         return {"status":"0", "ext":f"error choose usdt {e}"}
 
@@ -107,7 +107,7 @@ def login(driver):
         wait_visibility(driver, 20, '//*[@id="email"]')
         input_data(driver, 10, '//*[@id="email"]', user_email)
         input_data(driver, 10, '//*[@id="Re_Enter_Email"]', user_email)
-        click(driver, 10, '//*[@id="pay_btn"]')
+        js_click(driver, 10, '//*[@id="pay_btn"]')
     except Exception as e:
         return {"status":"0", "ext":f"error depos {e}"}
 
