@@ -2,15 +2,12 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://bankdoc.net/product/buy-australia-bank-statement/'
 user_email = "alex37347818@gmail.com"
 user_password = "onvB2mkVH5c"
@@ -44,7 +41,7 @@ def login(driver):
         input_city.clear()
         input_city.send_keys("City")
     except Exception as e:
-        print(f"ERROR 1 PART DATA \n{e}")
+        return {"status":"0", "ext":f"error first part data {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -62,7 +59,7 @@ def login(driver):
         input_email.clear()
         input_email.send_keys(user_email)
     except Exception as e:
-        print(f"ERROR 2 PART DATA \n{e}")
+        return {"status":"0", "ext":f"error second part data {e}"}
 
     sleep(2.5)
 
@@ -72,7 +69,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", place_order)
     except Exception as e:
-        print(f"ERROR PLACE ORDER \n{e}")
+        return {"status":"0", "ext":f"error place order {e}"}
 
     sleep(3.5)
 
@@ -82,7 +79,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script('arguments[0].click();', view_cart)
     except Exception as e:
-        print(f"ERROR VIEW \n{e}")
+        return {"status":"0", "ext":f"error view {e}"}
 
     try:
         driver.implicitly_wait(50)
@@ -90,7 +87,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", checkout_button)
     except Exception as e:
-        print(f"ERROR CHECKOUT \n{e}")
+        return {"status":"0", "ext":f"error checkout {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -113,7 +110,7 @@ def login(driver):
         input_city.clear()
         input_city.send_keys("City")
     except Exception as e:
-        print(f"ERROR 1 PART DATA \n{e}")
+        return {"status": "0", "ext": f"error first part data, step 2  {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -126,7 +123,7 @@ def login(driver):
         input_email.clear()
         input_email.send_keys(user_email)
     except Exception as e:
-        print(f"ERROR 2 PART DATA \n{e}")
+        return {"status":"0", "ext":f"error second part data step 2 {e}"}
 
     sleep(5)
 
@@ -144,7 +141,7 @@ def login(driver):
         actions.send_keys(Keys.ENTER).perform()
         sleep(0.5)
     except Exception as e:
-        print(f"CHOOSE SELECT ERROR \n{e}")
+        return {"status":"0", "ext":f"error choose trc20  {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -152,7 +149,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", place_order_2)
     except Exception as e:
-        print(f"ERROR PLACE ORDER \n{e}")
+        return {"status":"0", "ext":f"error place order {e}"}
 
 
 def get_wallet():
@@ -172,7 +169,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
