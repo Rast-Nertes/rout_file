@@ -2,6 +2,8 @@ import importlib.util
 import json
 import sys
 from flask import Flask
+from random import randint
+import socket
 
 app = Flask(__name__)
 
@@ -35,12 +37,22 @@ def selenium_route(project_name):
         return {"status": 0, "exception": f"{e}"}, 500
 
 
+def find_free_port():
+    while True:
+        port = randint(1000, 9000)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex(('localhost', port)) != 0:
+                return port
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: python record_data.py <project_name>")
         sys.exit(1)
 
     project_name = sys.argv[1]
+    port = find_free_port()
+
     result, status_code = selenium_route(project_name)
     print(json.dumps(result))
     sys.exit(status_code)
