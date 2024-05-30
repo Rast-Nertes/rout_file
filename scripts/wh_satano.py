@@ -43,11 +43,11 @@ def login(driver):
 
     try:
         driver.implicitly_wait(35)
-        a_href = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[2]/main/div/div[1]/div[2]/div[3]/div[2]/a[1]').get_attribute('href')
+        a_href = driver.find_element(By.XPATH, '//a[@class="buy-btn"]').get_attribute('href')
         sleep(1)
         driver.get(a_href)
     except Exception as e:
-        print(f"ERROR A HREF \n{e}")
+        return {"status": "0", "ext": f"error href{e}"}
 
     try:
         click(driver, 35, '//*[@id="TypeCurr_titleText"]')
@@ -58,7 +58,7 @@ def login(driver):
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
-        print(f"ERROR CHOOSE TRC20 \n{e}")
+        return {"status": "0", "ext": f"error choose trc20 {e}"}
 
     try:
         input_data(driver, 20, '//*[@id="email"]', user_email)
@@ -67,7 +67,7 @@ def login(driver):
         sleep(1.5)
         click(driver, 20, '//*[@id="pay_btn"]')
     except Exception as e:
-        print(f'ERROR SUBMIT \n{e}')
+        return {"status": "0", "ext": f"error submit {e}"}
 
 
 def get_wallet():
@@ -78,7 +78,7 @@ def get_wallet():
             click(driver, 20, '//*[@id="form1"]/section/section/div[2]/div[1]/div[4]')
             sleep(1.5)
         except Exception as e:
-            print(f"ERROR CHOOSE \n{e}")
+            return {"status": "0", "ext": f"error choose {e}"}
 
         try:
             driver.implicitly_wait(40)
@@ -93,7 +93,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status": "0", "ext": f"error data  {e}"}
 
 
 def wallet():
