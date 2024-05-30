@@ -167,7 +167,7 @@ def login(driver):
         wait_visibility(driver, 60, '//img[@alt="USDT"]')
         js_click(driver, 10, '//img[@alt="USDT"]')
         click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/button')
-        click(driver, 30, '//img[@alt="Tron"]')
+        js_click(driver, 30, '//img[@alt="Tron"]')
         click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
     except Exception as e:
         return {"status":"0", "ext":f"error choose trc20 {e}"}
@@ -176,7 +176,7 @@ def login(driver):
         wait_visibility(driver, 50, '//input[@name="email"]')
         input_data(driver, 10, '//input[@name="email"]', "kiracase34@gmail.com")
         sleep(1.5)
-        click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
+        js_click(driver, 10, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
     except Exception as e:
         return {"status":"0", "ext":f"error input email {e}"}
 
