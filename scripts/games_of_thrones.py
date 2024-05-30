@@ -1,12 +1,6 @@
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
-from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
@@ -18,14 +12,19 @@ site_key = '6LfB0fAoAAAAAGh_HziuH-kUo3Qay30h-9IiNrde'
 
 # CHROME CONSTANS
 
+options = webdriver.ChromeOptions()
+options.add_argument("--disable-save-password-bubble")
+options.add_argument('--log-level=3')
+options.add_argument('--disable-remote-fonts')
+options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
+
 with open('config.txt') as file:
     paths = file.readlines()
-    api_key = paths[2].strip()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+    ext = paths[1].strip()
 
-options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
-options.add_argument("--disable-save-password-bubble")
+options.add_extension(ext)
 
 proxy_address = "45.130.254.133"
 proxy_login = 'K0nENe'
@@ -40,16 +39,41 @@ proxy_options = {
 }
 
 
-def captcha_solver():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key(api_key)
-    solver.set_website_url(url)
-    solver.set_website_key(site_key)
-    solver.set_soft_id(0)
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
 
-    g_response = solver.solve_and_return_solution()
-    return g_response
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
 
 
 def click(driver, time, XPATH):
@@ -67,18 +91,29 @@ def input_data(driver, time, XPATH, data):
 
 
 def login(driver):
+    api_connect(driver)
     driver.get(url)
     driver.maximize_window()
-
-    sleep(3.5)
-    result_captcha = captcha_solver()
-    driver.implicitly_wait(5.5)
-    input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-    driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
 
     try:
         input_data(driver, 20, '//input[@type="text"]', user_email)
         input_data(driver, 20, '//input[@type="password"]', user_password)
+
+        try:
+            time_loop = 0
+            while True:
+                driver.implicitly_wait(10)
+                find_check = driver.find_element(By.XPATH, '(//div[@class="captcha-solver-info"])').text
+                if ("ена" in find_check) or ("lve" in find_check):
+                    break
+                else:
+                    if time_loop > 120:
+                        return {"status": "0", "ext": "CAPTCHA ERROR"}
+                    time_loop += 5
+                    sleep(5)
+                    print("Wait 5 seconds, captcha solving...")
+        except Exception as e:
+            print(f'ERROR CHECKBOX')
 
         driver.implicitly_wait(10)
         log_but = driver.find_element(By.XPATH, '//*[@id="login"]/div/div[6]/center/div/div/button/div[2]')
@@ -86,33 +121,6 @@ def login(driver):
         driver.execute_script("arguments[0].click();", log_but)
     except Exception as e:
         print(f'ERROR LOG \n{e}')
-
-    while True:
-        try:
-            sleep(1.5)
-            driver.implicitly_wait(10)
-            find_error = driver.find_element(By.XPATH, '//*[@id="btu-prompt-login_required"]/div/div[2]/p').text
-            if "failed" in find_error:
-                driver.implicitly_wait(5)
-                driver.find_element(By.XPATH, '//*[@id="btu-prompt-login_required"]/div/div[2]/div/div[1]/div/button').click()
-
-                result_captcha = captcha_solver()
-                driver.implicitly_wait(5.5)
-                input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-                driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
-
-                input_data(driver, 20, '//input[@type="text"]', user_email)
-                input_data(driver, 20, '//input[@type="password"]', user_password)
-
-                driver.implicitly_wait(10)
-                log_but = driver.find_element(By.XPATH, '//*[@id="login"]/div/div[6]/center/div/div/button/div[2]')
-                sleep(1.5)
-                driver.execute_script("arguments[0].click();", log_but)
-            else:
-                print(f"Solve")
-                break
-        except:
-            break
 
     try:
         click(driver, 20, '//*[@id="btu-prompt-login_required"]/div/div[2]/div/div[1]/div/button/div[1]')
