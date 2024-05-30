@@ -41,7 +41,7 @@ def login(driver):
         input_city.clear()
         input_city.send_keys("City")
     except Exception as e:
-        return {"status":"0", "ext":f"error first part data {e}"}
+        return {"status": "0", "ext": f"error first part data {e}"}
 
     try:
         driver.implicitly_wait(30)
