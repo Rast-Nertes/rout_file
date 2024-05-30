@@ -1,7 +1,7 @@
 import importlib.util
 import json
 import sys
-from flask import Flask
+from flask import Flask, request
 from random import randint
 import socket
 
@@ -55,4 +55,10 @@ if __name__ == '__main__':
 
     result, status_code = selenium_route(project_name)
     print(json.dumps(result))
+
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
     sys.exit(status_code)
