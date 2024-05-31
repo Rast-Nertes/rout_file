@@ -47,7 +47,7 @@ def login(driver):
         sleep(1)
         driver.get(a_href)
     except Exception as e:
-        print(f'ERROR A_HREF \n{e}')
+        return {"status":"0", "ext":f"error href {e}"}
 
     try:
         click(driver, 25, '/html/body/div[1]/div[2]/div/div[3]/div/form/div/div[3]')
@@ -56,12 +56,12 @@ def login(driver):
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
     except Exception as e:
-        print(f"ERROR CHOOSE WIN \n{e}")
+        return {"status":"0", "ext":f"error choose win {e}"}
 
     try:
         click(driver, 20, '//*[@id="btn_next"]')
     except Exception as e:
-        print(f'ERROR NEXT BUT \n{e}')
+        return {"status":"0", "ext":f"error next button {e}"}
 
     try:
         click(driver, 35, '//*[@id="TypeCurr_titleText"]')
@@ -72,7 +72,7 @@ def login(driver):
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
-        print(f"ERROR CHOOSE TRC20 \n{e}")
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
     try:
         input_data(driver, 20, '//*[@id="email"]', user_email)
@@ -81,7 +81,7 @@ def login(driver):
         sleep(1)
         click(driver, 20, '//*[@id="pay_btn"]')
     except Exception as e:
-        print(f'ERROR SUBMIT \n{e}')
+        return {"status":"0", "ext":f"error submit {e}"}
 
 
 def get_wallet():
@@ -102,7 +102,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
