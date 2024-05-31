@@ -1,13 +1,14 @@
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 
 # CONSTANS
 
 url = 'https://bfo7pokerdom.com/auth/login'
-site_key = '6Lc9h3oUAAAAAIVlZ8EWCx1ycpVDxAS8WKYV0mYO'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
 
@@ -40,6 +41,50 @@ with open('config.txt') as file:
 options.add_extension(ext)
 
 
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
@@ -57,24 +102,7 @@ def input_data(driver, time, XPATH, data):
 def login(driver):
     driver.get(url)
     driver.maximize_window()
-
-    windows = driver.window_handles
-    for win in windows:
-        driver.switch_to.window(win)
-        print(driver.title)
-        sleep(1.5)
-        if "2Cap" in driver.title:
-            break
-
-    try:
-        input_data(driver, 20, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
-        sleep(1)
-        click(driver, 20, '//*[@id="connect"]')
-    except Exception as e:
-        print(f'ERROR CAP CONNECT\n{e}')
-
-    driver.switch_to.window(windows[1])
-    sleep(2.5)
+    api_connect(driver)
 
     try:
         input_data(driver, 35, '/html/body/gg-root/gg-layout-wrapper/div/div/ng-component/main/section/ng-component/ng-component/form/section/gg-input-login/section/div/input', user_email)
@@ -82,45 +110,41 @@ def login(driver):
         input_data(driver, 20, '/html/body/gg-root/gg-layout-wrapper/div/div/ng-component/main/section/ng-component/ng-component/form/section/gg-input-password/section/div/input', user_password)
         sleep(1)
     except Exception as e:
-        print(f'ERROR DATA INPUT\n{e}')
+        return {"status":"0", "ext":f"error login data {e}"}
 
     try:
-        click(driver, 20, '//*[@id="ngrecaptcha-0"]/div/div[2]')
-    except Exception as e:
-        print(f'ERROR CLICK SOLVE CAPTCHA \n{e}')
-
-    while True:
-        try:
+        time_loop = 0
+        while True:
             driver.implicitly_wait(10)
-            find_text_captha = driver.find_element(By.XPATH, '//*[@id="ngrecaptcha-0"]/div/div[2]/div[2]').text
-            sleep(1.5)
-            if "Решается" in find_text_captha:
-                sleep(3.5)
-                print('Wait 5 sec...')
-            else:
-                print('Solve!')
-                sleep(1.5)
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            if ("ена" in find_check) or ("lve" in find_check):
                 break
-        except:
-            break
+            else:
+                if time_loop > 120:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
+                sleep(5)
+                print("Wait 5 seconds, captcha solving...")
+    except Exception as e:
+        print(f'ERROR CHECKBOX \n{e}')
 
     try:
         click(driver, 30, '/html/body/gg-root/gg-layout-wrapper/div/div/ng-component/main/section/ng-component/ng-component/form/section/gg-button/button/div')
     except Exception as e:
-        print(f'ERROR SOLVE CAPT \n{e}')
+        return {"status":"0", "ext":f"error click log but {e}"}
 
     try:
-        driver.implicitly_wait(90)
-        click_depos_but = driver.find_element(By.XPATH, '/html/body/gg-root/gg-layout-wrapper/div/gg-layout-header/div/div/gg-layout-header-rounded/header/div/div/gg-layout-header-deposit-button/gg-layout-deposit-button-rounded/gg-button/button/sp-msg')
+        wait_visibility(driver, 30, '(//button[@type="button"])[1]')
+        click_depos_but = driver.find_element(By.XPATH, '(//button[@type="button"])[1]')
         sleep(3.5)
         driver.execute_script("arguments[0].click();", click_depos_but)
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        return {"status":"0", "ext":f"error depos but {e}"}
 
     try:
         click(driver, 25, '//*[@id="329"]')
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
 
 def get_wallet():
@@ -141,7 +165,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
