@@ -56,7 +56,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
     sleep(2)
     driver.get('https://asignat.com/account/wallet')
@@ -78,11 +78,11 @@ def get_wallet():
             driver.execute_script("arguments[0].click();", select)
 
             driver.implicitly_wait(10)
-            choose_trc20 = driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div[19]')
+            choose_trc20 = driver.find_element(By.XPATH, '(//div[@class="ss-option" and text()=" TetherUS USDT-TRC20"])[1]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
-            print(f"CHOOSE TRC20 ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose trc20 {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -90,7 +90,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", next_step_button)
         except Exception as e:
-            print(f"NEXT STEP BUTTON ERROR \n{e}")
+            return {"status":"0", "ext":f"error next step button {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -107,7 +107,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
