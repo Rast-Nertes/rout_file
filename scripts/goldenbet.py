@@ -11,8 +11,6 @@ from fake_useragent import UserAgent
 url = 'http://goldenbet.com'
 user_email = "rwork875"
 user_password = "3644Lem"
-#3644Lem
-#rwork22133
 
 # CHROME CONSTANS
 
@@ -39,7 +37,8 @@ async def login(driver):
     await driver.maximize_window()
 
     try:
-        log_but = await driver.find_element(By.XPATH, '/html/body/header/div/div/ul/li[2]', timeout=20)
+        await asyncio.sleep(7.5)
+        log_but = await driver.find_element(By.XPATH, '//li[@class="login"]', timeout=20)
         await asyncio.sleep(1.5)
         await log_but.click()
 
@@ -54,34 +53,30 @@ async def login(driver):
         await asyncio.sleep(2.5)
         await log_but.click()
     except Exception as e:
-        print(f'ERROR LOG \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         await asyncio.sleep(2.5)
-        depos_button = await driver.find_element(By.XPATH, '/html/body/header/div/div/div[1]/div/ul/li[5]/a', timeout=20)
+        depos_button = await driver.find_element(By.XPATH, '//a[@class="btn green deposit"]', timeout=20)
         await asyncio.sleep(1)
         await depos_button.click()
     except Exception as e:
-        print(f'ERROR CLICK BUTTON \n{e}')
+        return {"status":"0", "ext":f"error click depos button {e}"}
 
     try:
-        # choose_wal = await driver.find_element(By.XPATH, '//*[@id="app"]/div[3]/div/div[2]/div[2]/div/div/div[2]/div[1]/div[2]/div/div', timeout=20)
-        # await asyncio.sleep(1)
-        # await choose_wal.click()
-
-        choose_usdt= await driver.find_element(By.XPATH, '/html/body/main/div[3]/ul/li[4]/div[5]', timeout=20)
+        choose_usdt = await driver.find_element(By.XPATH, '//h4[text()="Tether USD"]', timeout=20)
         await asyncio.sleep(1)
         await choose_usdt.click()
 
-        choose_net = await driver.find_element(By.XPATH, '/html/body/main/div[3]/ul/li[5]/div/div[1]/div[1]/div/div[1]', timeout=20)
+        choose_net = await driver.find_element(By.XPATH, '//div[@class="slctd-val" and text()=" Choose Network "]', timeout=20)
         await asyncio.sleep(1)
         await choose_net.click()
 
-        choose_trc = await driver.find_element(By.XPATH, '/html/body/main/div[3]/ul/li[5]/div/div[1]/div[1]/div/div[2]/div[2]', timeout=20)
+        choose_trc = await driver.find_element(By.XPATH, '//div[@class="optn" and text()=" Tether USD (Tron/TRC20) "]', timeout=20)
         await asyncio.sleep(1)
         await choose_trc.click()
     except Exception as e:
-        print(f'error choose net \n{e}')
+        return {"status":"0", "ext":f"error choose net {e}"}
 
 
 async def get_wallet():
@@ -90,7 +85,7 @@ async def get_wallet():
 
         await asyncio.sleep(4.5)
         try:
-            address_elem = await driver.find_element(By.XPATH, '/html/body/main/div[3]/ul/li[5]/div/div[1]/div[2]/div/div', timeout=30)
+            address_elem = await driver.find_element(By.XPATH, '//div[@class="wallet-address"]', timeout=30)
             address = await address_elem.text
 
             amount_elem = await driver.find_element(By.XPATH, '/html/body/main/div[3]/ul/li[4]/div[4]/p[1]/span[2]', timeout=30)
@@ -102,7 +97,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
