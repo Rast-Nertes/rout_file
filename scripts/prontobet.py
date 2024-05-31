@@ -54,7 +54,7 @@ def login(driver):
         input_data(driver, 20, '//*[@id="password"]', user_password)
         click(driver, 20, '/html/body/app-root/div/div/div[2]/app-main-overview/app-login-overview/section/div/div/app-login/form/div[3]/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status": "0", "ext": f"error login {e}"}
 
     try:
         click(driver, 20, '//a[text()=" Deposit "]')
@@ -63,13 +63,13 @@ def login(driver):
         if find_input_tag:
             return {"status": "0", "ext": "Login error. Check script."}
         else:
-            print(f"ERROR DEPOS BUT \n{e}")
+            return {"status": "0", "ext": f"error depos but {e}"}
 
     try:
         sleep(3.5)
         click(driver, 20, '//img[@alt="Crypto"]')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO \n{e}')
+        return {"status": "0", "ext": f"error choose crypto {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -78,19 +78,19 @@ def login(driver):
 
         select.select_by_value('USDTT')
     except Exception as e:
-        print(f'ERROR SELECT TRC20 \n{e}')
+        return {"status": "0", "ext": f"error select trc20 {e}"}
 
     try:
-        click(driver, 20, '/html/body/app-root/div/ng-component/app-deposit-overview/div/app-deposit-step-one/form/footer/button')
+        click(driver, 20, '//button[@type="submit"]')
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        return {"status": "0", "ext": f"error depos but  {e}"}
 
     try:
         driver.implicitly_wait(20)
         get_src = driver.find_element(By.ID, 'receiver').get_attribute('src')
         driver.get(get_src)
     except Exception as e:
-        print(f'ERROR GET SRC \n{e}')
+        return {"status": "0", "ext": f"error get src {e}"}
 
 
 def get_wallet():
@@ -102,10 +102,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(60)
-            address = driver.find_element(By.XPATH, '//*[@id="mui-10"]').get_attribute('value')
+            address = driver.find_element(By.XPATH, '//input[@name="address"]').get_attribute('value')
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form[1]/div[1]/div/div/div/div/div/div/div/h2').text.replace("USDT", '').replace(" ", '')
+            amount = driver.find_element(By.CSS_SELECTOR, 'div > h2').text.replace("USDT", '').replace(" ", '')
 
             return {
                 "address": address,
@@ -113,7 +113,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
