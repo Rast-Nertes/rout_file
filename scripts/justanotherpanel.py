@@ -49,34 +49,29 @@ proxy_options = {
 }
 
 
-#driver = webdriver.Chrome(options=options, seleniumwire_options=proxy_options)
-
 def login(driver):
-    driver.get('https://justanotherpanel.com/')
+    driver.get('https://justanotherpanel.com/?redirect=%2Faddfunds')
     driver.maximize_window()
 
-    driver.execute_script("window.scrollBy(0, 270);")
-    sleep(2)
     try:
         input_email = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="signin"]/div/div[1]/div/div/div/div/form/div/div[1]/input'))
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="username"]'))
         )
         input_email.send_keys(user_login)
 
         input_password = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="signin"]/div/div[1]/div/div/div/div/form/div/div[2]/input'))
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]'))
         )
         input_password.send_keys(user_password)
         sleep(2)
-        try:
-            log_in = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="signin"]/div/div[1]/div/div/div/div/form/div/div[3]/input'))
-            )
-            log_in.click()
-        except Exception as e:
-            print(f"CLICK INPUT ERROR \n{e}")
+
+        log_in = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '(//input[@type="submit"])[1]'))
+        )
+        log_in.click()
     except Exception as e:
-        print(f"INPUT ERROR \n{e}")
+        return {"status": "0", "ext": f"error login {e}"}
+
 
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
@@ -90,15 +85,15 @@ def get_wallet():
             specify_currency.send_keys('10')
 
             pay_button = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="tab-add"]/div[1]/form/button'))
+                EC.visibility_of_element_located((By.XPATH, '(//button[@type="submit"])[2]'))
             )
             pay_button.click()
         except Exception as e:
-            print(f"SPECIFY ERROR \n{e}")
+            return {"status": "0", "ext": f"error specify {e}"}
 
         try:
             usdt_ = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[2]/div'))
+                EC.visibility_of_element_located((By.XPATH, '//div[@class="ps_name" and text()="USDT"]'))
             )
             usdt_.click()
 
@@ -112,32 +107,32 @@ def get_wallet():
             )
             accept_wallet.click()
         except Exception as e:
-            print(f"USDT ERROR \n{e}")
+            return {"status": "0", "ext": f"error usdt choose {e}"}
 
         sleep(5)
 
-        amount = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[1]'))
-        )
-        amount = amount.text.replace("USDT", "")
+        try:
+            amount = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[1]'))
+            )
+            amount = amount.text.replace("USDT", "")
 
-        address = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[2]'))
-        )
-        address = address.text
-        return {
-            "address": address,
-            "amount": amount,
-            "currency": "usdt"
-        }
-@app.route('/api/selenium/justanotherpanel')
+            address = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, '//*[@id="info_bitcoin"]/div[1]/h3/font[2]'))
+            )
+            address = address.text
+            return {
+                "address": address,
+                "amount": amount,
+                "currency": "usdt"
+            }
+        except Exception as e:
+            return {"status": "0", "ext": f"error data {e}"}
+
+
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    #wallet()
-    app.run(use_reloader=False, debug=True, port=5027)
