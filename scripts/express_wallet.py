@@ -14,6 +14,7 @@ from selenium.webdriver.common.by import By
 url = 'https://a96a.express-wallet.info/?a=auth'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira555"
+
 with open('config.txt') as file:
     paths = file.readlines()
     api_key = paths[2].strip()
@@ -58,53 +59,39 @@ def input_data(driver, time, XPATH, data):
 
 
 def login(driver):
-    driver.get(url)
+    # driver.get(url)
     driver.maximize_window()
-
-    try:
-        click(driver, 20, '/html/body/div[4]/div[2]/a[2]')
-    except:
-        pass
-
-    try:
-        input_data(driver, 20, '//*[@id="email"]', user_email)
-        sleep(1)
-        input_data(driver, 20, '//*[@id="passw"]', user_password)
-    except Exception as e:
-        print(f'ERROR INPUT \n{e}')
-
-    driver.set_window_size(300, 400)
-    driver.execute_script("document.body.style.zoom='250%'")
-    driver.execute_script("window.scrollBy(350, 1000);")
-    sleep(1.5)
-    driver.save_screenshot('captcha.jpg')
-
-    sleep(1)
-    result_captcha = captcha_solver(api_key)
-
-    try:
-        driver.implicitly_wait(15)
-        input_captcha = driver.find_element(By.ID, 'capt')
-        input_captcha.clear()
-        input_captcha.send_keys(result_captcha)
-
-    except Exception as e:
-        print(f'ERROR INPUT CAPTCHA \n{e}')
-
-    sleep(1.5)
-    driver.maximize_window()
-    driver.execute_script("document.body.style.zoom='100%'")
-
-    try:
-        click(driver, 20, '//*[@id="btns"]')
-    except Exception as e:
-        print(f'ERROR CLICK \n{e}')
-
-    sleep(1.5)
-    try:
-        click(driver, 45, '//*[@id="content"]/div[2]/div[1]/div[2]/ul/li[8]')
-    except Exception as e:
-        print(f'ERROR ADD BALANCE \n{e}')
+    #
+    # try:
+    #     click(driver, 20, '/html/body/div[4]/div[2]/a[2]')
+    # except:
+    #     pass
+    #
+    # try:
+    #     input_data(driver, 20, '//*[@id="email"]', user_email)
+    #     sleep(1)
+    #     input_data(driver, 20, '//*[@id="passw"]', user_password)
+    # except Exception as e:
+    #     print(f'ERROR INPUT \n{e}')
+    #
+    # driver.find_element(By.XPATH, '//*[@id="reg_cap"]').screenshot('captcha.jpg')
+    # sleep(1)
+    # result_captcha = captcha_solver(api_key)
+    #
+    # try:
+    #     driver.implicitly_wait(15)
+    #     input_captcha = driver.find_element(By.ID, 'capt')
+    #     input_captcha.clear()
+    #     input_captcha.send_keys(result_captcha)
+    #
+    # except Exception as e:
+    #     print(f'ERROR INPUT CAPTCHA \n{e}')
+    #
+    # try:
+    #     click(driver, 20, '//*[@id="btns"]')
+    # except Exception as e:
+    #     print(f'ERROR CLICK \n{e}')
+    driver.get('https://42c8.express-wallet.site/?a=deposit&umail=kiracase34@gmail.com&hash=a64d63a649b484acde7f1862aa7744fe')
 
 
 def get_wallet():
@@ -112,30 +99,20 @@ def get_wallet():
         login(driver)
 
         try:
-            input_data(driver, 25, '/html/body/div[3]/div/div[2]/div[2]/center[2]/table/tbody/tr/td[3]/form/div/input', 650)
+            input_data(driver, 25, '(//*[@id="pay"]/div/input)[1]', "650")
             sleep(1)
-
-            find_buy_buttons = driver.find_elements(By.CLASS_NAME, 'buttop')
-
-            for buy_butt in find_buy_buttons:
-                text = buy_butt.get_attribute('value')
-                print(text)
-                if "Kassa" in text:
-                    buy_butt.click()
-                    break
-
-            sleep(1)
-            click(driver, 20, '//*[@id="content"]/div[2]/div[2]/center/form/input[8]')
+            click(driver, 20, '(//*[@id="pay"]/input[2])[1]')
+            click(driver, 10, '//input[@name="pay"]')
         except Exception as e:
-            print(f'ERROR INPUT AMOUNT \n{e}')
+            return {"status":"0", "ext":f"error inout email {e}"}
 
         try:
             driver.implicitly_wait(60)
-            choose_trc20 = driver.find_element(By.ID, 'currency-15')
+            choose_trc20 = driver.find_element(By.XPATH, '(//*[@id="currency-15"])[2]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -143,7 +120,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit button  {e}"}
 
         try:
             sleep(3.5)
@@ -159,7 +136,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
