@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,6 +13,18 @@ from selenium.webdriver.common.by import By
 url = 'https://bmb-original.org/ru/login'
 user_email = "kiracase34@gmail.com"
 user_password = "mpTnWcAcZhmAhP8"
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 # CHROME CONSTANS
 
@@ -42,7 +54,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -50,11 +62,11 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", insert_button)
     except Exception as e:
-        print(f"ERROR INSERT BUTTON \n{e}")
+        return {"status":"0", "ext":f"error insert button {e}"}
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
@@ -68,7 +80,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_freekassa)
         except Exception as e:
-            print(f"ERROR CHOOSE \n{e}")
+            return {"status":"0", "ext":f"error choose {e}"}
 
         try:
             sleep(5.5)
@@ -76,7 +88,7 @@ def get_wallet():
             driver.refresh()
             sleep(2)
         except Exception as e:
-            print(f"SWITCH ERROR \n{e}")
+            return {"status":"0", "ext":f"error switch {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -84,7 +96,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -92,7 +104,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit {e}"}
 
         try:
             sleep(3.5)
@@ -108,7 +120,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
