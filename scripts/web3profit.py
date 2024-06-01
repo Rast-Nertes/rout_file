@@ -38,7 +38,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
 
 def get_wallet():
@@ -59,7 +59,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", spend)
         except Exception as e:
-            print(f"CHOOSE TRC20 ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose trc20 {e}"}
 
         try:
             driver.implicitly_wait(40)
@@ -74,7 +74,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():

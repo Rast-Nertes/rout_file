@@ -163,7 +163,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", next_step_button)
         except Exception as e:
-            print(f"ERROR CHOOSE FREEKASSA \n{e}")
+            return {"status":"0", "ext":f"error choose frekassa {e}"}
 
         try:
             driver.implicitly_wait(30)
@@ -171,7 +171,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", step_2)
         except Exception as e:
-            print(f"SWITCH ERROR \n{e}")
+            return {"status":"0", "ext":f"error switch {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -184,7 +184,7 @@ def get_wallet():
             input_email.clear()
             input_email.send_keys(user_email)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -192,7 +192,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit {e}"}
 
         try:
             sleep(3.5)
@@ -208,7 +208,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
