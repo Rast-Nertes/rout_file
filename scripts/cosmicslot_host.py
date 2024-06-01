@@ -37,22 +37,23 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
+        await asyncio.sleep(3.5)
         input_email = await driver.find_element(By.XPATH, '//*[@id="loginModal___BV_modal_body_"]/div/div[1]/form/div/label[1]/input', timeout=30)
         await input_email.write(user_email)
 
         input_password = await driver.find_element(By.XPATH, '//*[@id="loginModal___BV_modal_body_"]/div/div[1]/form/div/label[2]/input', timeout=20)
         await input_password.write(user_password)
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
+        return {"status": "0", "ext": f"error log {e}"}
 
     try:
         click_log = await driver.find_element(By.XPATH, '//*[@id="loginModal___BV_modal_body_"]/div/div[1]/form/button[2]', timeout=20)
         await asyncio.sleep(1)
         await click_log.click()
     except Exception as e:
-        print(f'ERROR CLICK LOG \n{e}')
+        return {"status": "0", "ext": f"error log but {e}"}
 
-    await asyncio.sleep(2.5)
+    await asyncio.sleep(6.5)
     await driver.get('https://cosmicslot.com/en/account/myRoom')
 
     try:
@@ -60,10 +61,10 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await driver.execute_script("arguments[0].click();", click_depos_but)
     except Exception as e:
-        print(f'ERROR CLICK DEPOS BUT \n{e}')
+        return {"status": "0", "ext": f"error click depos but {e}"}
 
     try:
-        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="WalletModal___BV_modal_body_"]/div[2]/div[2]/div[1]/div[4]/div/button[13]', timeout=20)
+        choose_trc20 = await driver.find_element(By.XPATH, '(//img[@class="payments-list__image"])[18]', timeout=20)
         await asyncio.sleep(1)
         await choose_trc20.click()
 
@@ -71,7 +72,7 @@ async def login(driver):
         await asyncio.sleep(1)
         await depos_but.click()
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        return {"status": "0", "ext": f"error choose trc20 {e}"}
 
 
 async def get_wallet():
@@ -98,7 +99,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
