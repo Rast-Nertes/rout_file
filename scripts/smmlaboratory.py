@@ -1,9 +1,7 @@
-import requests
 from time import sleep
-from flask import Flask
 from flask import jsonify
-from fake_useragent import UserAgent
 from seleniumwire import webdriver
+from anticaptchaofficial.imagecaptcha import *
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,16 +10,15 @@ from selenium.webdriver.common.by import By
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://smmlaboratory.com'
 user_login = 'kiracase34@gmail.com'
 user_password = 'kirakira123'
 
-#API CONSTANS
-
-API_KEY = '7f728c25edca4f4d0e14512d756d6868'
-API_URL = 'http://rucaptcha.com/in.php'
-API_RESULT_URL = f'http://rucaptcha.com/res.php?key={API_KEY}&action=get'
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[2].strip()
+    ext = paths[1].strip()
 
 #CHROME OPTIONS
 
@@ -29,79 +26,49 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.headless = False
 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 
-#driver = webdriver.Chrome(options=chrome_options)
-def captcha(driver):
-    try:
-        driver.get(url)
-        #captcha_image_element = driver.find_element(By.ID, 'captcha_image')
-        captcha_image_element = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'captcha_image'))
-        )
-        captcha_image_url = captcha_image_element.get_attribute('src')
-        driver.set_window_size(200, 300)
-        driver.execute_script("window.scrollBy(0, 200);")
-        driver.save_screenshot("captcha.png")
-        sleep(2)
-        driver.maximize_window()
 
-        #Загружаем капчу
-        with open('captcha.png', 'rb') as captcha_file:
-            data = {
-                'key':API_KEY,
-                'method':'post'
-            }
-            response = requests.post(API_URL, data = data, files={'file':captcha_file})
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
 
-        sleep(3)
-        #Проверяем успешное выполнение капчи
-        response_text = response.text.split('|')
-        if response_text[0] == "OK":
-            captcha_id = response_text[1]
-            print(f"Капча успешно отправлена. ID капчи: {captcha_id}")
 
-            #Повторяем запросы для получения результата
-            while True:
-                result_response = requests.get(f"{API_RESULT_URL}&id={captcha_id}")
-                if 'OK' in result_response.text:
-                    captcha_solution = result_response.text.split('|')[1]
-                    print(f"Captcha решена: {captcha_solution}")
+def solve_captcha():
+    solver = imagecaptcha()
+    solver.set_verbose(1)
+    solver.set_key(api_key)
 
-                    #driver.find_element(By.XPATH, '//*[@id="captcha_input"]').send_keys(captcha_solution)
-                    #driver.find_element(By.XPATH, '//*[@id="submit_button"]').click()
-                    send_keys_captcha = WebDriverWait(driver, 10).until(
-                        EC.visibility_of_element_located((By.XPATH, '//*[@id="captcha_input"]'))
-                    )
-                    send_keys_captcha.send_keys(captcha_solution)
-                    driver.find_element(By.XPATH, '//*[@id="submit_button"]').click()
-                    break
+    solver.set_soft_id(0)
 
-                elif 'CAPCHA_NOT_READY' in result_response.text:
-                    print("Ожидание решения капчи...")
-                    sleep(5)  # Подождите некоторое время перед повторным запросом
-                else:
-                    print("Ошибка при получении результата.")
-                    print(result_response.text)
-                    break
-        else:
-            print(f"Ошибка при отправке капчи. Ответ сервера: {response.text}")
-    except:
-        print('Капчи нет.')
-        driver.maximize_window()
-        sleep(2)
+    captcha_text = solver.solve_and_return_solution("captcha.jpeg")
+    return captcha_text
+
 
 def login(driver):
-    captcha(driver)
-    #Проверим, правильно ли ввели капчу с первого раза.
+    driver.get(url)
+    driver.maximize_window()
+
+    sleep(3.5)
+    while True:
+        try:
+            driver.implicitly_wait(5)
+            driver.find_element(By.XPATH, '//*[@id="captcha_image"]').screenshot("captcha.jpeg")
+
+            result_captcha = solve_captcha()
+
+            driver.implicitly_wait(10)
+            input_captcha = driver.find_element(By.XPATH, '//*[@id="captcha_input"]')
+            input_captcha.send_keys(result_captcha)
+
+            driver.implicitly_wait(10)
+            submit = driver.find_element(By.XPATH, '//*[@id="submit_button"]')
+            submit.click()
+        except Exception as e:
+            print('solve')
+            break
 
     try:
-        captcha_image_element = driver.find_element(By.ID, 'captcha_image')
-        print("Капча была введена неверно.")
-        captcha()
-    except:
-        print("Капча была введена верно.")
-
-    try:
-        print("LOGIN START")
         #Клик для входа
         element_click = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//*[@id="accaunt"]'))
@@ -133,19 +100,16 @@ def login(driver):
 
         sleep(5)
 
-        print("LOGIN SUCCEFUL")
-
     except Exception as e:
         print(f"LOGIN ERROR -- \n{e}")
 
+
 def get_wallet_data():
-    try:
-        with webdriver.Chrome(options=chrome_options) as driver:
-            login(driver)
-            print("WALLET DATA START")
+    with webdriver.Chrome(options=chrome_options) as driver:
+        login(driver)
 
-            driver.get('https://smmlaboratory.com/money/wallet/')
-
+        driver.get('https://smmlaboratory.com/money/wallet/')
+        try:
             add_to_cart = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[9]/div[2]/div[2]/div[4]/button'))
             )
@@ -155,46 +119,59 @@ def get_wallet_data():
                 EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/nav/a[2]/div[1]'))
             )
             basket.click()
+        except Exception as e:
+            print(f'ERROR ADD TO BUSKET \n{e}')
 
-            driver.execute_script("window.scrollBy(0, 700);")
-
-
-            method_of_payment = WebDriverWait(driver, 30).until(
+        try:
+            WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="for-button-submit"]/div[3]/div/label[2]/div'))
             )
-            method_of_payment.click()
+            js_click(driver, 10, '//*[@id="for-button-submit"]/div[3]/div/label[2]/div')
 
             sleep(5)
 
-            order_ = WebDriverWait(driver, 30).until(
+            WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[9]/div/div/div[4]/div[1]/input'))
             )
-            order_.click()
+            js_click(driver, 10, '/html/body/div[2]/div[9]/div/div/div[4]/div[1]/input')
+        except Exception as e:
+            print(f'ERROR CHOOSE METHOD \n{e}')
 
+        try:
             choose_wallet = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[1]/div/div'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]'))
             )
             choose_wallet.click()
 
             choose_trc20 = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/ul/li[2]/div'))
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[2]/ul/li[1]'))
             )
             choose_trc20.click()
 
+            sleep(1.5)
+            js_click(driver, 10, '//*[@id="root"]/div/div[1]/div/div[1]/div/div[3]/div/div/div[2]/div[1]')
+            js_click(driver, 10, '/html/body/div[1]/div/div[1]/div/div[1]/div/div[3]/div/div/div[2]/div[2]/ul/li[2]')
+        except Exception as e:
+            print(f'ERROR CHOOSE TRC20 \n{e}')
+
+        try:
             next_step = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[1]/div[3]/button'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div/div[1]/div/div[3]/div/button'))
             )
             next_step.click()
+        except Exception as e:
+            print(f'ERROR NEXT STEP BUTTON \n{e}')
 
+        try:
             amount = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located(
-                    (By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[1]'))
+                    (By.XPATH, '//*[@id="root"]/div/div[1]/div/div[1]/div/div[2]/div[2]/div[1]/div[1]/div/span[1]'))
             )
             amount = amount.text.replace("USDT", "")
 
             address = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located(
-                    (By.XPATH, '//*[@id="payment-page"]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[2]/div/div[1]'))
+                    (By.XPATH, '//span[@class="address__text"]'))
             )
             address = address.text
 
@@ -203,11 +180,11 @@ def get_wallet_data():
                 "amount": amount,
                 "currency": "usdt"
             }
+        except Exception as e:
+            print(f'ERROR DATA \n{e}')
 
-    except Exception as e:
-        print(f"GET WALLET ERROR -- \n{e}")
-        return None
 
 def wallet():
     wallet_data = get_wallet_data()
+    print(wallet_data)
     return jsonify(wallet_data)
