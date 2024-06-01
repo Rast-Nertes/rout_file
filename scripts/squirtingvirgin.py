@@ -60,24 +60,24 @@ def login(driver):
         sleep(1)
         input_data(driver, 35, '//*[@id="password"]', user_password)
     except Exception as e:
-        print(f"ERROR INPUT DATA \n{e}")
+        return {"status": "0", "ext": f"error log data {e}"}
 
     try:
         click(driver, 20, '//*[@id="crypto-cascade"]')
         sleep(1)
         click(driver, 10, '//*[@id="submit-button"]')
     except Exception as e:
-        print(f"ERROR CHOOSE CRYPTO \n{e}")
+        return {"status": "0", "ext": f"error choose crypto {e}"}
 
     try:
         click(driver, 30, '//button[@data-pm-title="crypto"]')
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO METHOD \n{e}')
+        return {"status": "0", "ext": f"error choose crypto method {e}"}
 
     try:
         click(driver, 30, '//*[@id="root"]/div[1]/div/div[3]/div[2]/div/div[10]')
     except Exception as e:
-        print(f"ERROR CHOOSE TRC20 \n{e}")
+        return {"status": "0", "ext": f"error choose trc20 {e}"}
 
 
 def get_wallet():
@@ -98,7 +98,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
