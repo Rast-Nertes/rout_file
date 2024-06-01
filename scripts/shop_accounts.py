@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://shop-accounts.com/order-betting-accounts/'
 user_email = "alex37347818@gmail.com"
 user_password = "onvB2mkVH5c"
@@ -37,7 +37,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", ticket)
     except Exception as e:
-        print(f"ERROR ACTIONS \n{e}")
+        return {"status":"0", "ext":f"error actions {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -54,7 +54,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", ticket_2)
     except Exception as e:
-        print(f"ERROR DATA \n{e}")
+        return {"status":"0", "ext":f"error some data{e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -62,7 +62,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", submit_button)
     except Exception as e:
-        print(f'ERROR SUBMIT BUTTON \n{e}')
+        return {"status":"0", "ext":f"error submit {e}"}
 
 
 def get_wallet():
@@ -82,7 +82,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
