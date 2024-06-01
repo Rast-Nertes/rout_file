@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from anticaptchaofficial.recaptchav2proxyless import *
@@ -10,11 +10,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#33775511l
+
 url = 'https://robots-game.org/ru/login'
 user_email = "kiracase34@gmail.com"
 user_password = "vY7psYYKvCZTsG3"
-site_key = '6Lfq3TEUAAAAABhXFKk_qsch6OfG7AcKspdUartK'
 
 # CHROME CONSTANS
 
@@ -27,27 +26,75 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
 
-def captcha_solver():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key(api_key)
-    solver.set_website_url(url)
-    solver.set_website_key(site_key)
-    solver.set_soft_id(0)
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
-    g_response = solver.solve_and_return_solution()
-    return g_response
+
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
 
 
 def login(driver):
     driver.get(url)
     driver.maximize_window()
 
-    result_captcha = captcha_solver()
-    driver.implicitly_wait(7.5)
-    input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-    driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
+    # input("press")
 
     try:
         driver.implicitly_wait(50)
@@ -65,47 +112,14 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
-    while True:
-        try:
-            sleep(2.5)
-            driver.implicitly_wait(7.5)
-            find_error = driver.find_element(By.CSS_SELECTOR, 'body > div.message.message--type_warning.message--visible_show').text
-
-            if "робот" in find_error:
-
-                result_captcha = captcha_solver()
-
-                driver.implicitly_wait(7.5)
-                input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-                driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
-                sleep(2.5)
-
-                driver.implicitly_wait(50)
-                input_email = driver.find_element(By.XPATH, '//*[@id="login"]/div[2]/form/label[1]/input')
-                input_email.clear()
-                input_email.send_keys(user_email)
-
-                driver.implicitly_wait(10)
-                input_password = driver.find_element(By.XPATH, '//*[@id="login"]/div[2]/form/label[2]/input')
-                input_password.clear()
-                input_password.send_keys(user_password)
-
-                driver.implicitly_wait(10)
-                login_button = driver.find_element(By.XPATH, '//*[@id="login"]/div[2]/form/div[2]/button')
-                sleep(1.5)
-                driver.execute_script("arguments[0].click();", login_button)
-            else:
-                break
-        except:
-            break
     sleep(3)
     driver.get('https://robots-game.org/ru/account/insert')
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
@@ -119,7 +133,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_free)
         except Exception as e:
-            print(f"ERROR CHOOSE FREEKASSA \n{e}")
+            return {"status":"0", "ext":f"error choose freekassa {e}"}
 
         try:
             sleep(5.5)
@@ -127,7 +141,7 @@ def get_wallet():
             driver.refresh()
             sleep(2)
         except Exception as e:
-            print(f"SWITCH ERROR \n{e}")
+            return {"status":"0", "ext":f"error switch {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -135,7 +149,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -143,7 +157,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit {e}"}
 
         try:
             sleep(3.5)
@@ -159,7 +173,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
