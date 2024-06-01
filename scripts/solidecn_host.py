@@ -1,5 +1,6 @@
-import pyautogui
 from flask import jsonify
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
@@ -45,6 +46,13 @@ proxy_options = {
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
 
 
 def api_connect(driver):
@@ -95,10 +103,11 @@ def login(driver):
     driver.get(url)
 
     try:
-        input_data(driver, 30, '//*[@id="LoginUserName"]', user_email)
-        input_data(driver, 30, '//*[@id="LoginPassword"]', user_password)
+        wait_visibility(driver, 30, '//*[@id="LoginUserName"]')
+        input_data(driver, 10, '//*[@id="LoginUserName"]', user_email)
+        input_data(driver, 10, '//*[@id="LoginPassword"]', user_password)
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
+        return {"status": "0", "ext": f"ERROR INPUT DATA \n{e}"}
 
     sleep(1.5)
 
@@ -124,12 +133,14 @@ def login(driver):
     sleep(2.5)
 
     try:
-        click(driver, 30, '/html/body/div[1]/div/div/div/div[1]/div/div/div/form/div/div[1]/div/span/span')
+        wait_visibility(driver, 30, '(//span[@class="k-input"])[1]')
+        click(driver, 10, '(//span[@class="k-input"])[1]')
         sleep(1)
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(1)
         actions.send_keys(Keys.ENTER).perform()
-        click(driver, 30, '/html/body/div[1]/div/div/div/div[1]/div/div/div/form/div/div[2]/div/span/span')
+        wait_visibility(driver, 30, '(//span[@class="k-input"])[2]')
+        click(driver, 10, '(//span[@class="k-input"])[2]')
 
         for _ in range(4):
             actions.send_keys(Keys.ARROW_DOWN).perform()
@@ -141,13 +152,12 @@ def login(driver):
 
     try:
         sleep(1.5)
-        driver.implicitly_wait(20)
-        click_input_tag = driver.find_element(By.XPATH,
-                                              '/html/body/div[1]/div/div/div/div[1]/div/div/div/form/div/div[4]/div/div/span[1]/span/input[1]')
+        wait_visibility(driver, 30, '//input[@class="k-formatted-value form-control k-input"]')
+        click_input_tag = driver.find_element(By.XPATH, '//input[@class="k-formatted-value form-control k-input"]')
         sleep(1.5)
-        click_input_tag.click()
-        pyautogui.write('5')
-        click(driver, 30, '//*[@id="deposit-button"]')
+        click_input_tag.send_keys("5")
+        wait_visibility(driver, 30, '//*[@id="deposit-button"]')
+        click(driver, 10, '//*[@id="deposit-button"]')
     except Exception as e:
         return {"status": "0", "ext": f"DEPOS BUT \n{e}"}
 
@@ -165,8 +175,7 @@ def get_wallet():
             address = address_elem.get_attribute('value')
 
             driver.implicitly_wait(30)
-            amount_elem = driver.find_element(By.XPATH,
-                                              '/html/body/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[2]')
+            amount_elem = driver.find_element(By.CSS_SELECTOR, 'div:nth-child(1) > div.col-sm-10.text-start')
             amount = amount_elem.text
 
             return {
@@ -175,7 +184,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"ERROR DATA \n{e}"}
 
 
 def wallet():
