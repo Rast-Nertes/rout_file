@@ -86,16 +86,16 @@ def login(driver):
         sleep(3.5)
         click(driver, 30, '//button[@class="button secondary block xl"]')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     sleep(5)
     driver.get('https://bitfiring.com/profile/personal/deposit')
 
     try:
         sleep(3.5)
-        click(driver, 15, '//*[@id="__nuxt"]/div/main/div[1]/div[2]/section/div[2]/div/form/div[5]/div/button')
+        click(driver, 10, '//*[@id="__nuxt"]/div/main/div[1]/div[2]/section/div[2]/div/form/div[5]/div/button')
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        print(f'ERROR DEPOS BUT')
 
 
 def get_wallet():
@@ -120,14 +120,10 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
