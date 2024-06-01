@@ -1,6 +1,5 @@
-import requests
-from PIL import Image
-from time import sleep
+import time
+
 from flask import Flask
 from flask import jsonify
 from fake_useragent import UserAgent
@@ -29,71 +28,57 @@ chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 user_agent = UserAgent()
 chrome_options.add_argument(f"user-agent={user_agent.random}")
 
-#driver = webdriver.Chrome(options=chrome_options)
 
 def get_wallet():
-    try:
-        with webdriver.Chrome(options=chrome_options) as driver:
-            driver.get('https://esimplus.me/virtual-phone-number/united-states/alabama?phone=%2B16197989936')
-            driver.maximize_window()
+    with webdriver.Chrome(options=chrome_options) as driver:
+        driver.get('https://esimplus.me/virtual-phone-number/united-states/alabama?phone=%2B16197989936')
+        driver.maximize_window()
 
-            try:
-                driver.implicitly_wait(10)
-                choose_month_tariff = driver.find_element(By.CSS_SELECTOR, 'div.sc-1cb45200-14.gShvJM > div.sc-1cb45200-15.ifOnEc > label:nth-child(1)')
-                driver.execute_script("arguments[0].click();", choose_month_tariff)
+        try:
+            driver.implicitly_wait(10)
+            get_num = driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div/div[2]/button')
+            driver.execute_script("arguments[0].click();", get_num)
+        except Exception as e:
+            return {"status":"0", "ext":f"error accept button {e}"}
 
-                driver.implicitly_wait(10)
-                get_num = driver.find_element(By.CSS_SELECTOR, 'div.sc-7a9d20cb-3.sc-ef50f70f-0.WBcIA.fkgzzt > div > div.sc-1cb45200-14.gShvJM > button')
-                driver.execute_script("arguments[0].click();", get_num)
-            except Exception as e:
-                print(f"CHOOSE MONTH TARIFF ERROR \n{e}")
+        try:
+            driver.implicitly_wait(10)
+            choose_crypto_currency = driver.find_element(By.XPATH, '/html/body/div[3]/div/div[1]/button[3]')
+            driver.execute_script("arguments[0].click();", choose_crypto_currency)
+        except Exception as e:
+            return {"status":"0", "ext":f"error choose cryptocurrency {e}"}
 
-            try:
-                driver.implicitly_wait(10)
-                choose_crypto_currency = driver.find_element(By.CSS_SELECTOR, 'div.sc-8f6f74e3-1.cwBvbl > button:nth-child(2)')
-                driver.execute_script("arguments[0].click();", choose_crypto_currency)
-            except Exception as e:
-                print(f"CHOOSE CRYPTO CURRENCY ERROR \n{e}")
+        try:
+            driver.implicitly_wait(10)
+            choose_tether_trc20 = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div/div[2]/form/div[2]/ul/li[1]')
+            driver.execute_script("arguments[0].click();", choose_tether_trc20)
 
-            try:
-                driver.implicitly_wait(10)
-                choose_tether_trc20 = driver.find_element(By.CSS_SELECTOR, 'div.search-currency > form > div.list-container > ul > li:nth-child(1)')
-                driver.execute_script("arguments[0].click();", choose_tether_trc20)
+            driver.implicitly_wait(10)
+            next_step_button = driver.find_element(By.CSS_SELECTOR, '#btn-sub')
+            driver.execute_script("arguments[0].click();", next_step_button)
+        except Exception as e:
+            return {"status":"0", "ext":f"error choose trc20 {e}"}
 
-                driver.implicitly_wait(10)
-                next_step_button = driver.find_element(By.CSS_SELECTOR, '#btn-sub')
-                driver.execute_script("arguments[0].click();", next_step_button)
-            except Exception as e:
-                print(f"CHOOSE TRC20 ERROR \n{e}")
+        try:
+            time.sleep(5)
+            driver.implicitly_wait(30)
+            amount_elem = driver.find_element(By.XPATH,'(//div[@class="pay-currency-addres__hesh"])[1]')
+            amount = amount_elem.text.replace(' USDT TRC20', '')
 
-            try:
-                amount = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located(
-                        (By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div[1]/div[3]/div/div[3]/div[1]/div[2]'))
-                )
-                amount = amount.text.replace(' USDT TRC20', '')
+            driver.implicitly_wait(20)
+            address_elem = driver.find_element(By.XPATH, '(//a[@target="_blank"])[1]')
+            address = address_elem.get_attribute('href').split("address/")[1]
 
-                address = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located(
-                        (By.XPATH, '//*[@id="app"]/div/div/div/div/div[1]/div/div[1]/div[1]/div[3]/div/div[3]/div[2]/div[2]'))
-                )
-                address = address.text
+            return {
+                "address": address,
+                "amount": amount,
+                "currency": "usdt"
+            }
+        except Exception as e:
+            return {"status":"0", "ext":f"error data {e}"}
 
-                return {
-                    "address": address,
-                    "amount": amount,
-                    "currency": "usdt"
-                }
-            except Exception as e:
-                print(f"DATA ERROR \n{e}")
-                return None
-
-
-    except Exception as e:
-        print(f"GET WALLET ERROR \n{e}")
-        return None
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
-
