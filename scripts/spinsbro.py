@@ -45,33 +45,33 @@ async def login(driver):
         input_pass = await driver.find_element(By.XPATH, '//*[@id="password"]', timeout=20)
         await input_pass.write(user_password)
     except Exception as e:
-        print(f'ERROR LOGIN DATA INPUT \n{e}')
+        return {"status":"0", "ext":f"error login data input {e}"}
 
     try:
         log_but = await driver.find_element(By.XPATH, '//*[@id="popupSubmit"]', timeout=40)
         await asyncio.sleep(1)
         await log_but.click()
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     await asyncio.sleep(2.5)
     await driver.get('https://spinsbro.com/en/wallet/deposit', timeout=60)
 
     try:
-        choose_bit = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div/div[2]/ul/li[12]/div', timeout=20)
+        choose_bit = await driver.find_element(By.XPATH, '//img[@alt="Bitpace"]', timeout=20)
         await asyncio.sleep(1)
         await choose_bit.click()
     except Exception as e:
-        print(f'ERROR CHOOSE BIT \n{e}')
+        return {"status":"0", "ext":f"error choose bitpace {e}"}
 
     try:
         depos = await driver.find_element(By.XPATH, '//*[@id="walletDepositSubmit"]', timeout=40)
         await asyncio.sleep(1)
         await depos.click()
     except Exception as e:
-        print(f'ERROR DEPOS \n{e}')
+        return {"status":"0", "ext":f"error depos {e}"}
 
-    await asyncio.sleep(2)
+    await asyncio.sleep(5)
     wind = await driver.window_handles
     await driver.switch_to.window(wind[0])
     await asyncio.sleep(1.5)
@@ -91,14 +91,14 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        return {"status":"0", "ext":f"error choose trc20 {e}"}
 
     try:
         pay_but = await driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div/span[2]/button', timeout=80)
         await asyncio.sleep(2.5)
         await pay_but.click()
     except Exception as e:
-        print(f'ERROR PAY BUT \n{e}')
+        return {"status":"0", "ext":f"error pay button {e}"}
 
 
 async def get_wallet():
@@ -127,7 +127,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
