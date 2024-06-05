@@ -25,6 +25,13 @@ options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
 
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
 def login(driver):
     driver.get(url)
     driver.maximize_window()
@@ -38,7 +45,7 @@ def login(driver):
         input_password = driver.find_element(By.ID, 'password')
         input_password.send_keys(user_password)
     except Exception as e:
-        print(f"INPUT DATA ERROR \n{e}")
+        return {"status":"0", "ext":f"error input data {e}"}
 
     try:
         driver.implicitly_wait(10)
@@ -46,7 +53,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN BUTTON ERROR \n{e}")
+        return {"status":"0", "ext":f"error log button  {e}"}
 
 
 def get_wallet(driver):
@@ -58,7 +65,7 @@ def get_wallet(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", button_in_busket)
     except Exception as e:
-        print(f"ADD TO BUSKET ERROR \n{e}")
+        return {"status":"0", "ext":f"error add to busket {e}"}
 
     driver.get('https://freekurses.site/wishlist/cart/')
 
@@ -69,7 +76,7 @@ def get_wallet(driver):
         input_count.clear()
         input_count.send_keys('1')
     except Exception as e:
-        print(f"INPUT COUNT ERROR \n{e}")
+        return {"status":"0", "ext":f"error count input {e}"}
 
     try:
         driver.implicitly_wait(10)
@@ -77,7 +84,7 @@ def get_wallet(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", refresh_busket)
     except Exception as e:
-        print(f"REFRESH BUSKET \n{e}")
+        return {"status":"0", "ext":f"error refresh busket  {e}"}
 
     sleep(1.5)
     driver.get('https://freekurses.site/wishlist/checkout/')
@@ -88,50 +95,60 @@ def choose_payment_method():
         get_wallet(driver)
 
         try:
-            driver.implicitly_wait(10)
-            choose_crypto_cloud_payment = driver.find_element(By.XPATH, '//*[@id="payment"]/ul/li[12]/label')
+            sleep(6.5)
+            wait_visibility(driver, 30, '//label[@for="payment_method_cryptocloud"]')
+            choose_crypto_cloud_payment = driver.find_element(By.XPATH, '//label[@for="payment_method_cryptocloud"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_crypto_cloud_payment)
         except Exception as e:
-            print(f"CHOOSE CRYPTO ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose crypto {e}"}
 
         try:
+            sleep(1.5)
+            wait_visibility(driver, 15, '(//input[@type="email"])[1]')
+            input_email = driver.find_element(By.XPATH, '(//input[@type="email"])[1]')
+            input_email.send_keys(user_login)
+
             driver.implicitly_wait(10)
             accept_choose = driver.find_element(By.ID, 'place_order')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", accept_choose)
         except Exception as e:
-            print(f"ACCEPT CHOOSE ERROR")
+            return {"status":"0", "ext":f"error accept choose {e}"}
 
         try:
-            driver.implicitly_wait(30)
-            buy_with_trc_20 = driver.find_element(By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button')
+            wait_visibility(driver, 30, '(//button[@target="_blank"])[2]')
+            buy_with_trc_20 = driver.find_element(By.XPATH, '(//button[@target="_blank"])[2]')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_with_trc_20)
-
-            driver.implicitly_wait(10)
-            buy_with_trc = driver.find_element(By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_with_trc)
-        except Exception as e:
-            print(f"BUY WITH TRC20 ERROR \n{e}")
+            buy_with_trc_20.click()
+        except:
+            try:
+                driver.refresh()
+                driver.implicitly_wait(50)
+                buy_with_trc_20 = driver.find_element(By.XPATH, '(//button[@target="_blank"])[2]')
+                sleep(1.5)
+                buy_with_trc_20.click()
+            except Exception as e:
+                return {"status":"0", "ext":f"error click buy button {e}"}
 
         try:
+            WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span'))
+            )
+
             driver.implicitly_wait(30)
-            address = driver.find_element(By.CSS_SELECTOR,
-                                          'div.col-span-9.ms-16 > div > div.data-info.pt-12 > div.data-info__address.flex.items-center.justify-between > div > span').text
+            address = driver.find_element(By.XPATH,
+                                          '//*[@id="app"]/div/div/div/div[2]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span').text
             driver.implicitly_wait(30)
-            amount = driver.find_element(By.CSS_SELECTOR,
-                                         'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > div:nth-child(1) > span:nth-child(2)').text
+            amount = driver.find_element(By.XPATH,
+                                         '//*[@id="app"]/div/div/div/div[2]/div[2]/div[2]/div[3]/div[1]/span[2]').text.replace("USDT", '')
             return {
                 "address": address,
                 "amount": amount,
                 "currency": "usdt"
             }
-
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
