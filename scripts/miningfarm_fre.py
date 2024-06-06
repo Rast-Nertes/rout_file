@@ -2,16 +2,11 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://miningfarm.store/login'
+url = 'https://s1.mining-farms.lol/login'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
 
@@ -21,6 +16,19 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+
+
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 
 def login(driver):
@@ -43,14 +51,14 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
-    sleep(3.5)
-    driver.get('https://miningfarm.store/account/insert')
+    sleep(5.5)
+    driver.get('https://s1.mining-farms.lol/account/insert')
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
@@ -69,7 +77,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", submit)
         except Exception as e:
-            print(f"ERROR CHOOSE FREEKASSA \n{e}")
+            return {"status":"0", "ext":f"error choose freekassa {e}"}
 
         try:
             driver.implicitly_wait(30)
@@ -77,7 +85,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", next_step_button_2)
         except Exception as e:
-            print(f'ERROR NEXT STEP BUTTON \n{e}')
+            return {"status":"0", "ext":f"error next step button {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -90,7 +98,7 @@ def get_wallet():
             input_email.clear()
             input_email.send_keys(user_email)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -98,7 +106,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit {e}"}
 
         try:
             sleep(3.5)
@@ -114,7 +122,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
