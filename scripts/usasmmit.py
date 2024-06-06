@@ -49,26 +49,15 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", purchase_button)
         except Exception as e:
-            print(f"PURCHASE BUTTON ERROR \n{e}")
+            return {"status": "0", "ext": f"error button {e}"}
 
         try:
-            # driver.implicitly_wait(10)
-            # input_count = driver.find_element(By.CSS_SELECTOR, '#quantity_65e02fff83238')
-            # sleep(1.5)
-            # input_count.clear()
-            # input_count.send_keys("1")
-            #
-            # driver.implicitly_wait(10)
-            # update_cart = driver.find_element(By.CSS_SELECTOR, 'div.rh-container.clearfix.mt30.mb30 > div > article > div > form > table > tbody > tr:nth-child(2) > td > button')
-            # sleep(1.5)
-            # driver.execute_script("arguments[0].click();", update_cart)
-
             driver.implicitly_wait(10)
             proceed_to_checkout = driver.find_element(By.CSS_SELECTOR, 'div.rh-container.clearfix.mt30.mb30 > div > article > div > div.cart-collaterals > div > div > a')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", proceed_to_checkout)
         except Exception as e:
-            print(f"INPUT ERROR \n{e}")
+            return {"status": "0", "ext": f"error input {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -110,7 +99,7 @@ def get_wallet():
             actions.send_keys(Keys.ENTER).perform()
             sleep(5)
         except Exception as e:
-            print(f"CHOOSE CURRENCY ERROR \n{e}")
+            return {"status": "0", "ext": f"error choose usdt {e}"}
 
         try:
             driver.implicitly_wait(30)
@@ -126,8 +115,7 @@ def get_wallet():
             }
 
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
-            return None
+            return {"status": "0", "ext": f"error data {e}"}
 
 
 def wallet():
