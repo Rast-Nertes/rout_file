@@ -40,10 +40,16 @@ proxy_options = {
 }
 
 
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[2].strip()
+
+
 def captcha_solver():
     solver = imagecaptcha()
     solver.set_verbose(1)
-    solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
+    solver.set_key(api_key)
 
     captcha_text = solver.solve_and_return_solution("captcha.jpg")
     time.sleep(1)
@@ -67,7 +73,18 @@ def get_wallet():
             add_to_cart_button = driver.find_element(By.CSS_SELECTOR, 'div > div.summary.entry-summary.col-md-7 > form > button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", add_to_cart_button)
+        except Exception as e:
+            print("refresh page")
+            driver.refresh()
+            try:
+                driver.implicitly_wait(30)
+                add_to_cart_button = driver.find_element(By.CSS_SELECTOR,'div > div.summary.entry-summary.col-md-7 > form > button')
+                sleep(1.5)
+                driver.execute_script("arguments[0].click();", add_to_cart_button)
+            except Exception as e:
+                return {"status":"0", "ext":f"error add to busket {e}"}
 
+        try:
             sleep(2)
             driver.get('https://psdlife.com/checkout/')
 
@@ -76,7 +93,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", proceed_to_check)
         except Exception as e:
-            print(f"ERROR ADD CART \n{e}")
+            return {"status":"0", "ext":f"error add to cart {e}"}
 
         try:
             driver.implicitly_wait(20)
@@ -93,7 +110,7 @@ def get_wallet():
             input_email = driver.find_element(By.ID, 'billing_email')
             input_email.send_keys(user_email)
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error input data {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -102,7 +119,7 @@ def get_wallet():
             driver.execute_script("arguments[0].click();", choose_perfect)
             sleep(5)
         except Exception as e:
-            print(f"ERROR CHOOSE PERFECT \n{e}")
+            return {"status": "0", "ext": f"error choose perfect {e}"}
 
         try:
             driver.implicitly_wait(30)
@@ -110,7 +127,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", place_order)
         except Exception as e:
-            print(f"ERROR PERFECT \n{e}")
+            return {"status":"0", "ext":f"error place order  {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -123,51 +140,53 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", make_payment_start)
         except Exception as e:
-            print(f'ERROR MAKE PAYMENT \n{e}')
+            return {"status":"0", "ext":f"error make payment {e}"}
 
-        try:
-            driver.implicitly_wait(10)
-            input_member_id = driver.find_element(By.CSS_SELECTOR, 'tr > td > table > tbody > tr:nth-child(1) > td:nth-child(2) > input[type=text]')
-            sleep(1.5)
-            input_member_id.send_keys(perfect_id)
+        while True:
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, '//*[@id="cpt_img"]'))
+                )
+                driver.find_element(By.XPATH, '//*[@id="cpt_img"]').screenshot('captcha.jpg')
+                sleep(1.5)
+                result = captcha_solver()
 
-            driver.implicitly_wait(10)
-            input_name = driver.find_element(By.ID, 'keyboardInputInitiator0')
-            input_name.clear()
-            input_name.send_keys(perfect_pass)
-        except Exception as e:
-            print(f"ERROR CHOOSE CRYPTO CURRENCY \n{e}")
+                try:
+                    driver.implicitly_wait(10)
+                    input_result_captcha = driver.find_element(By.XPATH,
+                                                               '/html/body/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr[3]/td[1]/div[1]/form/table[1]/tbody/tr/td/table/tbody/tr[3]/td[2]/input')
+                    sleep(1.5)
+                    input_result_captcha.send_keys(result)
+                except Exception as e:
+                    return {"status":"0", "ext":f"error input result {e}"}
+            except:
+                break
 
-        driver.set_window_size(400, 400)
-        driver.execute_script("document.body.style.zoom='350%'")
-        driver.execute_script("window.scrollBy(185, 1750);")
-        sleep(3)
-        driver.save_screenshot('captcha.jpg')
-        sleep(1)
-        driver.maximize_window()
-        driver.execute_script("document.body.style.zoom='100%'")
+            try:
+                driver.implicitly_wait(10)
+                input_member_id = driver.find_element(By.CSS_SELECTOR, 'tr > td > table > tbody > tr:nth-child(1) > td:nth-child(2) > input[type=text]')
+                sleep(1.5)
+                input_member_id.clear()
+                input_member_id.send_keys(perfect_id)
 
-        result = captcha_solver()
-        sleep(3)
-        try:
-            driver.implicitly_wait(10)
-            input_result_captcha = driver.find_element(By.XPATH, '/html/body/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr[3]/td[1]/div[1]/form/table[1]/tbody/tr/td/table/tbody/tr[3]/td[2]/input')
-            sleep(1.5)
-            input_result_captcha.send_keys(result)
-        except Exception as e:
-            print(f"ERROR INPUT RESULT \n{e}")
+                driver.implicitly_wait(10)
+                input_name = driver.find_element(By.ID, 'keyboardInputInitiator0')
+                input_name.clear()
+                input_name.send_keys(perfect_pass)
+            except Exception as e:
+                return {"status":"0", "ext":f"error choose crypto currency {e}"}
 
-        try:
-            driver.implicitly_wait(10)
-            make_payment = driver.find_element(By.XPATH, '//*[@id="f_log"]/table[2]/tbody/tr[2]/td[1]/input')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", make_payment)
-        except Exception as e:
-            print(f'MAKE PAYMENT ERROR \n{e}')
+            try:
+                driver.implicitly_wait(10)
+                make_payment = driver.find_element(By.XPATH, '//*[@id="f_log"]/table[2]/tbody/tr[2]/td[1]/input')
+                sleep(1.5)
+                driver.execute_script("arguments[0].click();", make_payment)
+            except Exception as e:
+                return {"status":"0", "ext":f"error make payment error {e}"}
 
         try:
             driver.implicitly_wait(60)
-            choose_trc20 = driver.find_element(By.XPATH, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/form/table[1]/tbody/tr[3]/td/table/tbody/tr/td/table/tbody/tr/td[2]/label[2]/table')
+            choose_trc20 = driver.find_element(By.XPATH, '//label[@for="USDTTRC"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
 
@@ -175,7 +194,7 @@ def get_wallet():
             make_payment_2 = driver.find_element(By.CSS_SELECTOR, 'table:nth-child(4) > tbody > tr > td > table > tbody > tr > td > div > form > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(1) > input')
             driver.execute_script("arguments[0].click();", make_payment_2)
         except Exception as e:
-            print(f"ERROR CHOOSE TRC20 \n{e}")
+            return {"status":"0", "ext":f"error choose trc20 {e}"}
 
         try:
             driver.implicitly_wait(30)
@@ -190,7 +209,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
