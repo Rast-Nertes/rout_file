@@ -108,7 +108,7 @@ def get_wallet():
             address = address_elem.text
 
             driver.implicitly_wait(30)
-            amount_elem = driver.find_element(By.XPATH, '//*[@id="payment_modal_container"]/div[2]/div/div[2]/span').text
+            amount_elem = driver.find_element(By.XPATH, '(//div[@class="field_information"])[3]').text
             elem = amount_elem.split('USDT')[0]
             amount = ''.join(char for char in elem if (char.isdigit()) or char == ".")
 
@@ -118,7 +118,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
