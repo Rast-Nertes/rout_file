@@ -104,10 +104,11 @@ async def get_wallet():
         try:
             input_email = await driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/form/div/div[2]/input', timeout=30)
             await input_email.click()
-            await asyncio.sleep(2.5)
-            pyautogui.typewrite(user_email)
+            await asyncio.sleep(5.5)
+            pyautogui.write(user_email)
 
             continue_button_2 = await driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button', timeout=20)
+            await asyncio.sleep(1.5)
             await driver.execute_script("arguments[0].removeAttribute('disabled')", continue_button_2)
             await asyncio.sleep(1.5)
             await continue_button_2.click()
