@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://softhubik.ru/pubg-mobile.html'
+url = 'https://softhubik.ru/cs2.html'
 user_email = "yewoxo4550@otemdi.com"
 user_password = "onvB2mkVH5c"
 
@@ -51,15 +51,15 @@ def login(driver):
 
     try:
         driver.implicitly_wait(20)
-        a_href = driver.find_element(By.XPATH, '//*[@id="u922-6"]').get_attribute('href')
+        a_href = driver.find_element(By.XPATH, '//*[@id="u6068-6"]').get_attribute('href')
         driver.get(a_href)
     except Exception as e:
-        print(f'ERROR HREF \n{e}')
+        return {"status":"0", "ext":f"error href {e}"}
 
     try:
         click(driver, 20, '//*[@id="btn_next"]')
     except Exception as e:
-        print(f'ERROR NEXT BUT \n{e}')
+        return {"status":"0", "ext":f"error next but {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -73,7 +73,7 @@ def login(driver):
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
-        print(f'ERROR CHOOSE USDT \n{e}')
+        return {"status":"0", "ext":f"error choose usdt {e}"}
 
     try:
         input_data(driver, 20, '//*[@id="email"]', user_email)
@@ -82,7 +82,7 @@ def login(driver):
         sleep(1)
         click(driver, 20, '//*[@id="pay_btn"]')
     except Exception as e:
-        print(f'ERROR SUBMIT \n{e}')
+        return {"status":"0", "ext":f"error submit  {e}"}
 
 
 def get_wallet():
@@ -103,7 +103,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
