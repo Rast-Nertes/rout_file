@@ -14,22 +14,26 @@ user_password = "22194di1qpaE"
 
 # CHROME CONSTANS
 
-# with open('config.txt') as file:
-#     paths = file.readlines()
-#     chrome_path = paths[0].strip()
-#     ext = paths[1].strip()
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    ext = paths[1].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-# options.binary_location = chrome_path
+options.binary_location = chrome_path
 # options.add_extension(ext)
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
 
 
 async def login(driver):
-    # await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
-    # await asyncio.sleep(1)
+    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await driver.get(url, timeout=60)
     await driver.maximize_window()
 
@@ -91,7 +95,7 @@ async def get_wallet():
         try:
             await asyncio.sleep(2.5)
             address_elem = await driver.find_element(By.XPATH, '//*[@id="pay_way_open_form_container_tether_trc"]/div/div[1]/fieldset[2]/input', timeout=30)
-            address = await address_elem.__getattribute__('value')
+            address = await address_elem.get_attribute('value')
 
             amount_elem = await driver.find_element(By.XPATH, '//*[@id="pay_way_open_tether_trc"]/div[2]/div[2]/div[2]/div[2]', timeout=30)
             amount = await amount_elem.text
