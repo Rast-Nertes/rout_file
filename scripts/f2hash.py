@@ -32,10 +32,6 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
 
 options.binary_location = chrome_path
-# options.add_extension(ext)
-
-#490f5ca2ce767a96c5393566b6ecc29a
-#3548e6b7c65b2f3e2f98e7bcf26aaa97
 
 
 async def login(driver):
@@ -51,14 +47,14 @@ async def login(driver):
         password = await driver.find_element(By.XPATH, '//*[@id="passcode"]', timeout=30)
         await password.write(user_password)
     except Exception as e:
-        print(f'ERROR INPUT DATA \n{e}')
+        return {"status":"0", "ext":f"error input data {e}"}
 
     try:
         click_log_but = await driver.find_element(By.XPATH, '//*[@id="loginForm"]/div[3]/button', timeout=30)
         await asyncio.sleep(1)
         await click_log_but.click()
     except Exception as e:
-        print(f'ERROR CLICK BUT LOG \n{e}')
+        return {"status":"0", "ext":f"error click log but {e}"}
 
     await asyncio.sleep(2.5)
     await driver.get('https://my.f2hash.com/deposit')
@@ -72,7 +68,7 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await depos_now_but.click()
     except Exception as e:
-        print(f'ERROR CHOOSE CRYPTO \n{e}')
+        return {"status":"0", "ext":f"error choose crypto {e}"}
 
     try:
         choose_select = await driver.find_element(By.XPATH, '//*[@id="prm-currency-name"]', timeout=20)
@@ -83,7 +79,7 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await choose_USDT.click()
     except Exception as e:
-        print(f'ERROR CHOOSE USDT \n{e}')
+        return {"status":"0", "ext":f"error choose usdt {e}"}
 
     try:
         input_amount = await driver.find_element(By.XPATH, '//*[@id="prm-amnt"]', timeout=20)
@@ -94,14 +90,14 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await proceed_but.click()
     except Exception as e:
-        print(f'ERROR PROCEED BUT \n{e}')
+        return {"status":"0", "ext":f"error proceed button {e}"}
 
     try:
         confirm_but = await driver.find_element(By.XPATH, '//*[@id="confirm-deposit"]', timeout=20)
         await asyncio.sleep(1.5)
         await confirm_but.click()
     except Exception as e:
-        print(f'ERROR CONFIRM BUT \n{e}')
+        return {"status":"0", "ext":f"error confirm but {e}"}
 
 
 async def get_wallet():
@@ -111,7 +107,7 @@ async def get_wallet():
         await asyncio.sleep(4.5)
         try:
             address_elem = await driver.find_element(By.XPATH, '//*[@id="wallet-address"]', timeout=30)
-            address = await address_elem.__getattribute__('value')
+            address = await address_elem.get_attribute('value')
 
             amount_elem = await driver.find_element(By.CLASS_NAME, 'text-soft', timeout=30)
             amount = await amount_elem.text
@@ -122,7 +118,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
