@@ -139,7 +139,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
