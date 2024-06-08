@@ -37,7 +37,7 @@ options.add_extension(ext)
 
 async def api_connect():
     await asyncio.sleep(0.4)
-    pyautogui.moveTo(1730, 75)
+    pyautogui.moveTo(1767, 75)
     pyautogui.click()
 
     await asyncio.sleep(1)
@@ -57,7 +57,7 @@ async def api_connect():
     pyautogui.typewrite(api_key_solver, 0.05)
     await asyncio.sleep(3.5)
 
-    pyautogui.moveTo(1730, 15)
+    pyautogui.moveTo(1767, 15)
     pyautogui.click()
     await asyncio.sleep(2)
 
@@ -115,7 +115,7 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await click(driver, 30, '/html/body/div[2]/div[2]/div/div/div/div[2]/form/div[4]/button')
     except Exception as e:
-        print(f'ERROR LOGIN \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     await asyncio.sleep(8.5)
     await driver.get('https://pocketoption.com/ru/cabinet/deposit-step-2/?submit=1&method=trongrid_trc20&amount=10&code=')
@@ -141,7 +141,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
