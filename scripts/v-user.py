@@ -21,30 +21,27 @@ proxy_port = 8000
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://www.hostwinds.com'
 user_login = 'kiracase34@gmail.com'
 user_password = 'Hkasd12'
 
 #CHROME CONSTANS
-#driver_path = Path('C:\\Users\\Acer\\Desktop\\python_work\\web_drivers\\chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.headless = False
-#C:\Users\Acer\Desktop\python_work\web_drivers\chromedriver.exe
+
 proxy_options = {
     "proxy":{
         "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
-#driver = webdriver.Chrome(options=options)
+
 
 def login(driver):
     try:
-        print("LOGIN START")
         driver.get('https://www.v-user.com/en/user-panel-en/login')
         driver.maximize_window()
         sleep(2)
@@ -67,9 +64,11 @@ def login(driver):
             EC.visibility_of_element_located((By.XPATH, '//*[@id="login-form-106"]/div[2]/div[4]/button'))
         )
         accept_registration.click()
-        print("LOGIN ACCEPT")
+
+        sleep(5)
     except Exception as e:
-        print(f"LOGIN ERROR -- \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
+
 
 def get_wallet_data():
     with webdriver.Chrome(options = options) as driver:
@@ -77,9 +76,9 @@ def get_wallet_data():
         try:
             print("WALLET DATA START")
 
-            driver.get('https://www.v-user.com/en/buy')
             driver.get('https://www.v-user.com/en/buy/player-serial-number-of-virtual-user-software')
-            sleep(5)
+            sleep(3.5)
+
             try:
                 close = WebDriverWait(driver, 30).until(
                     EC.visibility_of_element_located((By.XPATH, '//*[@id="iam-here"]/button[1]/i'))
@@ -88,49 +87,64 @@ def get_wallet_data():
             except:
                 pass
 
-            # driver.execute_script("window.scrollBy(0, 500);")
-            # sleep(2)
-            #
-            # choose_tariff = WebDriverWait(driver, 30).until(
-            #     EC.visibility_of_element_located((By.XPATH, '//*[@id="adminForm"]/div[1]/div/div[4]'))
-            # )
-            # choose_tariff.click()
+            try:
+                #Галочку ставим
+                tick = WebDriverWait(driver, 20).until(
+                    EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/span/input'))
+                )
+                sleep(1.5)
+                driver.execute_script("arguments[0].click();", tick)
 
-            #Галочку ставим
-            tick = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/span/input'))
-            )
-            driver.execute_script("arguments[0].click();", tick)
+                sleep(1.5)
 
-            driver.execute_script("window.scrollBy(0, 1350);")
+                #Выбираем оплату с помощью валют
+                tick_wallet = WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[3]/div[2]/div/div[1]/div[1]/label'))
+                )
+                sleep(1.5)
+                driver.execute_script("arguments[0].click();", tick_wallet)
 
-            #Выбираем оплату с помощью валют
-            tick_wallet = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[3]/div[2]/div/div[1]/div[1]/label'))
-            )
-            driver.execute_script("arguments[0].click();", tick_wallet)
+                sleep(1.5)
+                #Pay now
+                accept = WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, '//*[@id="ppform"]/div[3]/div[2]/div/div[2]/span'))
+                )
+                driver.execute_script("arguments[0].click();", accept)
+            except Exception as e:
+                driver.refresh()
+                sleep(2.5)
+                # Галочку ставим
+                tick = WebDriverWait(driver, 30).until(
+                    EC.visibility_of_element_located(
+                        (By.XPATH, '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/span/input'))
+                )
+                driver.execute_script("arguments[0].click();", tick)
 
-            #Pay now
-            accept = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="ppform"]/div[3]/div[2]/div/div[2]/span'))
-            )
-            accept.click()
+                # Выбираем оплату с помощью валют
+                tick_wallet = WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH,
+                                                      '/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[3]/div[2]/div/div[1]/div[1]/label'))
+                )
+                driver.execute_script("arguments[0].click();", tick_wallet)
+
+                # Pay now
+                accept = WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, '//*[@id="ppform"]/div[3]/div[2]/div/div[2]/span'))
+                )
+                driver.execute_script("arguments[0].click();", accept)
 
             #Continue
             continue_accept = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="submit-btn"]'))
             )
-            continue_accept.click()
+            sleep(2.5)
+            driver.execute_script("arguments[0].click();", continue_accept)
 
             sleep(3)
 
             all_tabs = driver.window_handles
-
-            # Переключаемся на последнюю (новую) вкладку
             new_tab = all_tabs[-1]
             driver.switch_to.window(new_tab)
-
-            sleep(10)
 
             choose_tron = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="select2-currency-container"]'))
@@ -144,11 +158,6 @@ def get_wallet_data():
                 sleep(0.5)
 
             actions.send_keys(Keys.ENTER).perform()
-            sleep(5)
-            # trc_20_choose = WebDriverWait(driver, 20).until(
-            #     EC.visibility_of_element_located((By.XPATH, '/html/body/span/span/span[2]/ul/li[11]'))
-            # )
-            # driver.execute_script("arguments[0].click();", trc_20_choose)
             sleep(5)
 
             amount = WebDriverWait(driver, 10).until(
@@ -168,9 +177,10 @@ def get_wallet_data():
             }
 
         except Exception as e:
-            print(f"GET WALLET ERROR -- \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet_data()
+    print(wallet_data)
     return jsonify(wallet_data)
