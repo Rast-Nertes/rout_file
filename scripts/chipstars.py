@@ -43,7 +43,7 @@ async def login(driver):
         click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input', timeout=12.5)
         await click_checkbox.click()
     except Exception as e:
-        print(f'ERROR CHECKBOX \n{e}')
+        return {"status":"0", "ext":f"error checkbox {e}"}
 
     try:
         input_email = await driver.find_element(By.XPATH, '//*[@id="login-field"]', timeout=60)
@@ -52,14 +52,14 @@ async def login(driver):
         input_password = await driver.find_element(By.XPATH, '//*[@id="form-password"]', timeout=20)
         await input_password.write(user_password)
     except Exception as e:
-        print(f'ERROR LOG DATA \n{e}')
+        return {"status":"0", "ext":f"error log data  {e}"}
 
     try:
         click_log_but = await driver.find_element(By.XPATH, '//*[@id=":r0:"]', timeout=30)
         await asyncio.sleep(1.5)
         await click_log_but.click()
     except Exception as e:
-        print(f"ERROR CLICK LOG BUT \n{e}")
+        return {"status":"0", "ext":f"error click log button {e}"}
 
     await asyncio.sleep(3.5)
     await driver.get('https://chipstars.bet/en')
@@ -79,7 +79,7 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await click_depos_now_but.click()
     except Exception as e:
-        print(f'ERROR DEPOS BUT \n{e}')
+        return {"status":"0", "ext":f"error depos but {e}"}
 
     try:
         choose_crypto = await driver.find_element(By.XPATH, '/html/body/div[4]/div[3]/div/div[2]/div/div/div[2]/div/div/p[2]', timeout=20)
@@ -90,7 +90,7 @@ async def login(driver):
         await asyncio.sleep(1.5)
         await choose_trc20.click()
     except Exception as e:
-        print(f'ERROR CHOOSE  CRYPTO \n{e}')
+        return {"status":"0", "ext":f"error choose crypto {e}"}
 
 
 async def get_wallet():
@@ -111,7 +111,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status": "0", "ext": f"error login {e}"}
 
 
 def wallet():
