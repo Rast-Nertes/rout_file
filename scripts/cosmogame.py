@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://cosmogame.ink/login'
+url = 'https://s1.cosmo-games.pro/login'
 user_email = "kiracase34@gmail.com"
 user_password = "kirakira222"
 
@@ -48,12 +48,12 @@ def login(driver):
         sleep(1)
         click(driver, 20, '/html/body/div/div/div[2]/form/button')
     except Exception as e:
-        print(f"ERROR INPUT DATA \n{e}")
+        return {"status":"0", "ext":f"error input log data {e}"}
 
     try:
         click(driver, 20, '/html/body/div[3]/div[2]/div[2]/div[2]/div[1]/div/a')
     except Exception as e:
-        print(f'ERROR ADD AMOUNT \n{e}')
+        return {"status":"0", "ext":f"error add amount {e}"}
 
     try:
         driver.implicitly_wait(20)
@@ -66,27 +66,27 @@ def login(driver):
         actions.send_keys(Keys.ENTER).perform()
         sleep(0.5)
     except Exception as e:
-        print(f'ERROR CLICK \n{e}')
+        return {"status":"0", "ext":f"error click {e}"}
 
     try:
         click(driver, 20, '/html/body/div[3]/div[2]/div/div[2]/form/input[3]')
     except Exception as e:
-        print(f'ERROR APPEND \n{e}')
+        return {"status":"0", "ext":f"error append {e}"}
 
     try:
         input_data(driver, 20, '//*[@id="psevdo"]', 650)
     except Exception as e:
-        print(f'ERROR INPUT DATA error \n{e}')
+        return {"status":"0", "ext":f"error input data {e}"}
 
     try:
         click(driver, 20, '//*[@id="submit"]')
     except Exception as e:
-        print(f'ERROR SUBMIT \n{e}')
+        return {"status":"0", "ext":f"error submit {e}"}
 
     try:
         click(driver, 20, '/html/body/div[3]/div[2]/div/div[2]/center/form/center/input')
     except Exception as e:
-        print(f'ERROR BUY SILVER \n{e}')
+        return {"status":"0", "ext":f"error buy silver {e}"}
 
 
 def get_wallet():
@@ -104,7 +104,7 @@ def get_wallet():
             input_email.clear()
             input_email.send_keys(user_email)
         except Exception as e:
-            print(f"INPUT EMAIL \n{e}")
+            return {"status":"0", "ext":f"error input email {e}"}
 
         try:
             driver.implicitly_wait(60)
@@ -112,7 +112,7 @@ def get_wallet():
             sleep(1.5)
             submit_payment.click()
         except Exception as e:
-            print(f"SUBMIT ERROR \n{e}")
+            return {"status":"0", "ext":f"error submit {e}"}
 
         try:
             sleep(3.5)
@@ -128,7 +128,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
