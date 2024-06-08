@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://roposh.com/product/zambia-passport-template-in-psd-format-fully-editable/'
 user_email = "kiracase34"
 user_password = "MnQ-wM6-Njf-i2y"
@@ -28,15 +28,15 @@ def login(driver):
 
     try:
         driver.implicitly_wait(30)
-        add_to_cart_button = driver.find_element(By.XPATH, '//*[@id="product-35444"]/div[2]/form/button')
+        add_to_cart_button = driver.find_element(By.XPATH, '//button[@name="add-to-cart"]')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", add_to_cart_button)
     except Exception as e:
-        print(f'ERROR ADD TO CART \n{e}')
+        return {"status":"0", "ext":f"error add to cart {e}"}
 
     try:
         driver.implicitly_wait(30)
-        view_cart_button = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[1]/div/a')
+        view_cart_button = driver.find_element(By.XPATH, '//a[@class="button wc-forward"]')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", view_cart_button)
 
@@ -45,7 +45,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", checkout_button)
     except Exception as e:
-        print(f'ERROR VIEW CART \n{e}')
+        return {"status":"0", "ext":f"error view cart {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -53,7 +53,7 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", click_log)
     except Exception as e:
-        print(f"ERROR CLICK LOG \n{e}")
+        return {"status":"0", "ext":f"error click log {e}"}
 
     try:
         driver.implicitly_wait(30)
@@ -71,20 +71,32 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login  {e}"}
 
     try:
+        sleep(3.5)
+        driver.implicitly_wait(20)
+        choose_now_pay = driver.find_element(By.XPATH, '//*[@id="payment_method_nowpayments_gateway"]')
+        sleep(1.5)
+        choose_now_pay.click()
+    except Exception as e:
+        return {"status":"0", "ext":f"error choose nowpay{e}"}
+
+    try:
+        sleep(5)
         driver.implicitly_wait(30)
         place_order = driver.find_element(By.ID, 'place_order')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", place_order)
     except Exception as e:
-        print(f'ERROR PLACE ORDER \n{e}')
+        return {"status":"0", "ext":f"error place order {e}"}
 
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
-        login(driver)
+        log = login(driver)
+        if log:
+            return log
 
         try:
             driver.implicitly_wait(50)
@@ -104,7 +116,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", next_step)
         except Exception as e:
-            print(f"ERROR CHOOSE TRON \n{e}")
+            return {"status":"0", "ext":f"error choose tron {e}"}
 
         try:
             sleep(5.5)
@@ -120,10 +132,14 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+
+if __name__ == "__main__":
+    wallet()
