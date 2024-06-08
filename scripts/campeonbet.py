@@ -54,12 +54,12 @@ async def login(driver):
         await input_data(driver, 30, '//input[@autocomplete="email"]', user_email)
         await input_data(driver, 20, '//input[@autocomplete="current-password"]', user_password)
     except Exception as e:
-        print(f'ERROR LOGIN INPUT \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     try:
         await click(driver, 20, '//button[@type="submit"]')
     except Exception as e:
-        print(f'ERROR LOG BUT \n{e}')
+        return {"status":"0", "ext":f"error log but  {e}"}
 
     await asyncio.sleep(3.5)
     await driver.get('https://campeonbet.com/account/financials/deposit')
@@ -93,7 +93,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f'ERROR CHOOSE TRC20 \n{e}')
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
