@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,6 +20,18 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 
 def login(driver):
@@ -49,7 +61,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         actions = ActionChains(driver)
         login(driver)
 
@@ -61,7 +73,7 @@ def get_wallet():
             sleep(5)
 
             driver.implicitly_wait(5)
-            for _ in range(5):
+            for _ in range(3):
                 actions.send_keys(Keys.ARROW_DOWN).perform()
                 sleep(0.5)
             actions.send_keys(Keys.ENTER).perform()
@@ -82,6 +94,7 @@ def get_wallet():
             print(f"ERROR CHOOSE UPGRADE \n{e}")
 
         try:
+            sleep(7.5)
             driver.implicitly_wait(10)
             address = driver.find_element(By.CSS_SELECTOR, 'div > div.wallet__content > ul > li:nth-child(2) > div').text
 
@@ -101,3 +114,7 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+
+if __name__ == "__main__":
+    wallet()
