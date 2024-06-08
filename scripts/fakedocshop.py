@@ -46,26 +46,17 @@ def get_wallet():
             driver.execute_script("arguments[0].click();", submit_button)
             sleep(7.5)
         except Exception as e:
-            print(f"SUBMIT BUTTON ERROR \n{e}")
-
+            return {"status": "0", "ext": f"error submit {e}"}
 
         driver.get(url)
 
         try:
             driver.implicitly_wait(10)
-            choose_tariff = driver.find_element(By.CSS_SELECTOR, 'div.arpbody-content.arppricingtablebodycontent > div.arpcolumnfooter > div.arppricetablebutton.toggle_step_first > button')
-            sleep(2)
-            driver.execute_script("arguments[0].click();", choose_tariff)
+            choose_tariff = driver.find_element(By.XPATH, '(//button[@type="button"])[1]')
+            sleep(5)
+            choose_tariff.click()
         except Exception as e:
-            print(f"CHOOSE TARIFF ERROR \n{e}")
-
-        try:
-            driver.implicitly_wait(20)
-            button_to_login = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/header/div/div/div/div[1]/div[2]/nav/ul')
-            sleep(3)
-            driver.execute_script("arguments[0].click();", button_to_login)
-        except Exception as e:
-            print(f"BUTTON TO LOGIN ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose tariff {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -78,7 +69,7 @@ def get_wallet():
             actions.send_keys(Keys.ENTER).perform()
             sleep(0.5)
         except Exception as e:
-            print(f"CHOOSE CURRENCY ERROR \n{e}")
+            return {"status":"0", "ext":f"error currency{e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -86,7 +77,7 @@ def get_wallet():
             sleep(2)
             driver.execute_script("arguments[0].click();", purchase_button)
         except Exception as e:
-            print(f"PURCHASE BUTTON ERROR \n{e}")
+            return {"status":"0", "ext":f"error purchase {e}"}
 
         try:
             driver.implicitly_wait(20)
@@ -101,7 +92,8 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
