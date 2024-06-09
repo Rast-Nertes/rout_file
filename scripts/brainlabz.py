@@ -13,7 +13,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://brainlabz.ru/product/nolvadex-tamoxifen-10mg-60-tabs-600mg/'
 user_login = 'kiracase34@gmail.com'
 user_password = 'L7RzGZDNXnF4J2Y'
@@ -44,7 +43,7 @@ proxy_options = {
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
-#driver = webdriver.Chrome(options=options, seleniumwire_options=proxy_options)
+
 
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
@@ -105,7 +104,7 @@ def get_wallet():
             sleep(0.5)
             actions.send_keys(Keys.ENTER).perform()
         except Exception as e:
-            print(f"CHOOSE ERROR \n{e}")
+            return {"status":"0", "ext":f"error choose {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -148,7 +147,7 @@ def get_wallet():
             )
             driver.execute_script("arguments[0].click();", pay_)
         except Exception as e:
-            print(f"PAY BUTTON ERROR \n{e}")
+            return {"status":"0", "ext":f"error pay button{e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -165,7 +164,8 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
