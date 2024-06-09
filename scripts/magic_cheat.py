@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://magic-cheat.com/cheat/btg-dayz'
+url = 'https://magic-cheat.com/cheat/radar-eft'
 user_email = "yewoxo4550@otemdi.com"
 user_password = "onvB2mkVH5c"
 
@@ -60,33 +60,35 @@ def login(driver):
         sleep(1.5)
 
         driver.implicitly_wait(20)
-        choose_tc20 = driver.find_element(By.XPATH, '//span[@class="ddlabel" and text()="USDT"]')
+        choose_tc20 = driver.find_element(By.XPATH, '//span[@class="ddlabel" and text()="USDT (Tether)"]')
+        # driver.execute_script("arguments[0].click();", choose_tc20)
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
         print(f"ERROR CHOOSE TRC20 \n{e}")
-
-    try:
-        input_data(driver, 20, '//*[@id="email"]', user_email)
-        sleep(1)
-        input_data(driver, 20, '//*[@id="Re_Enter_Email"]', user_email)
-        sleep(1)
-        click(driver, 20, '//*[@id="pay_btn"]')
-    except Exception as e:
-        print(f'ERROR SUBMIT \n{e}')
 
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
 
-        try:
-            sleep(3.5)
-            driver.implicitly_wait(40)
-            amount = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/p/span').text.replace("USDT", '').replace(" ", '')
+        sleep(3.5)
+        driver.implicitly_wait(40)
+        amount = driver.find_element(By.XPATH, '//*[@id="price_value"]').text.replace(  "USDT", '').replace(" ", '')
 
+        try:
+            input_data(driver, 20, '//*[@id="email"]', user_email)
+            sleep(1)
+            input_data(driver, 20, '//*[@id="Re_Enter_Email"]', user_email)
+            sleep(1)
+            click(driver, 20, '//*[@id="pay_btn"]')
+        except Exception as e:
+            print(f'ERROR SUBMIT \n{e}')
+
+        try:
+            sleep(5)
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/div/div[1]/div/span').text
+            address = driver.find_element(By.XPATH, '//*[@id="qrcode"]').get_attribute('title')
 
             return {
                 "address": address,
