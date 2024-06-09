@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://miningfarm.store/login'
+url = 'https://s1.mining-farms.lol/login'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
 
@@ -55,15 +55,17 @@ def login(driver):
         sleep(1.5)
         driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
     sleep(3.5)
-    driver.get('https://miningfarm.store/account/insert')
+    driver.get('https://s1.mining-farms.lol/account/insert')
 
 
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
-        login(driver)
+        log = login(driver)
+        if log:
+            return log
 
         try:
             driver.implicitly_wait(30)
@@ -85,7 +87,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            choose_usdt = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[3]/div/div')
+            choose_usdt = driver.find_element(By.XPATH, '(//div[@class="td"])[4]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
 
@@ -115,7 +117,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
