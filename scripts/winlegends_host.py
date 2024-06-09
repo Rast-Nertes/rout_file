@@ -53,7 +53,7 @@ async def login(driver):
     await asyncio.sleep(1.5)
 
     try:
-        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div/div[2]/ul/li[15]/button', timeout=30)
+        choose_trc20 = await driver.find_element(By.XPATH, '//img[@alt="Tether"]', timeout=30)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
@@ -101,4 +101,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
