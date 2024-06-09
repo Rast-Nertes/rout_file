@@ -19,8 +19,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -63,7 +61,7 @@ async def login(driver):
         print(f'ERROR CLICK DEPOS BUT \n{e}')
 
     try:
-        choose_bit = await driver.find_element(By.XPATH, '//*[@id="WalletModal___BV_modal_body_"]/div[2]/div[2]/div[1]/div[4]/div/button[6]', timeout=20)
+        choose_bit = await driver.find_element(By.XPATH, '//*[@id="WalletModal___BV_modal_body_"]/div[2]/div[2]/div[1]/div/div[3]/div[2]/button[7]/img', timeout=20)
         await asyncio.sleep(1)
         await choose_bit.click()
 
@@ -138,7 +136,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
