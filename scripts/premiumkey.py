@@ -1,7 +1,7 @@
+import time
+
 import cloudscraper
-from selenium import webdriver
-from time import sleep
-from twocaptcha import TwoCaptcha
+from seleniumwire import webdriver
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
 from urllib.parse import urlparse, parse_qs
@@ -13,15 +13,9 @@ from selenium.webdriver.chrome.options import Options
 
 #Coingate
 
-#CONSTANS
-app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
 user_login = 'nobrandnametoshow@gmail.com'
 user_password = 'kiramira123'
 url = 'https://premiumkey.co/account/login'
-
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -30,7 +24,19 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options= options)
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 
 def login(driver):
     driver.get(url)
@@ -56,12 +62,15 @@ def login(driver):
             print(f"BUTTON TO LOG IN \n{e}")
 
     except Exception as e:
-        print(f"INPUT ERROR \n{e}")
+        return {"status":"0", "ext":f"error login {e}"}
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
-        login(driver)
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+        log = login(driver)
+        if log:
+            return log
+
         driver.get('https://premiumkey.co/premium-key/dasan-paypal-reseller')
 
         try:
@@ -76,11 +85,15 @@ def get_wallet():
         try:
             driver.implicitly_wait(10)
             choose_wallet = driver.find_element(By.XPATH, '//*[@id="coingate"]/label')
+            time.sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_wallet)
 
             driver.implicitly_wait(10)
             ticket = driver.find_element(By.XPATH, '//*[@id="content"]/div[2]/div[2]/input')
+            time.sleep(1.5)
             driver.execute_script("arguments[0].click();", ticket)
+
+            time.sleep(3.5)
 
             driver.implicitly_wait(10)
             checkout_button = driver.find_element(By.XPATH, '//*[@id="button-loggedorder"]')
@@ -93,7 +106,7 @@ def get_wallet():
             except Exception as e:
                 print(f"CONFIRM BUTTON ERROR ")
         except Exception as e:
-            print(f"WALLET ERROR \n{e}")
+            return {"status":"0", "ext":f"error wallet  {e}"}
 
         try:
             driver.implicitly_wait(10)
@@ -107,11 +120,6 @@ def get_wallet():
             print(f"ERROR CHOOSE \n{e}")
 
         try:
-            continue_without_email_button = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button[2]'))
-            )
-            continue_without_email_button.click()
-
             driver.implicitly_wait(10)
             choose_network = driver.find_element(By.CSS_SELECTOR, 'div.short-background.css-10h2p0h.e1wz9m0w0 > div.css-nl7kme.e7kd91g2 > div > div > label:nth-child(3)')
             driver.execute_script("arguments[0].click();", choose_network)
@@ -123,8 +131,18 @@ def get_wallet():
             print(f"continue without email error \n{e}")
 
         try:
-            driver.set_window_size(1000, 750)
+            input_email = driver.find_element(By.XPATH, '//input[@name="email"]')
+            time.sleep(1.5)
+            input_email.send_keys(user_login)
 
+            click_continue_button = driver.find_element(By.XPATH, '(//button[@type="button"])[5]')
+            time.sleep(1.5)
+            click_continue_button.click()
+        except Exception as e:
+            print(f'ERROR INPUT EMAIL \n{e}')
+
+        try:
+            driver.set_window_size(1000, 750)
 
             amount = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located(
@@ -144,7 +162,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
