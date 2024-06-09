@@ -14,9 +14,9 @@ url = 'https://cfr-original.com/ru/'
 user_email = "kiracase34@gmail.com"
 user_password = "ud6_nPRefNzTa6"
 
-proxy_address = "62.3.13.13"
-proxy_login = '1QjtPL'
-proxy_password = 'pHSyxy'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 proxy_options = {
@@ -86,7 +86,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            choose_usdt = driver.find_element(By.CSS_SELECTOR, 'div.slist > ul:nth-child(3) > li:nth-child(3)')
+            choose_usdt = driver.find_element(By.XPATH, '(//div[@class="td"])[4]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
 
