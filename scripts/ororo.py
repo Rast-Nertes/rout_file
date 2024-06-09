@@ -49,7 +49,7 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        find_error = await driver.find_element(By.XPATH, '//*[@id="main-message"]/h1/span', timeout=10)
+        find_error = await driver.find_element(By.XPATH, '//*[@id="main-message"]/h1/span', timeout=5)
         if find_error:
             await driver.refresh()
         print(f'ERROR PAGE')
@@ -58,11 +58,12 @@ async def login(driver):
 
     try:
         await click(driver, 40, '//*[@id="wrapper"]/div[1]/header/div/div/nav/div[3]/ul/li[1]/a')
+        await asyncio.sleep(3)
         await input_data(driver, 20, '//*[@id="user_email"]', user_login)
         await input_data(driver, 20, '//*[@id="user_password"]', user_password)
         await click(driver, 30, '//*[@id="new_user"]/input[2]')
     except Exception as e:
-        print(f'ERROR INPUT LOG DATA \n{e}')
+        return {"status":"0", "ext":f"error login {e}"}
 
     await asyncio.sleep(10.5)
     await driver.get('https://ororo.tv/ru/users/subscription')
@@ -92,7 +93,7 @@ async def get_wallet():
             await click(driver, 30, '//img[@alt="Tether"]')
             await click(driver, 30, '//img[@alt="Tether TRC-20"]')
         except Exception as e:
-            print(f'ERROR CHOOSE TETHER \n{e}')
+            return {"status":"0", "ext":f"error tether{e}"}
 
         await asyncio.sleep(4.5)
         try:
@@ -108,12 +109,10 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
