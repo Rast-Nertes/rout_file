@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://www.buyhack.pro/en/products/apex-legends/mason-apex'
+url = 'https://www.buyhack.pro/en/products/counter-strike-2/pussycat-cs2'
 user_email = "yewoxo4550@otemdi.com"
 user_password = "onvB2mkVH5c"
 
