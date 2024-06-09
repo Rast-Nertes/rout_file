@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://cloud.dolphin.tech/ru/#tariffs'
 user_login = 'kiracase34@gmail.com'
 user_password = 'w!U7yPGeh5FfUx5'
@@ -31,21 +30,14 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 
+
 def login(driver):
     driver.get(url)
     driver.maximize_window()
 
     try:
-        driver.implicitly_wait(30)
-        choose_tariff = driver.find_element(By.CSS_SELECTOR, 'div.container-fluid.container-lg > div > div:nth-child(2) > div > a')
-        sleep(2)
-        driver.execute_script("arguments[0].click();", choose_tariff)
-    except Exception as e:
-        print(f"CHOOSE TARIFF ERROR \n{e}")
-
-    try:
         driver.implicitly_wait(10)
-        button_to_log = driver.find_element(By.ID, 'login-tab')
+        button_to_log = driver.find_element(By.XPATH, '//a[@class="nav__login"]')
         sleep(1)
         driver.execute_script("arguments[0].click();", button_to_log)
     except Exception as e:
@@ -69,15 +61,16 @@ def login(driver):
     except Exception as e:
         print(f"CLICK BUTTON ERROR \n{e}")
 
+
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         login(driver)
         sleep(5)
         driver.get('https://cloud.dolphin.tech/app/fb/profile/tariffs')
 
         try:
             driver.implicitly_wait(30)
-            choose_tariff = driver.find_element(By.CSS_SELECTOR, 'div.choose-plan-container > div > div:nth-child(2) > div > button')
+            choose_tariff = driver.find_element(By.XPATH, '(//button[@class="choose-plan-btn"])[4]')
             sleep(1)
             driver.execute_script("arguments[0].click();", choose_tariff)
         except Exception as e:
@@ -108,14 +101,13 @@ def get_wallet():
             driver.execute_script("arguments[0].click();", next_step_to_payment)
         except:
                 sleep(2)
-                driver.refresh()
                 driver.implicitly_wait(10)
-                address = driver.find_element(By.CSS_SELECTOR,
-                                              'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
+                address = driver.find_element(By.XPATH,
+                                              '//*[@id="payment-form"]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[1]/div/p').text
 
                 driver.implicitly_wait(10)
-                amount = driver.find_element(By.CSS_SELECTOR,
-                                             'div.payment_req > div > div.payment_requisites > div.req_to_clipboard > p').text
+                amount = driver.find_element(By.XPATH,
+                                             '//*[@id="payment-form"]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]/p').text
 
                 return {
                     "address": address,
@@ -123,9 +115,7 @@ def get_wallet():
                     "currency": "usdt"
                 }
         try:
-            sleep(2)
-            driver.refresh()
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(20)
             address = driver.find_element(By.CSS_SELECTOR,
                                           'div.payment_requisites > div.req_to_clipboard_wrapper > div > p').text
 
@@ -134,13 +124,13 @@ def get_wallet():
                                          'div.payment_req > div > div.payment_requisites > div.req_to_clipboard > p').text
 
             return {
-                "address": address,
-                "amount": amount,
+                "address": amount,
+                "amount": address,
                 "currency": "usdt"
             }
 
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
