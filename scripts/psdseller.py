@@ -92,6 +92,13 @@ def get_wallet():
             print(f"INPUT DATA ERROR \n{e}")
 
         try:
+            click_ticket = driver.find_element(By.XPATH, '//*[@id="edd-agree-to-privacy-policy"]')
+            sleep(1.5)
+            click_ticket.click()
+        except Exception as e:
+            print(f'ERROR TICKET \n{e}')
+
+        try:
             driver.implicitly_wait(10)
             purchase_button_2 = driver.find_element(By.ID, 'edd-purchase-button')
             sleep(3)
@@ -122,6 +129,7 @@ def get_wallet():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
+
 
 def wallet():
     wallet_data = get_wallet()
