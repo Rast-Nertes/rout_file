@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://buyusabank.com/product/buy-scarlet-bank-account/'
 user_email = "alex37347818@gmail.com"
 user_password = "onvB2mkVH5c"
@@ -53,21 +53,27 @@ def login(driver):
         input_email.clear()
         input_email.send_keys(user_email)
     except Exception as e:
-        print(f"ERROR INPUT DATA \n{e}")
+        return {"status": "0", "ext": f"error input data {e}"}
 
     try:
-        driver.implicitly_wait(30)
         sleep(4.5)
+        driver.implicitly_wait(10)
         choose_coinpal = driver.find_element(By.ID, 'payment_method_coinpal')
         sleep(1.5)
         driver.execute_script('arguments[0].click();', choose_coinpal)
+    except Exception as e:
+        print(f"ERROR CHOOSE COINPAL \n{e}")
 
-        driver.implicitly_wait(20)
-        place_order = driver.find_element(By.ID, 'place_order')
+    try:
+        WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="place_order"]'))
+        )
+        sleep(2.5)
+        place_order = driver.find_element(By.XPATH, '//*[@id="place_order"]')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", place_order)
     except Exception as e:
-        print(f"ERROR CHOOSE COINPAL \n{e}")
+        return {"status":"0", "ext":f"error place order {e}"}
 
     try:
         driver.implicitly_wait(40)
@@ -96,7 +102,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
