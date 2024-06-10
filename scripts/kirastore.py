@@ -15,14 +15,10 @@ from selenium.webdriver.chrome.options import Options
 #Zerocryptopay
 
 #CONSTANS
-app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
+
 user_login = 'kiracase34@gmail.com'
 #user_password = 'kiramira34'
 url = 'https://kirastore.info'
-
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -31,7 +27,6 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options=options)
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -104,13 +99,10 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"INFO ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
-@app.route('/api/selenium/kirastore')
+
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5032)
