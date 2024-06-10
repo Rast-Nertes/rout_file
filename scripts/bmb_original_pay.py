@@ -22,9 +22,9 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 
-proxy_address = "62.3.13.13"
-proxy_login = '1QjtPL'
-proxy_password = 'pHSyxy'
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 proxy_options = {
@@ -33,6 +33,7 @@ proxy_options = {
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
+
 
 def login(driver):
     driver.get(url)
@@ -92,7 +93,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            choose_usdt = driver.find_element(By.CSS_SELECTOR, 'div.slist > ul:nth-child(3) > li:nth-child(3)')
+            choose_usdt = driver.find_element(By.CSS_SELECTOR, 'div.slist > ul:nth-child(3) > li:nth-child(4)')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_usdt)
 
@@ -122,7 +123,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
