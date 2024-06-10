@@ -32,11 +32,17 @@ proxy_options = {
     }
 }
 
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[2].strip()
+    ext = paths[1].strip()
+
 
 def solve_captcha():
     solver = imagecaptcha()
     solver.set_verbose(1)
-    solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
+    solver.set_key(api_key)
 
     captcha_text = solver.solve_and_return_solution("captcha.jpg")
     time.sleep(1)
@@ -51,43 +57,44 @@ def solve_captcha():
 
 def login(driver):
     driver.get(url)
-
-    driver.set_window_size(400, 400)
-    driver.execute_script("document.body.style.zoom='250%'")
-    driver.execute_script("window.scrollBy(0, 660);")
-    sleep(1)
-    driver.save_screenshot("captcha.jpg")
-
-    solved_captcha = solve_captcha()
-
-    driver.execute_script("document.body.style.zoom='100%'")
     driver.maximize_window()
 
-    try:
-        driver.implicitly_wait(10)
-        solved_captcha_input = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(5) > td:nth-child(2) > input')
-        solved_captcha_input.clear()
-        solved_captcha_input.send_keys(solved_captcha)
-    except Exception as e:
-        print(f"SOLVED CAPTCHA ERROR \n{e}")
+    while True:
 
-    try:
-        driver.implicitly_wait(30)
-        input_email = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(3) > td:nth-child(2) > input')
-        input_email.clear()
-        input_email.send_keys(user_email)
+        try:
+            driver.implicitly_wait(5)
+            driver.find_element(By.XPATH, '/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td[1]/form/table/tbody/tr[5]/td[1]/img').screenshot('captcha.jpg')
+            solved_captcha = solve_captcha()
+        except:
+            break
 
-        driver.implicitly_wait(10)
-        input_password = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(4) > td:nth-child(2) > input')
-        input_password.clear()
-        input_password.send_keys(user_password)
+        try:
+            driver.implicitly_wait(10)
+            solved_captcha_input = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(5) > td:nth-child(2) > input')
+            solved_captcha_input.clear()
+            solved_captcha_input.send_keys(solved_captcha)
+        except Exception as e:
+            print(f"SOLVED CAPTCHA ERROR \n{e}")
 
-        driver.implicitly_wait(10)
-        login_button = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(6) > td:nth-child(2) > input')
-        sleep(1.5)
-        driver.execute_script("arguments[0].click();", login_button)
-    except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        try:
+            sleep(2.5)
+            driver.implicitly_wait(30)
+            input_email = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(3) > td:nth-child(2) > input')
+            input_email.clear()
+            input_email.send_keys(user_email)
+
+            sleep(1.5)
+            driver.implicitly_wait(10)
+            input_password = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(4) > td:nth-child(2) > input')
+            input_password.clear()
+            input_password.send_keys(user_password)
+
+            driver.implicitly_wait(10)
+            login_button = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td:nth-child(1) > form > table > tbody > tr:nth-child(6) > td:nth-child(2) > input')
+            sleep(1.5)
+            driver.execute_script("arguments[0].click();", login_button)
+        except Exception as e:
+            print(f"LOGIN ERROR \n{e}")
 
 
 def get_wallet():
@@ -98,7 +105,12 @@ def get_wallet():
         driver.get('https://luxioprofit.com/?a=deposit')
         try:
             driver.implicitly_wait(10)
-            ticket = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td.bgcolormain > table > tbody > tr > td > div > form > table:nth-child(21) > tbody > tr:nth-child(5) > td > table > tbody > tr > td:nth-child(1) > input[type=radio]')
+            accept_choose_trc20 = driver.find_element(By.XPATH, '//input[@name="type"]')
+            sleep(1.5)
+            accept_choose_trc20.click()
+
+            driver.implicitly_wait(10)
+            ticket = driver.find_element(By.XPATH, '(//input[@name="h_id"])[2]')
             sleep(1.4)
             driver.execute_script("arguments[0].click();", ticket)
         except Exception as e:
@@ -106,18 +118,18 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            spend_button = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td.bgcolormain > table > tbody > tr > td > div > form > table:nth-child(21) > tbody > tr:nth-child(6) > td > input')
+            spend_button = driver.find_element(By.XPATH, '//input[@class="sbmt"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", spend_button)
         except Exception as e:
             print(f"ERROR SPEND BUTTON \n{e}")
 
         try:
-            driver.implicitly_wait(40)
-            address = driver.find_element(By.CSS_SELECTOR, '#usdt_form > i > a').text.replace('(Token USDT)', "").replace(" ", '')
-
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td.bgcolormain > table > tbody > tr > td > div > table > tbody > tr:nth-child(8) > td').text
+            data_elem = driver.find_element(By.XPATH, '//*[@id="deposit_result_div"]').get_attribute('src')
+
+            address = data_elem.split("wallet/")[1].split('/amount')[0]
+            amount = data_elem.split('amount/')[1].split('/')[0]
 
             return {
                 "address": address,
@@ -125,7 +137,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
