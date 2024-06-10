@@ -71,7 +71,8 @@ async def login(driver):
     await driver.get('https://winsmania.com/en-GB/home/account/manage-balance/deposit')
 
     try:
-        await click(driver, 30, '/html/body/app-root/app-main/div[1]/div/app-account/div/div/app-manage-balance/div/div[2]/app-manage-balance-deposit/app-manage-balance-transact/div/div/div/div[1]/div[5]/div/div[1]')
+        await click(driver, 30, '/html/body/app-root/app-main/div[1]/div/app-account/div/div/app-manage-balance/div/div[2]/app-manage-balance-deposit/app-manage-balance-transact/div/div/div/div[1]/div[8]/div')
+        await asyncio.sleep(3.5)
         await click(driver, 30, '/html/body/app-root/app-main/div[1]/div/app-account/div/div/app-manage-balance/div/div[2]/app-manage-balance-deposit/app-manage-balance-transact/div/div/div/div[2]/div/div/form/app-action-button/button')
     except Exception as e:
         return {"status": "0", "ext":f"error path to address:  {e}"}
@@ -94,7 +95,6 @@ async def get_wallet():
             await asyncio.sleep(2.5)
             iframe_doc = await find_frame.content_document
         except Exception as e:
-            # input("pr")
             return {"status":"0", "ext":f"error frame:  {e}"}
 
         await asyncio.sleep(4.5)
