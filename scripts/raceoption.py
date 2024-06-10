@@ -157,12 +157,12 @@ async def get_wallet():
             address = await address_elem.text
 
             return {
-                "address": address,
+                "address": address.replace(" ", ''),
                 "amount": amount.replace("USDT", '').replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
