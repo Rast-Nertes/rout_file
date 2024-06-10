@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://bd.techtreek.com/store/south-carolina-driver-license-psd-template/'
 user_email = "alex37347818@gmail.com"
 user_password = "onvB2mkVH5c"
@@ -143,12 +143,12 @@ def get_wallet():
         try:
             driver.implicitly_wait(50)
             address = driver.find_element(By.XPATH,
-                                          '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span').text
+                                          '//*[@id="app"]/div/div/div/div[2]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span').text
             sleep(1.5)
 
             driver.implicitly_wait(10)
             amount = driver.find_element(By.XPATH,
-                                         '/html/body/div[1]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span').text.replace(
+                                         '//*[@id="app"]/div/div/div/div[2]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span').text.replace(
                 "USDT", '').replace(" ", '')
 
             return {
@@ -157,7 +157,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
