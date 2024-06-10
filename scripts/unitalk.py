@@ -14,10 +14,6 @@ user_login = 'kiracase34@gmail.com'
 user_password = '0WvpZNBM'
 url = 'https://my.unitalk.cloud/enter.html#auth'
 
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
-site_key = '6LdTrQYeAAAAAB5wwjOovTVSrXDmPB7we-9dYi0o'
-
 #PROXY_CONSTANS
 
 proxy_address = "45.130.254.133"
@@ -35,28 +31,80 @@ proxy_options = {
 #CHROME OPTIONS
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.headless = False
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_argument("--disable-extensions")
+# options.add_argument("--disable-extensions")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-browser-side-navigation")
 options.add_argument("--disable-gpu")
-#options.add_argument("--headless")
 options.add_experimental_option("detach", True)
 
 
-def solve_captcha(sitekey: str, url: str) -> str:
-    solver = TwoCaptcha(api_key)
-    result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
-    return result["code"]
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+    ext = paths[1].strip()
+
+options.add_extension(ext)
 
 
-def captcha_and_login(driver):
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
+
+
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        js_click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
+def login(driver):
+    api_connect(driver)
     driver.get(url)
     driver.maximize_window()
+
     try:
         driver.implicitly_wait(10)
         input_email = driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[2]/input')
@@ -69,16 +117,22 @@ def captcha_and_login(driver):
         input_password.send_keys(user_password)
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
-        return None
 
     try:
-        driver.implicitly_wait(30)
-        captcha_result = solve_captcha(sitekey=site_key, url=url)
-        print(captcha_result)
-
-        driver.execute_script(f'var textarea = document.getElementById("g-recaptcha-response-100000"); textarea.style.display = "block"; textarea.innerHTML = "{captcha_result}";')
-    except:
-        pass
+        time_loop = 0
+        while True:
+            driver.implicitly_wait(10)
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            if ("ена" in find_check) or ("lve" in find_check):
+                break
+            else:
+                if time_loop > 120:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
+                sleep(5)
+                print("Wait 5 seconds, captcha solving...")
+    except Exception as e:
+        print(f'ERROR CHECKBOX')
 
     try:
         driver.implicitly_wait(10)
@@ -87,12 +141,13 @@ def captcha_and_login(driver):
     except Exception as e:
         print(f"BUTTON ERROR \n{e}")
         return None
+
     sleep(5)
 
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
-        captcha_and_login(driver)
+        login(driver)
         driver.get('https://my.unitalk.cloud/index.html#balance')
 
         try:
@@ -163,3 +218,7 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
+
+
+if __name__ == "__main__":
+    wallet()

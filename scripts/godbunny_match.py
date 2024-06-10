@@ -19,8 +19,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -60,7 +58,7 @@ async def login(driver):
     await driver.get('https://godbunny.com/en/profile/cash')
 
     try:
-        await click(driver, 30, "//div[text()='Praxis Match2Pay']")
+        await click(driver, 30, '//img[@alt="Praxis Match2Pay"]')
         await asyncio.sleep(1.5)
         await click(driver, 30, "//span[text()=' +20 ']")
     except Exception as e:
@@ -72,7 +70,7 @@ async def login(driver):
 
     try:
         await asyncio.sleep(2)
-        await click(driver, 30, "/html/body/div[1]/div/div[4]/div/div[2]/div/div[2]/div[2]/div/div[2]/form/button")
+        await click(driver, 30, '(//span[@class="wlc-btn__text"])[9]')
     except Exception as e:
         print(f'ERROR DEPOSIT BUT \n{e}')
 
@@ -89,7 +87,7 @@ async def get_wallet():
         iframe_doc = await find_frame.content_document
 
         try:
-            click_select = await iframe_doc.find_element(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[2]/form/div/div[1]/div/div/div/div[2]/div/div/div[1]', timeout=60)
+            click_select = await iframe_doc.find_element(By.XPATH, '//div[@class="custom-select-dropdown-arrow-container"]', timeout=60)
             await asyncio.sleep(1.5)
             await click_select.click()
 
@@ -106,17 +104,17 @@ async def get_wallet():
         except Exception as e:
             print(f'ERROR DEPOS BUT CLICK \n{e}')
 
-        await asyncio.sleep(7.5)
+        await asyncio.sleep(10.5)
         find_frame = await driver.find_element(By.NAME, 'deposit_frame', timeout=90)
         await asyncio.sleep(0.5)
         iframe_doc = await find_frame.content_document
 
-        await asyncio.sleep(5)
+        await asyncio.sleep(2.5)
         try:
-            amount_elem = await iframe_doc.find_element(By.XPATH, '/html/body/app-root/app-crypto-payment/div/div/mat-tab-group/div/mat-tab-body[1]/div/app-with-crypto/div/p/strong[1]', timeout=30)
+            amount_elem = await iframe_doc.find_element(By.XPATH, '(//strong)[1]', timeout=30)
             amount = await amount_elem.text
 
-            address_elem = await iframe_doc.find_element(By.XPATH, '/html/body/app-root/app-crypto-payment/div/div/mat-tab-group/div/mat-tab-body[1]/div/app-with-crypto/div/div/div[2]/app-copy-input/div/span', timeout=30)
+            address_elem = await iframe_doc.find_element(By.XPATH, '//span[@class="text"]', timeout=30)
             address = await address_elem.text
 
             return {
@@ -125,7 +123,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
