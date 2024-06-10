@@ -124,8 +124,7 @@ def get_wallet_data():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"WALLET DATA ERROR -- \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
