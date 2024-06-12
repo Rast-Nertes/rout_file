@@ -58,10 +58,10 @@ def input_data(driver, time, XPATH, data):
 def login(driver):
     driver.get(url)
     driver.maximize_window()
-
     actions = ActionChains(driver)
     try:
-        click(driver, 40, '//*[@id="root"]/div/div/div[1]/div[1]/div/div[2]/header/div/div[2]/div[1]/div[1]/button')
+        sleep(5)
+        click(driver, 40, '//button[@class="button sign-in"]')
         sleep(1.5)
         input_data(driver, 30, '//input[@name="username"]', user_email)
         sleep(1)
@@ -99,7 +99,6 @@ def login(driver):
         driver.implicitly_wait(30)
         click_send_but = driver.find_element(By.CSS_SELECTOR, 'div.single-wrap > div > div.modal-content-payments-single > div > div.form-cont > form > button')
         click_send_but.click()
-        click(driver, 30, '//*[@id="root"]/div/div/div[4]/div/div[2]/div/button[1]')
     except Exception as e:
         print(f'ERROR SEND BUT \n{e}')
 
@@ -132,7 +131,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
