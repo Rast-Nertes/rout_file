@@ -67,7 +67,7 @@ def login(driver):
         print(f'ERROR INPUT DATA \n{e}')
 
     try:
-        click(driver, 20, '/html/body/div[2]/div/div[4]/div[4]/div')
+        click(driver, 20, '(//div[@class="payment-method-block"])[7]')
     except Exception as e:
         print(f'ERROR CHOOSE HYPER \n{e}')
 
@@ -100,20 +100,20 @@ def get_wallet():
                 print(f'ERROR NEXT BUT \n{e}')
 
             try:
-                    sleep(2.5)
-                    driver.implicitly_wait(65)
-                    amount = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/div[2]/span').text.replace("USDT", '').replace(" ", '')
+                sleep(2.5)
+                driver.implicitly_wait(65)
+                amount = driver.find_element(By.XPATH, '//div[@class="amount-clipboard flex items-center"]/span').text.replace("USDT", '').replace(" ", '')
 
-                    driver.implicitly_wait(20)
-                    address = driver.find_element(By.XPATH,'//*[@id="app"]/div/div/div/div[2]/div[1]/div[1]/div[1]/div[2]/div/div[2]/div/div[2]/div[1]/div/span').text
+                driver.implicitly_wait(20)
+                address = driver.find_element(By.XPATH,'(//div[@class="address-clipboard flex items-center"])[1]/span').text
 
-                    return {
-                        "address": address,
-                        "amount": amount,
-                        "currency": "usdt"
-                    }
+                return {
+                    "address": address,
+                    "amount": amount,
+                    "currency": "usdt"
+                }
             except Exception as e:
-                print(f"ERROR DATA \n{e}")
+                return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
