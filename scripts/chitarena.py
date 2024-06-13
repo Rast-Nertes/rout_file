@@ -74,7 +74,7 @@ async def login(driver):
             click_select = await driver.find_element(By.ID, 'TypeCurr_msdd', timeout=20)
             await click_select.click()
             sleep(3.5)
-            choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="TypeCurr_child"]/ul/li[15]', timeout=40)
+            choose_trc20 = await driver.find_element(By.XPATH, '//li[@class="enabled _msddli_ name15 GCZ"]', timeout=40)
             await choose_trc20.click()
         except Exception as e:
             print(f"ERROR CHOOSE TRC20")
@@ -97,10 +97,10 @@ async def get_wallet():
 
         sleep(4.5)
         try:
-            address_elem = await driver.find_element(By.XPATH, '/html/body/main/div[2]/div/form/div[2]/fieldset/input', timeout=30)
-            address = await address_elem.__getattribute__('value')
+            address_elem = await driver.find_element(By.XPATH, '(//div[@class="merchant-tabs__tab-address"])[4]/span', timeout=30)
+            address = await address_elem.text
 
-            amount_elem = await driver.find_element(By.XPATH, '/html/body/main/div[2]/div/form/div[1]/div[2]/span', timeout=30)
+            amount_elem = await driver.find_element(By.XPATH, '//div[@class="sm_zag"]/span', timeout=30)
             amount = await amount_elem.text
 
         except Exception as e:
