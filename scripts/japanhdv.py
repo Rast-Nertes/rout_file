@@ -89,7 +89,7 @@ def login(driver):
     try:
         click(driver, 45, '//*[@id="btn_USDT.TRC20"]')
         sleep(1)
-        input_data(driver, 20, '//*[@id="bstable"]/tbody/tr[11]/td/input', user_email)
+        input_data(driver, 20, '(//input[@type="text"])[3]', user_email)
     except Exception as e:
         print(f'ERROR CHOOSE TRC20 \n{e}')
 
@@ -120,7 +120,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
