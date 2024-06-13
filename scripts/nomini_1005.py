@@ -11,8 +11,6 @@ from fake_useragent import UserAgent
 url = 'https://nomini-1005.com'
 user_email = "kiracase34"
 user_password = "Adsjkfhnncsofgu89!"
-#kaksejW113
-
 
 # CHROME CONSTANTS
 
@@ -22,8 +20,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -72,13 +68,9 @@ async def login(driver):
 
     try:
         await click(driver, 30, '//a[@popup-open="cashbox"]')
-        await click(driver, 30, '//img[@alt="USDTether TRC20"]')
+        await click(driver, 30, '//img[@alt="USDTether"]')
     except Exception as e:
-        find_input_tag = await driver.find_element(By.XPATH, '//a[@popup-open="login"]', timeout=10)
-        if find_input_tag:
-            return {"status": "0", "ext": "Login error. Check script."}
-        else:
-            print(f"ERROR DEPOS BUT \n{e}")
+        print(f'ERROR DEPOS BUT \n{e}')
 
 
 async def get_wallet():
