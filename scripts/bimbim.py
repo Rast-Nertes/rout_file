@@ -17,9 +17,9 @@ user_password = "Qwerty62982"
 
 # CHROME CONSTANS
 
-proxy_address = "62.3.13.13"
-proxy_login = '1QjtPL'
-proxy_password = 'pHSyxy'
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 proxy_options = {
@@ -84,7 +84,7 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(40)
-            choose_method = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[3]/p/span/a')
+            choose_method = driver.find_element(By.XPATH, '//*[@id="overlay-container"]/section/div/div[2]/div[1]/div[1]/div/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
