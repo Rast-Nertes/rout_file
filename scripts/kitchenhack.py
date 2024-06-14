@@ -42,15 +42,15 @@ def login(driver):
     driver.maximize_window()
 
     try:
-        driver.implicitly_wait(35)
-        a_href = driver.find_element(By.XPATH, '//*[@id="__next"]/main/div[3]/div[2]/div[3]/a[1]').get_attribute('href')
+        driver.implicitly_wait(15)
+        a_href = driver.find_element(By.XPATH, '(//a[@class="cheat__button"])[1]').get_attribute('href')
         sleep(1)
         driver.get(a_href)
     except Exception as e:
         print(f"ERROR A HREF \n{e}")
 
     try:
-        click(driver, 35, '/html/body/div[1]/div[2]/div/div[3]/div/form/div/div[3]')
+        click(driver, 15, '/html/body/div[1]/div[2]/div/div[3]/div/form/div/div[3]')
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
@@ -63,7 +63,7 @@ def login(driver):
         print(f"ERROR NEXT BUT \n{e}")
 
     try:
-        click(driver, 35, '//*[@id="TypeCurr_titleText"]')
+        click(driver, 15, '//*[@id="TypeCurr_titleText"]')
         sleep(1.5)
 
         driver.implicitly_wait(20)
@@ -101,7 +101,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
