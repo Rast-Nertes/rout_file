@@ -1,4 +1,3 @@
-#import undetected_chromedriver
 from time import sleep
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
@@ -7,24 +6,35 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium import webdriver
+from seleniumwire import webdriver
 #ALFACOINS
 
 #CONSTANS
-app = Flask(__name__)
+
 user_login = 'kiracase34@gmail.com'
 user_password = 'kirakira34'
-url = 'https://torguard.net/clientarea.php'
+
 
 options = webdriver.ChromeOptions()
-options.headless = False
-#driver = webdriver.Chrome(options=options)
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
 
 def login():
-    with webdriver.Chrome(options = options) as driver:
+    with webdriver.Chrome(options = options, seleniumwire_options=proxy_options) as driver:
         driver.get(
             'https://1movies.life/user/premiummembership?utm_source=1movies&utm_medium=red_button&utm_campaign=premium&utm_content=guest')
         driver.maximize_window()
+
         try:
             continue_button = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="premium-data-trigger"]/div[3]/div[2]/div[3]'))
@@ -113,7 +123,8 @@ def login():
             "currency": "usdt"
         }
 
+
 def wallet():
     wallet = login()
+    print(wallet)
     return jsonify(wallet)
-
