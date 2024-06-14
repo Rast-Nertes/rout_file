@@ -79,13 +79,17 @@ def get_wallet():
             choose_coinpal = driver.find_element(By.ID, 'payment_method_coinpal')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_coinpal)
+        except Exception as e:
+            print(f'ERROR CHOOSE COINPAL \n{e}')
 
+        try:
+            sleep(1.5)
             driver.implicitly_wait(20)
             place_order = driver.find_element(By.ID, 'place_order')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", place_order)
         except Exception as e:
-            print(f'ERROR CHOOSE COINPAL \n{e}')
+            print(f'ERROR PLACE ORDER \n{e}')
 
         try:
             driver.implicitly_wait(60)
@@ -109,7 +113,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
