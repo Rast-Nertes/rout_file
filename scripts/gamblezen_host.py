@@ -67,7 +67,7 @@ async def login(driver):
         print(f'ERROR DEPOS BUTTON \n{e}')
 
     try:
-        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div[3]/div/div[11]', timeout=30)
+        choose_trc20 = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div[3]/div/div[12]', timeout=30)
         await asyncio.sleep(1)
         await choose_trc20.click()
     except Exception as e:
@@ -110,14 +110,10 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
