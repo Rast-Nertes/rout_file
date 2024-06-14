@@ -42,7 +42,7 @@ def login(driver):
 
     try:
         driver.implicitly_wait(50)
-        a_href = driver.find_element(By.XPATH, '//*[@id="__next"]/main/div/div[2]/div[3]/div/a').get_attribute('href')
+        a_href = driver.find_element(By.XPATH, '(//a[@class="button cheat"])[1]').get_attribute('href')
         sleep(1)
         driver.get(a_href)
     except Exception as e:
@@ -87,7 +87,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data:  {e}"}
 
 
 def wallet():
