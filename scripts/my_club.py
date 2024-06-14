@@ -16,24 +16,24 @@ user_email = "kiracase34"
 user_password = "wDxr$7sSsT8p4VL"
 
 # CHROME CONSTANS
-#C:/Users/Acer/Desktop/py_scripts/result/ROUT_FILE/config.txt
-with open('config.txt') as file:
-    paths = file.readlines()
-    api = paths[3].strip()
 
 with open('config.txt') as file:
     paths = file.readlines()
-    extension_path = paths[1].strip()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+    api_key_solver = paths[5].strip()
+    ext = paths[1].strip()
 
 options = webdriver.ChromeOptions()
+
+options.add_extension(ext)
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_extension(extension_path)
 
-proxy_address = "62.3.13.13"
-proxy_login = '1QjtPL'
-proxy_password = 'pHSyxy'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 proxy_options = {
@@ -44,30 +44,77 @@ proxy_options = {
 }
 
 
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
+
+
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
 def login(driver):
+    api_connect(driver)
     driver.get(url)
     driver.maximize_window()
 
-    driver.switch_to.window(driver.window_handles[0])
+    # input("press")
     try:
-        driver.implicitly_wait(30)
-        input_api_key = driver.find_element(By.CSS_SELECTOR,
-                                            'body > div > div.content > table > tbody > tr:nth-child(1) > td:nth-child(2) > input[type=text]')
-        input_api_key.clear()
-        input_api_key.send_keys(api)
+        click(driver, 10, '//button[@class="modal-ds-close-icon"]')
+    except:pass
 
-        driver.implicitly_wait(5)
-        connect = driver.find_element(By.ID, 'connect')
-        sleep(1.5)
-        driver.execute_script("arguments[0].click();", connect)
-    except Exception as e:
-        print(f"ERROR CONNECT \n{e}")
-
-    driver.switch_to.window(driver.window_handles[1])
-    sleep(2.5)
     try:
         driver.implicitly_wait(40)
-        button_login = driver.find_element(By.CSS_SELECTOR, 'nav.ga__nav-right > div > button.btn.btn-outline-pale.btn-medium')
+        button_login = driver.find_element(By.XPATH, '(//button[@type="button"])[1]')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", button_login)
     except Exception as e:
@@ -87,25 +134,20 @@ def login(driver):
         print(f"ERROR INPUT DATA \n{e}")
 
     try:
-        driver.implicitly_wait(50)
-        click_solve_captcha = driver.find_element(By.CSS_SELECTOR, '#recaptcha-container > div > div.captcha-solver.captcha-solver_inner')
-        sleep(1.5)
-        driver.execute_script("arguments[0].click();", click_solve_captcha)
-    except Exception as e:
-        print(f"ERROR CLICK \n{e}")
-
-    while True:
-        try:
+        time_loop = 0
+        while True:
             driver.implicitly_wait(10)
-            wait_moment = driver.find_element(By.CSS_SELECTOR, '#recaptcha-container > div > div.captcha-solver.captcha-solver_inner > div.captcha-solver-info')
-            if "Решается" in wait_moment.text:
-                print(f"Капча решается...")
-                sleep(5)
-            else:
-                print(f"Captcha solved!")
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            if ("ена" in find_check) or ("lve" in find_check):
                 break
-        except:
-            break
+            else:
+                if time_loop > 120:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
+                sleep(5)
+                print("Wait 5 seconds, captcha solving...")
+    except Exception as e:
+        print(f'ERROR CHECKBOX')
 
     try:
         driver.implicitly_wait(30)
@@ -130,12 +172,12 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(60)
-            join_button = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div/aside/div[1]/div[3]/button')
+            join_button = driver.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div/div[1]/div[2]/section/div/div[1]/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", join_button)
 
             driver.implicitly_wait(30)
-            join_club = driver.find_element(By.CSS_SELECTOR, 'div.modal-ds-body.modal-ds-body--background--none.modal-ds-body--size--regular > div > div.modal-ds-footer.modal-ds-footer--background--dark > div > div > button')
+            join_club = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div/div/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", join_club)
         except Exception as e:
@@ -143,11 +185,11 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(30)
-            choose_method_text = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({1}) > div.b5__left > div:nth-child(2) > div.text-s14-w500').text
+            choose_method_text = driver.find_element(By.XPATH, f'//*[@id="app-portals"]/div[2]/div[2]/div/div[2]/div[1]/div[2]').text
             if "Crypto" in choose_method_text:
-                choose_method = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({1}) > div.b5__left > div:nth-child(2) > div.text-s14-w500')
+                choose_method = driver.find_element(By.XPATH, f'//*[@id="app-portals"]/div[2]/div[2]/div/div[2]/div[1]/div[2]')
             else:
-                choose_method = driver.find_element(By.CSS_SELECTOR, f'div.scroll-bar-container.b5__list.ps > div:nth-child({2}) > div.b5__left > div:nth-child(2) > div.text-s14-w500')
+                choose_method = driver.find_element(By.XPATH, f'//*[@id="app-portals"]/div[2]/div[2]/div/div[2]/div[1]/div[1]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_method)
         except Exception as e:
@@ -176,27 +218,27 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE USDT \n{e}")
 
+        driver.implicitly_wait(50)
+        choose_tron = driver.find_element(By.XPATH, '//label[@data-test="Tron-currency"]')
+        sleep(1.5)
+        driver.execute_script("arguments[0].click();", choose_tron)
+
+        driver.implicitly_wait(50)
+        continue_button_2 = driver.find_element(By.XPATH, '//button[@data-test="continue-button"]')
+        sleep(1.5)
+        driver.execute_script("arguments[0].click();", continue_button_2)
+
         try:
             driver.implicitly_wait(50)
             input_email = driver.find_element(By.XPATH, '//input[@name="email"]')
             sleep(1.5)
             input_email.clear()
-            input_email.send_keys(user_email)
+            input_email.send_keys("kiracase34@gmail.com")
 
             driver.implicitly_wait(20)
-            continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/button')
+            continue_button = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", continue_button)
-
-            driver.implicitly_wait(50)
-            choose_tron = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[3]/div/div/label[3]/span[2]/div')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_tron)
-
-            driver.implicitly_wait(50)
-            continue_button_2 = driver.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[4]/div/div[2]/div/button')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", continue_button_2)
         except Exception as e:
             print(f"ERROR CHOOSE TRON \n{e}")
 
@@ -215,7 +257,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
