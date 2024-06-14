@@ -94,7 +94,7 @@ def login(driver):
         click(driver, 50, '//div[@class="logo-container USDTT "]')
         input_data(driver, 30, '//*[@id="cashier"]/section/div/div[1]/div[2]/div/input', '10')
         sleep(2.5)
-        click(driver, 30, '//*[@id="cashier"]/section/div/div[2]/button')
+        click(driver, 30, '(//button[@class])[5]')
     except Exception as e:
         return {"status":"0", "ext":f"error input amount:  {e}"}
 
