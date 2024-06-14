@@ -21,8 +21,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -38,6 +36,7 @@ async def login(driver):
     await asyncio.sleep(1)
     await driver.get(url, timeout=60)
 
+    await asyncio.sleep(3.5)
     try:
         input_email = await driver.find_element(By.XPATH, '//*[@id="email"]', timeout=30)
         await input_email.write(user_email)
@@ -65,15 +64,17 @@ async def login(driver):
     except:
         pass
 
+    input("press")
+
     try:
         input_amount = await driver.find_element(By.XPATH, '//*[@id="send"]', timeout=20)
         await input_amount.write('18')
 
-        pay_but = await driver.find_element(By.XPATH, '//*[@id="app"]/buy-gomining/section/card/div/div[1]/buy-token-crypto/card-token-buy/card/div/div[2]/div/div[2]/button', timeout=20)
+        pay_but = await driver.find_element(By.XPATH, '//button[@type="submit"]', timeout=20)
         await asyncio.sleep(1.5)
         await driver.execute_script("arguments[0].click();", pay_but)
 
-        pay_but_2 = await driver.find_element(By.XPATH, '//*[@id="html"]/body/modal-container/div[2]/div/modal-token-buy-confirm/modal/div/div[4]/div/div/div[2]/button', timeout=20)
+        pay_but_2 = await driver.find_element(By.XPATH, '//button[@class="btn btn-lg btn-primary-theme"]', timeout=20)
         await asyncio.sleep(1)
         await driver.execute_script("arguments[0].click();", pay_but_2)
     except Exception as e:
