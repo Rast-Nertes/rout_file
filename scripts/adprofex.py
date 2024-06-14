@@ -6,29 +6,17 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from flask import Flask, jsonify
-from twocaptcha import TwoCaptcha
 from selenium import webdriver
 from time import sleep
 
-API_KEY = "7f728c25edca4f4d0e14512d756d6868" # ruCaptcha api-key
 USERNAME = "kiracase34@gmail.com" # username
 PASSWORD = "kiraadpro9" # password
-
-
-def solve_captcha(sitekey: str, url: str) -> str:
-    solver = TwoCaptcha(API_KEY)
-    result = solver.recaptcha(sitekey=sitekey, url=url, invisible=1)
-    return result["code"]
 
 
 def captcha_and_login(driver):
     url = "https://advertiser.adprofex.com/login"
     driver.maximize_window()
     driver.get(url); driver.implicitly_wait(30)
-    captcha_code = solve_captcha('6LcbPqMmAAAAAIIZTlt7AwAmV4z32HIst1aix5Gr', url)
-    print(captcha_code)
-    driver.execute_script(f'var textarea = document.getElementById("g-recaptcha-response-100000"); textarea.style.display = "block"; textarea.innerHTML = "{captcha_code}";')
-
     try:
         input_email = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div/div[2]/div[2]/div/div/form/div[1]/div[1]/label/div/div[1]/div/input'))
@@ -58,16 +46,11 @@ def get_wallet():
         driver.get('https://advertiser.adprofex.com/lk/balance')
 
         try:
+
             add_funds = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/button'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[4]/main/div/div/div/div[2]/button'))
             )
             add_funds.click()
-
-            choose_wallet = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[1]/div/div/div[6]/div[2]/div[2]'))
-            )
-            choose_wallet.click()
-
         except Exception as e:
             print(f"ADD FUNDS ERROR \n{e}")
             driver.implicitly_wait(10)
@@ -78,26 +61,36 @@ def get_wallet():
                 print(f"ERROR DEPOS BUT \n{e}")
 
         try:
+            driver.implicitly_wait(10)
+            click_other_amount = driver.find_element(By.XPATH, '//*[@id="q-app"]/div/div[4]/main/div/div/div/div[2]/div[1]/div/div/div[6]/div[2]/div[2]')
+            click_other_amount.click()
+        except Exception as e:
+            print(f'ERROR CHOOSE OTHER AMOUNT \n{e}')
+
+        try:
             choose_capitalist_method = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[2]/div[2]/div/div/div[2]'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[4]/main/div/div/div/div[2]/div[2]/div[2]/div/div/div[2]/div[2]/div[1]'))
             )
+            sleep(2.5)
             choose_capitalist_method.click()
+            # driver.execute_script("arguments[0].click();", choose_capitalist_method)
         except Exception as e:
             print(f"CHOOSE ERROR \n{e}")
 
         try:
             ticket = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[3]/label/div'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[4]/main/div/div/div/div[2]/div[3]/label/div/div[1]/div'))
             )
             ticket.click()
 
             add_funds_button = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[3]/main/div/div/div/div[2]/div[4]/button[2]'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="q-app"]/div/div[4]/main/div/div/div/div[2]/div[4]/button[2]'))
             )
             add_funds_button.click()
         except Exception as e:
             print(f"TICKET CHOOSE ERROR \n{e}")
 
+        sleep(3.5)
         windows = driver.window_handles
         for window in windows:
             driver.switch_to.window(window)
