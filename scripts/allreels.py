@@ -20,8 +20,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -54,7 +52,9 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
+        await asyncio.sleep(1.5)
         await input_data(driver, 30, '//*[@id="login"]', user_email)
+        await asyncio.sleep(1.5)
         await input_data(driver, 30, '//*[@id="password"]', user_password)
         await click(driver, 30, '//*[@id="popupSubmit"]')
     except Exception as e:
@@ -135,7 +135,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
