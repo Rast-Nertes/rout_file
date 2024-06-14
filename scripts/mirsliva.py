@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,7 +22,94 @@ url = 'https://mirsliva.com/login'
 user_login = "kiracase34"
 user_password = "zWcBvXGiA2FkD4n"
 
+# proxy_address = "45.130.254.133"
+# proxy_login = 'K0nENe'
+# proxy_password = 'uw7RQ3'
+# proxy_port = 8000
+
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
+
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+    api_key_solver = paths[5].strip()
+    ext = paths[1].strip()
+
+options.add_extension(ext)
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
+
+
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
+
+
 def login(driver):
+    api_connect(driver)
     driver.get(url)
     driver.maximize_window()
 
@@ -50,7 +137,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
         driver.get("https://mirsliva.com/account/upgrades")
 
@@ -79,35 +166,45 @@ def get_wallet():
             print(f"CHOOSE CURRENCY ERROR \n{e}")
 
         try:
-            driver.implicitly_wait(10)
-            buy_button = driver.find_element(By.CSS_SELECTOR, 'body > div > section > div > div.payment1__method > button')
-            sleep(1.5)
+            time_loop = 0
+            while True:
+                driver.implicitly_wait(10)
+                find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+                if ("ена" in find_check) or ("lve" in find_check):
+                    click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
+                    break
+                else:
+                    if time_loop > 120:
+                        return {"status": "0", "ext": "CAPTCHA ERROR"}
+                    time_loop += 5
+                    sleep(5)
+                    print("Wait 5 seconds, captcha solving...")
+        except Exception as e:
+            print(f'ERROR CHECKBOX ')
+
+        try:
+            click(driver, 10, '//button[@type="submit"]')
+        except Exception as e:
+            print(f'ERROR PAY BUT \n{e}')
+
+        try:
+            WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '(//button[@target="_blank"])[2]'))
+            )
+            sleep(10.5)
+            driver.implicitly_wait(5)
+            buy_button = driver.find_element(By.XPATH, '(//button[@target="_blank"])[2]')
             driver.execute_script("arguments[0].click();", buy_button)
         except Exception as e:
             print(f"BUY BUTTON ERROR \n{e}")
 
         try:
             driver.implicitly_wait(30)
-            buy_with_trc_20 = driver.find_element(By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_with_trc_20)
-
-            sleep(5)
-
-            driver.implicitly_wait(10)
-            buy_with_trc = driver.find_element(By.CSS_SELECTOR, 'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > button')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", buy_with_trc)
-        except Exception as e:
-            print(f"BUY WITH TRC20 ERROR \n{e}")
-
-        try:
+            address = driver.find_element(By.XPATH,
+                                          '(//div[@class="address-clipboard flex items-center"])[1]/span').text
             driver.implicitly_wait(30)
-            address = driver.find_element(By.CSS_SELECTOR,
-                                          'div.col-span-9.ms-16 > div > div.data-info.pt-12 > div.data-info__address.flex.items-center.justify-between > div > span').text
-            driver.implicitly_wait(30)
-            amount = driver.find_element(By.CSS_SELECTOR,
-                                         'div.total.col-span-12.md\:col-span-6.lg\:col-span-4.hidden.md\:block.dark\:bg-dark-layout > div.total__footer.border-dot.dark\:bg-dark-layout > div:nth-child(1) > span:nth-child(2)').text.replace("USDT", "").replace(" ", "")
+            amount = driver.find_element(By.XPATH,
+                                         '//div[@class="amount-clipboard flex items-center"]/span').text.replace("USDT", "").replace(" ", "")
             return {
                 "address": address,
                 "amount": amount,
@@ -115,8 +212,8 @@ def get_wallet():
             }
 
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
