@@ -43,6 +43,13 @@ def click(driver, time, XPATH):
     driver.implicitly_wait(time)
     elem_click = driver.find_element(By.XPATH, XPATH)
     sleep(1.5)
+    elem_click.click()
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
     driver.execute_script("arguments[0].click();", elem_click)
 
 
@@ -59,7 +66,7 @@ def login(driver):
     actions = ActionChains(driver)
 
     try:
-        click(driver, 30, '//*[@id="select-option-77"]')
+        js_click(driver, 30, '//*[@id="select-option-75"]')
         sleep(1.5)
         driver.implicitly_wait(10)
         a_href = driver.find_element(By.XPATH, '/html/body/main/div[2]/div/div/div[2]/div/div/a').get_attribute('href')
@@ -68,26 +75,28 @@ def login(driver):
         print(f'ERROR LINK \n{e}')
 
     try:
-        click(driver, 30, '//*[@id="SelectedOption_1096208_msdd"]')
+        js_click(driver, 30, '//*[@id="SelectedOption_1096190_msdd"]')
+        actions.send_keys(Keys.ARROW_DOWN).perform()
+        sleep(0.5)
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
         sleep(0.2)
 
-        click(driver, 30, '//*[@id="SelectedOption_1096209_msdd"]')
+        js_click(driver, 30, '//*[@id="SelectedOption_1096191_msdd"]')
         actions.send_keys(Keys.ARROW_DOWN).perform()
         sleep(0.5)
         actions.send_keys(Keys.ENTER).perform()
         sleep(0.2)
 
-        click(driver, 30, '//*[@id="btn_next"]')
+        js_click(driver, 30, '//*[@id="btn_next"]')
     except Exception as e:
         print(f'ERROR DATA \n{e}')
 
     try:
-        click(driver, 30, '//*[@id="selectLabel_msdd"]')
+        click(driver, 30, '//*[@id="TypeCurr_msdd"]')
         driver.implicitly_wait(20)
-        choose_trc20 = driver.find_element(By.XPATH, '//*[@id="selectLabel_child"]/ul/li[12]/span')
+        choose_trc20 = driver.find_element(By.XPATH, '//li[@class="enabled _msddli_ name9 PRZ"]')
         choose_trc20.click()
     except Exception as e:
         print(f'ERROR CHOOSE TRC20 \n{e}')
@@ -95,7 +104,7 @@ def login(driver):
     try:
         input_data(driver, 30, '//*[@id="email"]', user_email)
         input_data(driver, 30, '//*[@id="Re_Enter_Email"]', user_email)
-        click(driver, 30, '//*[@id="pay_btn"]')
+        js_click(driver, 30, '//*[@id="pay_btn"]')
     except Exception as e:
         print(f'ERROR PLACE ORDER \n{e}')
 
@@ -109,10 +118,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(60)
-            address = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[7]/div[2]').text
+            address = driver.find_element(By.XPATH, '(//div[@class="merchant-tabs__tab-address"]/span)[4]').text
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[5]/span').text
+            amount = driver.find_element(By.XPATH, '//*[@id="form1"]/section/section/div[2]/div[2]/div[4]/p/span').text
 
             return {
                 "address": address,
@@ -120,7 +129,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":"error data {e"}
 
 
 def wallet():
