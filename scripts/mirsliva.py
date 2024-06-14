@@ -171,7 +171,6 @@ def get_wallet():
                 driver.implicitly_wait(10)
                 find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
                 if ("ена" in find_check) or ("lve" in find_check):
-                    click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
                     break
                 else:
                     if time_loop > 120:
