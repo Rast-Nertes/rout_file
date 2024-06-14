@@ -1,18 +1,13 @@
 import asyncio
-import pyautogui
-from anticaptchaofficial.imagecaptcha import *
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from fake_useragent import UserAgent
 
 # CONSTANTS
 
 url = 'https://playfastcasino.com/?modal=login'
 user_email = "kiracase34@gmail.com"
 user_password = "dAYZ!gqhpM6vria"
-
-#102Ekaowp123!
 
 # CHROME CONSTANTS
 
