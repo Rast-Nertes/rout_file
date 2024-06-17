@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://paripesa24.biz/ru/block'
+url = 'https://paripesa24.biz/ru'
 user_email = "873998755"
 user_password = "e3x4yw7x"
 
@@ -30,9 +30,9 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 proxy_options = {
@@ -119,7 +119,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
