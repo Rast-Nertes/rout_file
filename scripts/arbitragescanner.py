@@ -12,7 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://arbitragescanner.io/'
 user_login = 'kiracase34@gmail.com'
 user_password = 'kiraoleg00'
@@ -46,24 +45,24 @@ def login(driver):
     driver.maximize_window()
 
     try:
+        sleep(5)
         driver.implicitly_wait(10)
-        input_email = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[3]/div/div/div/div/div/form/label[1]/div[2]/input')
+        input_email = driver.find_element(By.XPATH, '//input[@name="email"]')
         input_email.send_keys(user_login)
 
         driver.implicitly_wait(10)
-        input_pass = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[3]/div/div/div/div/div/form/label[2]/div[2]/input')
+        input_pass = driver.find_element(By.XPATH, '//input[@name="password"]')
         input_pass.send_keys(user_password)
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
 
     try:
         driver.implicitly_wait(10)
-        button_login = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[3]/div/div/div/div/div/form/button[1]')
+        button_login = driver.find_element(By.XPATH, '//button[@type="submit"]')
         driver.execute_script("arguments[0].click();", button_login)
         sleep(5)
     except Exception as e:
         print(f"BUTTON LOG IN ERROR \n{e}")
-
 
 
 def get_wallet():
@@ -71,8 +70,12 @@ def get_wallet():
         login(driver)
         try:
             print("WALLET START")
-            driver.get('https://arbitragescanner.io/tariffs')
-
+            try:
+                driver.implicitly_wait(10)
+                click_buy_paln = driver.find_element(By.XPATH, '//div[@class="header-plan"]')
+                click_buy_paln.click()
+            except Exception as e:
+                print(f'ERROR CLICK BUY PLAN \n{e}')
             #Выбираем тариф
 
             try:
@@ -84,34 +87,31 @@ def get_wallet():
 
             try:
                 driver.implicitly_wait(10)
-                button_proceed_to_payment = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[4]/div/div[2]/div[2]/div/div[4]/button[1]')
-                driver.execute_script("arguments[0].click();", button_proceed_to_payment)
+                button_proceed_to_payment = driver.find_element(By.XPATH, '(//button[@type="button"])[13]')
+                sleep(1.5)
+                button_proceed_to_payment.click()
             except Exception as e:
                 print(f'PROCEED BUTTON ERROR \n{e}')
 
             try:
                 driver.implicitly_wait(10)
-                button_proceed_to_payment = driver.find_element(By.XPATH, '//*[@id="__layout"]/div/div[4]/div/div[2]/div[2]/div/div[2]/button[1]')
-                driver.execute_script("arguments[0].click();", button_proceed_to_payment)
-            except Exception as e:
-                print(f'PROCEED BUTTON ERROR \n{e}')
-
-            try:
-                driver.implicitly_wait(10)
-                amount = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/div/div[2]/div[2]/div[2]/b')
+                amount = driver.find_element(By.XPATH, '(//div[@class="section-plans-tariff__price_price"]/b)[1]')
                 amount = amount.text.replace(" $", "")
-                print(amount)
+                # print(amount)
             except Exception as e:
                 print(f"AMOUNT ERROR \n{e}")
                 amount = 'None'
 
             try:
+                sleep(5)
                 address = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/div[4]/div/div[2]/div[2]/div/div[2]/img'))
+                    EC.visibility_of_element_located((By.XPATH, '(//img[@src])[3]'))
                 )
                 address = address.get_attribute('src')
-                result_address = address.split("/")[-1].split(".")[0]
-                print(result_address)
+                # print(address)
+                # input("press")
+                result_address = address.split(".io/")[1].replace("undefined", '').replace(".png", '')
+                # print(result_address)
             except Exception as e:
                 print(f"ADDRESS ERROR \n{e}")
 
@@ -122,10 +122,10 @@ def get_wallet():
             }
 
         except Exception as e:
-            print(f"WALLET ERROR -- {e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
-
-    
