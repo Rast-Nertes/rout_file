@@ -1,7 +1,7 @@
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
-from twocaptcha import TwoCaptcha
+from anticaptchaofficial.imagecaptcha import *
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -23,7 +23,7 @@ options.add_experimental_option('prefs', {'intl.accept_languages': 'en, en_US'})
 with open('config.txt') as file:
     paths = file.readlines()
     chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
+    api_key = paths[2].strip()
     ext = paths[1].strip()
 
 proxy_address = "45.130.254.133"
@@ -40,9 +40,12 @@ proxy_options = {
 
 
 def solve_captcha():
-    solver = TwoCaptcha(api_key)
-    result = solver.normal('captcha.jpg')
-    return result['code']
+    solver = imagecaptcha()
+    solver.set_verbose(1)
+    solver.set_key(api_key)
+    captcha_text = solver.solve_and_return_solution("captcha.jpeg")
+    return captcha_text
+
 
 def click(driver, time, XPATH):
     driver.implicitly_wait(time)
@@ -81,20 +84,29 @@ def login(driver):
 
     while True:
         try:
-            driver.implicitly_wait(6)
-            find_verif_code = driver.find_element(By.XPATH, '//img[@class="verify-img"]')
-            sleep(1.5)
-            find_verif_code.screenshot('captcha.jpg')
+            driver.implicitly_wait(5)
+            driver.find_element(By.XPATH, '//img[@class="verify-img"]').screenshot('captcha.jpeg')
 
-            result_code = solve_captcha()
-            input_data(driver, 30, '//*[@id="login"]/div[1]/div[3]/div[2]/input', result_code)
-            click(driver, 30, '//*[@id="login"]/div[2]/button[1]/div')
+            result = solve_captcha()
+
+            driver.implicitly_wait(10)
+            input_captcha = driver.find_element(By.XPATH, '(//div[@class="input-control"]/input)[3]')
+            input_captcha.send_keys(result)
+
+            click(driver, 30, '//*[@id="login"]/div[2]/button[1]')
             sleep(5)
-        except:
+        except Exception as e:
+            print(f'ERROR CAPTCHA ')
             break
 
     sleep(3.5)
     driver.get('https://nanogames.io/wallet/deposit')
+
+    try:
+        driver.implicitly_wait(10)
+        close = driver.find_element(By.XPATH, '//button[@class="close flex-center"]')
+        close.click()
+    except :pass
 
     try:
         click(driver, 30, '//*[@id="deposit"]/div[3]/div[1]/div[2]/div/div[3]/button')
@@ -122,7 +134,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
