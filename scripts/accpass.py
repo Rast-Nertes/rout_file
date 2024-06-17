@@ -74,8 +74,9 @@ def get_wallet():
         sleep(1)
 
         try:
+            sleep(5)
             driver.implicitly_wait(10)
-            accept_place_order = driver.find_element(By.ID, 'place_order')
+            accept_place_order = driver.find_element(By.XPATH, '//*[@id="place_order"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", accept_place_order)
         except Exception as e:
@@ -94,7 +95,8 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
