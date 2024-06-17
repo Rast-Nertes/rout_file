@@ -14,9 +14,13 @@ user_password = "kiramira123"
 # CHROME CONSTANTS
 
 options = webdriver.ChromeOptions()
-# user_agent = UserAgent()
-# options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
 
 with open('config.txt') as file:
     paths = file.readlines()
@@ -50,9 +54,11 @@ async def input_data(driver, time, XPATH, data):
 
 
 async def login(driver):
+    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
+    await asyncio.sleep(1.5)
     await driver.maximize_window()
     await asyncio.sleep(1)
-    await driver.get(url, timeout=60)
+    await driver.get(url, timeout=90)
 
     try:
         await click(driver, 50, '//*[@id="header"]/div/div[2]/div/button[1]')
