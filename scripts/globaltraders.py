@@ -1,6 +1,6 @@
 from flask import jsonify
 import re
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -24,17 +24,30 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
+
 def login(driver):
     driver.get(url)
 
     try:
         driver.implicitly_wait(10)
-        input_email = driver.find_element(By.CSS_SELECTOR, 'form > div.input-block.input-block_margin_bottom > input')
+        input_email = driver.find_element(By.XPATH, '//input[@name="login"]')
         input_email.clear()
         input_email.send_keys(user_login)
 
         driver.implicitly_wait(10)
-        input_password = driver.find_element(By.CSS_SELECTOR, 'div > form > div:nth-child(4) > input')
+        input_password = driver.find_element(By.XPATH, '//input[@name="password"]')
         input_password.clear()
         input_password.send_keys(user_password)
     except Exception as e:
@@ -50,10 +63,11 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         driver.maximize_window()
         login(driver)
 
+        sleep(3.5)
         driver.get('https://globaltraders.pro/user/wallets/')
 
         try:
