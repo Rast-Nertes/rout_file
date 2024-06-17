@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://www.bitcoingirlsflash.me/ru/auth/login'
 user_email = "kiramira123"
 user_password = "kiramira123123"
@@ -39,7 +39,7 @@ def login(driver):
     driver.maximize_window()
 
     try:
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(10)
         accept = driver.find_element(By.XPATH, '//*[@id="react-app"]/div/div[2]/button')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", accept)
@@ -62,6 +62,10 @@ def login(driver):
         sleep(3)
         driver.execute_script("arguments[0].click();", login_button)
         sleep(2)
+        driver.implicitly_wait(10)
+        login_button = driver.find_element(By.CSS_SELECTOR, 'form > div.form-row.form-row--submit > button')
+        sleep(3)
+        driver.execute_script("arguments[0].click();", login_button)
     except Exception as e:
         print(f"LOGIN ERROR \n{e}")
 
@@ -131,11 +135,6 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(50)
-            without_email = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button[2]')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", without_email)
-
-            driver.implicitly_wait(50)
             choose_tron = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_tron)
@@ -147,6 +146,17 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE TRON \n{e}")
 
+        try:
+            driver.implicitly_wait(20)
+            input_email = driver.find_element(By.XPATH, '//input[@name="email"]')
+            sleep(1.5)
+            input_email.send_keys("kiracase34@gmail.com")
+
+            driver.implicitly_wait(20)
+            accept_but = driver.find_element(By.XPATH, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
+            accept_but.click()
+        except Exception as e:
+            print(f'ERROR ACCEPT BUTTON \n{e}')
         driver.set_window_size(1200, 500)
 
         try:
@@ -162,7 +172,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
