@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://money-farms.art/login'
+url = 'https://s1.money-farm.art/login'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira000"
 
@@ -119,7 +119,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
