@@ -15,12 +15,12 @@ user_pass = 'kirakira123'
 #CHROME OPTIONS
 
 with open('config.txt') as file:
-    chrome_path = file.read().strip() # Здесь укажи абсолютный путь к экзешнику хрома
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.binary_location = chrome_path
+
 
 async def login(driver):
     await driver.get(url)
@@ -47,6 +47,7 @@ async def login(driver):
         print(f"CLICK BUTTON TO LOGIN ERROR \n{e}")
         return "Now work click button to login"
 
+
 async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
@@ -69,45 +70,52 @@ async def get_wallet():
             print(f"NEXT STEP ERROR \n{e}")
             return "Not work next step button"
 
-        sleep(5)
-        pyautogui.moveTo(420, 435)
-        pyautogui.click()
+        try:
+            await asyncio.sleep(4)
+            find_frame = await driver.find_elements(By.TAG_NAME, 'iframe')
+            await asyncio.sleep(0.6)
+            iframe_doc = await find_frame[0].content_document
+            click_checkbox = await iframe_doc.find_element(By.XPATH, '//*[@id="challenge-stage"]/div/label/input',
+                                                           timeout=20)
+            await click_checkbox.click()
+        except Exception as e:
+            print(f'ERROR CHECKBOX')
 
         try:
-            input_email = await driver.find_element(By.CSS_SELECTOR, '#details_email', timeout=40)
-            sleep(3)
+            input_email = await driver.find_element(By.XPATH, '//*[@id="payer_details"]', timeout=40)
+            await asyncio.sleep(3)
             await input_email.write(user_login)
 
-            next_step_after_input_email = await driver.find_element(By.CSS_SELECTOR, '#payment_proceed_details > div.input-field > button', timeout=30)
-            sleep(2)
+            next_step_after_input_email = await driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/form[1]/div/button', timeout=30)
+            await asyncio.sleep(2)
             await driver.execute_script("arguments[0].click();", next_step_after_input_email)
         except Exception as e:
             print(f"INPUT EMAIL ERROR \n{e}")
             return "Not work input"
 
         try:
-            choose_tether = await driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/form[2]/div[14]', timeout=40)
-            sleep(3)
+            choose_tether = await driver.find_element(By.XPATH, '//div[@method-name="USDTTRC"]', timeout=40)
+            await asyncio.sleep(3)
             await choose_tether.click()
         except Exception as e:
             print(f"CHOOSE TETHER ERROR \n{e}")
             return "Not work choose tether"
 
         try:
-            accept = await driver.find_element(By.CSS_SELECTOR,
-                                               'div.payment-container > div.popup__bg.active > div > div > input', timeout=30)
+            accept = await driver.find_element(By.XPATH,
+                                               '//input[@type="button"]', timeout=30)
 
-            sleep(2)
+            await asyncio.sleep(2)
             await driver.execute_script("arguments[0].click();", accept)
         except Exception as e:
             print(f"CONTINUE BUTTON ERROR \n{e}")
             return "Not work continue button"
 
         try:
-            amount_element = await driver.find_element(By.ID, 'pay_amount', timeout=30)
+            amount_element = await driver.find_element(By.XPATH, '//*[@id="amount"]', timeout=30)
             amount = await amount_element.text
 
-            address_element = await driver.find_element(By.ID, 'crypto_address', timeout=30)
+            address_element = await driver.find_element(By.XPATH, '//*[@id="address"]', timeout=30)
             address = await address_element.text
         except Exception as e:
             print(f"DATA ERROR \n{e}")
@@ -118,6 +126,7 @@ async def get_wallet():
             "amount": amount,
             "currency": "usdt"
         }
+
 
 def wallet():
     wallet_data = asyncio.run(get_wallet())
