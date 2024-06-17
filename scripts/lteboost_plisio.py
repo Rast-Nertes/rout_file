@@ -3,17 +3,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
 from flask import jsonify
-from undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-chrome_options = ChromeOptions()
-chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 OPR/105.0.0.0')
-chrome_options.headless = False
-user_agent = UserAgent()
-chrome_options.add_argument(f"user-agent={user_agent.random}")
 
 url = 'https://lteboost.com'
 
@@ -82,17 +76,16 @@ def get_wallet():
                 print("error accept")
                 # return {"status":"0", "ext":"Accept button error"}
 
-            # email_input = WebDriverWait(driver, 10).until(
-            #     EC.visibility_of_element_located((By.XPATH, '/html/body/div/div/div[2]/div[2]/form/div[2]/div/div[2]/input'))
-            # )
-            # email_input.send_keys(user_login)
-            #
-            # email_input_accept = WebDriverWait(driver, 10).until(
-            #     EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div[2]/div[2]/form/div[2]/button'))
-            # )
-            # email_input_accept.click()
+            try:
+                driver.implicitly_wait(10)
+                input_email = driver.find_element(By.XPATH, '//input[@type="email"]')
+                input_email.send_keys(user_login)
 
-            # driver.execute_script("window.scrollBy(0, 500);")
+                driver.implicitly_wait(10)
+                accept_email = driver.find_element(By.XPATH, '//button[@type="submit"]')
+                accept_email.click()
+            except Exception as e:
+                print(f'ERROR ACCEPT EMAIL \n{e}')
 
             wallet_chouse = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, '//img[@alt="Tether"]'))
@@ -114,7 +107,6 @@ def get_wallet():
             )
             min_value = min_value.text
 
-
             return {
                 "adress":id_wallet,
                 "amount":min_value,
@@ -122,7 +114,7 @@ def get_wallet():
             }
 
         except Exception as e:
-            print(f"ERROR3 -- {e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
