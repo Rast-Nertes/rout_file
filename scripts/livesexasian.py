@@ -112,6 +112,13 @@ def get_wallet():
             print(f"ERROR NEXT STEP ONE \n{e}")
 
         try:
+            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
+            sleep(1.5)
+            click(driver, 30, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
+        except Exception as e:
+            print(f'ERROR CHOOSE TRON NET \n{e}')
+
+        try:
             input_data(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[1]/form/div/div[2]/input', user_email_2)
             sleep(1)
             click(driver, 20, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
@@ -119,12 +126,6 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR INPUT EMAIL \n{e}")
 
-        try:
-            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
-            sleep(1.5)
-            click(driver, 30, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
-        except Exception as e:
-            print(f'ERROR CHOOSE TRON NET \n{e}')
 
         try:
             sleep(1.5)
@@ -142,7 +143,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
