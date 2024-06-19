@@ -14,9 +14,9 @@ user_password = "hQj8@7DJrn2HWY."
 
 # CHROME CONSTANTS
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
@@ -66,7 +66,9 @@ async def login(driver):
         return {"status": "0", "ext": f"error login \n{e}"}
 
     try:
+        await asyncio.sleep(5)
         await click(driver, 30, '//*[@id="app"]/div[6]/div/div/div/div/div[1]/div[2]/div/div[3]/div/div/div[2]/div[6]')
+        await asyncio.sleep(2.5)
         await click(driver, 30, '//*[@id="app"]/div[6]/div/div/div/div/div[1]/div[2]/div/div[4]/div/div[2]/div[3]')
     except Exception as e:
         return {"status": "0", "ext": f"error choose trc20 \n{e}"}
