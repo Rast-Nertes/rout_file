@@ -2,11 +2,6 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
@@ -46,9 +41,9 @@ def login(driver):
     driver.maximize_window()
 
     try:
-        input_data(driver, 35, '//*[@id="headlessui-dialog-3"]/div/div[2]/div[3]/form/div[1]/div/div[1]/input', user_email)
-        input_data(driver, 30, '//*[@id="headlessui-dialog-3"]/div/div[2]/div[3]/form/div[1]/div/div[2]/input', user_password)
-        click(driver, 20, '//*[@id="headlessui-dialog-3"]/div/div[2]/div[3]/form/div[2]/button')
+        input_data(driver, 35, '//input[@name="email"]', user_email)
+        input_data(driver, 30, '//input[@name="password"]', user_password)
+        click(driver, 20, '//button[@type="submit"]')
     except Exception as e:
         print(f'ERROR INPUT LOGIN DATA \n{e}')
 
@@ -90,7 +85,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
