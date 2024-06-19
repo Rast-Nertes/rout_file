@@ -2,7 +2,7 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from anticaptchaofficial.recaptchav2proxyless import *
+from twocaptcha.solver import TwoCaptcha
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -14,6 +14,7 @@ from selenium.webdriver.common.by import By
 url = 'https://www.taxi-money.ink/login'
 user_email = "alex37347818@gmail.com"
 user_password = "qwe123asd"
+site_key = '6Lf9fN0hAAAAAB1ZlI0Js8-_iUMl2EfxnsylYvR3'
 
 #CHROME CONSTANS
 
@@ -36,52 +37,83 @@ proxy_options = {
     }
 }
 
+with open('config.txt') as file:
+    paths = file.readlines()
+    api_key = paths[3].strip()
 
-def solve_captcha():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
-    solver.set_website_url(url)
-    solver.set_website_key("6Lf9fN0hAAAAAB1ZlI0Js8-_iUMl2EfxnsylYvR3")
 
-    solver.set_soft_id(0)
-    g_response = solver.solve_and_return_solution()
-    if g_response != 0:
-        print("g-response: " + g_response)
-    else:
-        print("task finished with error " + solver.error_code)
+def captcha_solve():
+    solver = TwoCaptcha(api_key)
 
-    return g_response
+    result = solver.recaptcha(
+        sitekey=site_key,
+        url=url
+    )
+
+    return result['code']
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
 
 
 def login(driver):
+    driver.maximize_window()
     driver.get(url)
-    try:
-        driver.implicitly_wait(10)
-        textarea = driver.find_element(By.TAG_NAME, 'textarea')
-
-        #Время на загрузку капчи
-        sleep(7.5)
-        driver.execute_script("arguments[0].removeAttribute('style');", textarea)
-        solved_task = solve_captcha()
-
-        textarea.clear()
-        textarea.send_keys(solved_task)
-    except Exception as e:
-        print(f"REVERSE TEXTAREA ERROR \n{e}")
 
     try:
         driver.implicitly_wait(10)
-        input_login = driver.find_element(By.CSS_SELECTOR, 'div.lpContent > form > div.formRow.loginRow > input[type=text]')
+        input_login = driver.find_element(By.XPATH, '//input[@name="login"]')
         input_login.clear()
         input_login.send_keys(user_email)
 
         driver.implicitly_wait(10)
-        input_password = driver.find_element(By.CSS_SELECTOR, 'div.lpContent > form > div.formRow.passwordRow > input[type=password]')
+        input_password = driver.find_element(By.XPATH, '//input[@name="password"]')
         input_password.clear()
         input_password.send_keys(user_password)
     except Exception as e:
         print(f"INPUT DATA ERROR \n{e}")
+
+    try:
+        time_loop = 0
+        while True:
+            driver.implicitly_wait(10)
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            if ("ена" in find_check) or ("lve" in find_check):
+                click(driver, 30, '//*[@id="content"]/div/div[2]/div[2]/div/form/div[4]/button')
+                break
+            else:
+                if time_loop > 120:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
+                sleep(5)
+                print("Wait 5 seconds, captcha solving...")
+    except Exception as e:
+        print(f'ERROR CHECKBOX \n{e}')
 
     try:
         driver.implicitly_wait(10)
