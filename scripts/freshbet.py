@@ -27,8 +27,6 @@ proxy_port = 8000
 
 options = webdriver.ChromeOptions()
 options.binary_location = chrome_path
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 
@@ -52,15 +50,15 @@ async def login(driver):
         print(f'ERROR LOG \n{e}')
 
     try:
-        await asyncio.sleep(2)
-        choose_tet = await driver.find_element(By.CSS_SELECTOR, 'div.page-wrapper > ul > li:nth-child(13) > div.payment-name > h4', timeout=20)
+        await asyncio.sleep(15)
+        choose_tet = await driver.find_element(By.XPATH, '//li[@payment-method="tether usd "]', timeout=20)
         await choose_tet.click()
 
-        choose_net = await driver.find_element(By.XPATH, '/html/body/main/div[1]/ul/li[14]/div/div[1]/div[1]/div/div[1]', timeout=20)
+        choose_net = await driver.find_element(By.XPATH, '(//div[@class="network-select"]/div/div)[1]', timeout=20)
         await asyncio.sleep(1)
         await choose_net.click()
 
-        choose_trc = await driver.find_element(By.XPATH, '/html/body/main/div[1]/ul/li[14]/div/div[1]/div[1]/div/div[2]/div[2]', timeout=20)
+        choose_trc = await driver.find_element(By.XPATH, '((//div[@class="network-select"]/div/div)[2]/div)[2]', timeout=20)
         await asyncio.sleep(1)
         await choose_trc.click()
     except Exception as e:
@@ -83,7 +81,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
