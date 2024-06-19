@@ -13,7 +13,6 @@ from selenium.webdriver.common.keys import Keys
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://arbitragescanner.io/'
 user_login = 'kiracase34@gmail.com'
 user_password = 'kiraoleg8'
@@ -58,10 +57,11 @@ def login(driver):
         except:
             pass
 
-        sleep(2)
+        sleep(5)
         print("LOGIN SUCCEFUL")
     except Exception as e:
         print(f"LOGIN ERROR -- \n{e}")
+
 
 def get_wallet_data():
     with webdriver.Chrome(options=options) as driver:
@@ -138,11 +138,8 @@ def get_wallet_data():
             print(f"WALLET DATA ERROR \n{e}")
             return None
 
-@app.route('/api/selenium/lumiproxy')
+
 def wallet():
     wallet_data = get_wallet_data()
     print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    app.run(use_reloader = False, debug=True, port=5008)
