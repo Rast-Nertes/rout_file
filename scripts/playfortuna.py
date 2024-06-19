@@ -1,5 +1,5 @@
 import asyncio
-from twocaptcha import TwoCaptcha
+from twocaptcha.solver import TwoCaptcha
 import pyperclip
 from flask import jsonify
 from selenium_driverless import webdriver
