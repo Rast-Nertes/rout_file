@@ -13,9 +13,9 @@ user_password = "asdgfdg12!KI"
 
 # CHROME CONSTANTS
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
