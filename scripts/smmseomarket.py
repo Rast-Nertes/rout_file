@@ -134,8 +134,9 @@ def login(driver):
         print(f"ERROR PLACE ORDER \n{e}")
 
     try:
+        sleep(5)
         driver.implicitly_wait(40)
-        choose_trc20 = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div/a[2]')
+        choose_trc20 = driver.find_element(By.XPATH, '(//button[@type="button"])[2]')
         sleep(1.5)
         driver.execute_script("arguments[0].click();", choose_trc20)
     except Exception as e:
@@ -149,10 +150,10 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(10)
-            address = driver.find_element(By.ID, 'add_val').get_attribute('value')
+            address = driver.find_element(By.XPATH, '(//input)[2]').get_attribute('value')
 
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.ID, 'amt_val').text
+            amount = driver.find_element(By.XPATH, '//*[@id="root"]/div/div/div[1]/div/div[2]/div/div/p[1]/span[1]').text
 
             return {
                 "address": address,
@@ -160,7 +161,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
