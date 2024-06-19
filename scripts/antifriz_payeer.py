@@ -1,8 +1,5 @@
-import requests
 from time import sleep
-from flask import Flask
 from flask import jsonify
-from fake_useragent import UserAgent
 from seleniumwire import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,30 +9,23 @@ from selenium.webdriver.common.by import By
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://antifriz.tv/'
 user_login = 'kiracase34@gmail.com'
 user_password = 'oleg123'
 
 #PROXY_CONSTANS
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 proxy_options = {
     "proxy":{
-        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
-
-#API CONSTANS
-
-API_KEY = '7f728c25edca4f4d0e14512d756d6868'
-API_URL = 'http://rucaptcha.com/in.php'
-API_RESULT_URL = f'http://rucaptcha.com/res.php?key={API_KEY}&action=get'
 
 #CHROME OPTIONS
 
@@ -43,7 +33,6 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.headless = False
 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 
-#driver = webdriver.Chrome(options=chrome_options, seleniumwire_options=proxy_options)
 
 def login(driver):
     try:
@@ -78,11 +67,11 @@ def login(driver):
     except Exception as e:
         print(f"LOGIN ERROR -- \n{e}")
 
+
 def get_wallet_data():
     try:
         with webdriver.Chrome(options=chrome_options, seleniumwire_options=proxy_options) as driver:
             login(driver)
-            print("WALLET DATA ERROR")
 
             driver.get('https://antifriz.tv/payments')
 
@@ -91,8 +80,10 @@ def get_wallet_data():
             except:
                 pass
 
+            sleep(5)
+
             method_of_payment_payeer = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[4]'))
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="app"]/main/div/div/div[1]/div/div[2]/form/div/div[1]/div/div[6]'))
             )
             method_of_payment_payeer.click()
 
@@ -101,7 +92,7 @@ def get_wallet_data():
                 send_minimal_count = driver.find_element(By.XPATH, '//*[@id="amountInput"]')
                 send_minimal_count.clear()
                 send_minimal_count.send_keys('5')
-            except:
+            except Exception as e:
                 print(f"SET MINIMAL VALUE ERROR \n{e}")
 
             try:
@@ -112,12 +103,16 @@ def get_wallet_data():
                 print(f"PAY BUTTON ERROR \n{e}")
 
             sleep(5)
-            new_window = driver.window_handles[1]
-            driver.switch_to.window(new_window)
+            windows = driver.window_handles
+            for window in windows:
+                sleep(1.5)
+                driver.switch_to.window(window)
+                if "aye" in driver.title:
+                    break
 
             try:
                 driver.implicitly_wait(10)
-                choose_tether = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[4]/div')
+                choose_tether = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[3]/ul[1]/li[4]')
                 driver.execute_script("arguments[0].click();", choose_tether)
             except Exception as e:
                 print(f"ERROR CHOOSE TETHER \n{e}")
@@ -155,9 +150,10 @@ def get_wallet_data():
                 "currency": "usdt"
             }
     except Exception as e:
-        print(f"GET WALLET ERROR \n{e}")
-        return None
+        return {'status':"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet_data()
+    print(wallet_data)
     return jsonify(wallet_data)
