@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 #Zerocryptopay
 
 #CONSTANS
-app = Flask(__name__)
+
 user_login = 'kiracase34@gmail.com'
 user_password = 'GGGggg1212'
 url = 'https://farmfb.store'
@@ -24,7 +24,6 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options= options)
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -70,7 +69,7 @@ def get_wallet():
             driver.execute_script("window.scrollBy(0, 400);")
 
             choose_zerocryptopay = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div/div[2]/div/div[3]/div/div/div[2]/div[3]/button[9]'))
+                EC.visibility_of_element_located((By.XPATH, '(//*[@id="setEmailButton"])[8]'))
             )
             choose_zerocryptopay.click()
 
@@ -89,7 +88,7 @@ def get_wallet():
             step_to_pay = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, '//*[@id="form-send-money"]/div[3]/button'))
             )
-            step_to_pay.click()
+            driver.execute_script("arguments[0].click();", step_to_pay)
 
         except Exception as e:
             print(f"CHOOSE USDT ERROR \n{e}")
@@ -113,8 +112,10 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"INFO ERROR \n{e}")
+            return {"status":'0', "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
