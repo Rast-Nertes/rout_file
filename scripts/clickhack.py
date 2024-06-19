@@ -1,14 +1,11 @@
 import asyncio
-import pyperclip
-from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from fake_useragent import UserAgent
 
 # CONSTANTS
 
-url = 'https://clickhack.ru/chity-dlya-counter-strike-2/soft/softhub.php'
+url = 'https://clickhack.ru/chity-dlya-pubg/soft/pubgjarvis.php'
 user_email = "kiracase34@gmail.com"
 user_password = "Kiramira123!"
 
@@ -20,8 +17,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -54,7 +49,8 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        a_href = await driver.find_element(By.XPATH, '/html/body/div[18]/div/div[2]/div[2]/div/a', timeout=20)
+        # input("press")
+        a_href = await driver.find_element(By.XPATH, '/html/body/div[18]/div/div[2]/div[1]/div/a', timeout=20)
         href = await a_href.get_attribute('href')
         await driver.get(href)
 
@@ -102,7 +98,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
