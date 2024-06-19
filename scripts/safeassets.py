@@ -18,8 +18,6 @@ with open('config.txt') as file:
     chrome_path = paths[0].strip()
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.binary_location = chrome_path
 
 #PROXY CONSTANS
