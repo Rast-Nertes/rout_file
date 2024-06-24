@@ -20,8 +20,9 @@ user_password = "ZUR/e?+9J!.5E@E"
 api_key = '7f728c25edca4f4d0e14512d756d6868'
 site_key = '6LdTYk0UAAAAAGgiIwCu8pB3LveQ1TcLUPXBpjDh'
 
+
 def solver_captcha(api_key, url, site_key):
-    from twocaptcha import TwoCaptcha
+    from twocaptcha.solver import TwoCaptcha
     solver = TwoCaptcha(api_key)
 
     try:
@@ -92,15 +93,7 @@ def get_wallet():
         sleep(3)
         driver.refresh()
         sleep(2)
-        driver.get('https://funpay.com/en/lots/offer?id=24639037')
-
-        # try:
-        #     driver.implicitly_wait(20)
-        #     add_funds = driver.find_element(By.CSS_SELECTOR, '#content > div > div > div:nth-child(3) > a')
-        #     sleep(1.5)
-        #     driver.execute_script("arguments[0].click();", add_funds)
-        # except Exception as e:
-        #     print(f"ADD FUNDS ERROR \n{e}")
+        driver.get('https://funpay.com/en/lots/offer?id=28595708')
 
         try:
             driver.implicitly_wait(10)
@@ -145,7 +138,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
