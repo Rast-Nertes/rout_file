@@ -1,6 +1,5 @@
 import asyncio
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
@@ -25,8 +24,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.binary_location = chrome_path
 
@@ -49,6 +46,7 @@ async def login(driver):
         input_pass = await driver.find_element(By.CSS_SELECTOR, 'div > div.login-form > form > div.login-password > div > input', timeout=20)
         await input_pass.write(user_password)
 
+        await asyncio.sleep(3)
         log_but = await driver.find_element(By.CSS_SELECTOR, 'div > div.modal-body > div > div > div > div.login-form > form > button', timeout=20)
         await asyncio.sleep(2.5)
         await log_but.click()
@@ -78,20 +76,16 @@ async def get_wallet():
 
         try:
             await asyncio.sleep(2.5)
-            address_elem = await driver.find_element(By.CSS_SELECTOR, 'div > div.modal-body > div.wallet-bonus-deposit-message.deposit-message > div > div > div > span:nth-child(1)', timeout=30)
+            address_elem = await driver.find_element(By.XPATH, '//div[@class="wallet-address"]/span', timeout=30)
             address = await address_elem.text
 
-
-            amount_elem = await driver.find_element(By.CSS_SELECTOR, 'section > div.wallet-layout__left-column > div.wallet-address > span > span', timeout=30)
-            amount = await amount_elem.text
-
             return {
-                "address": amount.replace(" ", ''),
-                "amount":address,
+                "address": address.replace(" ", ''),
+                "amount":"0.01",
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
