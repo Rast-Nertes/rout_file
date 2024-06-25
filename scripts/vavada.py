@@ -1,28 +1,23 @@
 import asyncio
-import pickle
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANTS
 
-url = 'https://vavadapot.com/ru/login'
+url = 'https://vavadaiyi.com/ru/login'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
 
 # CHROME CONSTANTS
 
-proxy_address = "196.19.121.187"
-proxy_login = 'WyS1nY'
-proxy_password = '8suHN9'
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -38,9 +33,13 @@ async def login(driver):
     await asyncio.sleep(1)
     await driver.get(url, timeout=60)
 
-    await asyncio.sleep(2.5)
-    await driver.refresh()
-    await asyncio.sleep(2)
+    while True:
+        try:
+            await driver.find_element(By.XPATH, '//*[@id="_username"]', timeout=7.5)
+            break
+        except Exception:
+            print("Refresh page")
+            await driver.refresh()
 
     try:
         input_email = await driver.find_element(By.XPATH, '//*[@id="_username"]', timeout=50)
@@ -61,17 +60,26 @@ async def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     await asyncio.sleep(2.5)
-    await driver.get('https://vavadapot.com/en/profile/deposit/form/tether_trc20')
+    await driver.get('https://vavadaiyi.com/en/profile/deposit/form/tether_trc20')
 
 
 async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
+        while True:
+            try:
+                await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div[2]/div/div/fieldset[1]/div[2]/input', timeout=7.5)
+                break
+            except:
+                print('refresh')
+                await asyncio.sleep(2.5)
+                await driver.get('https://vavadaiyi.com/en/profile/deposit/form/tether_trc20')
+
         await asyncio.sleep(4.5)
         try:
             address_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div[2]/div/div/fieldset[1]/div[2]/input', timeout=30)
-            address = await address_elem.__getattribute__('value')
+            address = await address_elem.get_attribute('value')
 
             amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div[2]/div/div/fieldset[1]/p[3]', timeout=30)
             amount = await amount_elem.text
