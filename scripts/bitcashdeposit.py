@@ -2,10 +2,6 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
@@ -77,7 +73,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
