@@ -61,7 +61,7 @@ def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
-        click(driver, 20, '/html/body/app-root/app-pages/app-side-nav/nav/div[2]/div[1]/app-user-balance/div[1]/div')
+        click(driver, 20, '(/html/body/app-root/app-pages/app-side-nav/nav/div[2]/div[1]/app-user-balance/div[1]/div)[2]')
     except:
         driver.implicitly_wait(10)
         find_input_tag = driver.find_element(By.XPATH, '/html/body/app-root/app-auth/div/div/div/app-simple-sign-in/div/div[2]/form/app-text-field-password/div[1]/div/input')
@@ -70,14 +70,14 @@ def login(driver):
 
     try:
         sleep(1.5)
-        click(driver, 20, '//*[@id="sidebar-inner"]/ng-component/app-deposit/app-stepper/div/app-sidebar-container[2]/div/div/app-payment-list/div/button[17]')
+        click(driver, 20, '//img[@alt="USDT TRC20"]')
     except Exception as e:
         print(f'ERROR CHOOSE TRC20 \n{e}')
 
     try:
         sleep(1.5)
-        input_data(driver, 20, '//*[@id="sidebar-inner"]/ng-component/app-deposit/app-stepper/div/app-sidebar-container[3]/div/div/app-amount-form/div[2]/input', '10')
-        click(driver, 20, '//*[@id="sidebar-inner"]/ng-component/app-deposit/app-stepper/div/app-sidebar-container[3]/div/div/app-amount-form/app-main-button/button')
+        input_data(driver, 20, '//*[@id="depositSumInput"]', '10')
+        click(driver, 20, '//*[@id="depositBtn"]/button')
     except Exception as e:
         print(f'ERROR INPUT AMOUNT \n{e}')
 
