@@ -15,7 +15,7 @@ user_password = '3GEahNCa@L24XzF'
 
 with open('config.txt') as file:
     paths = file.readlines()
-    chrome_path = paths[0].strip() # Здесь укажи абсолютный путь к экзешнику хрома
+    chrome_path = paths[0].strip()
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -24,6 +24,7 @@ options.binary_location = chrome_path
 
 
 #PROXY CONSTANS
+
 proxy_name = 'WyS1nY'
 proxy_pass = '8suHN9'
 proxy_port = '8000'
