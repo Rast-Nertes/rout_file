@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 
 # CONSTANS
 
-url = 'https://teamcheat.ru/rust/arcane'
+url = 'https://teamcheat.ru/Pubg/Crooked'
 user_email = "kiracase34@gmail.com"
 user_password = "Kiramira000"
 
@@ -19,14 +19,6 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
-with open('config.txt') as file:
-    paths = file.readlines()
-    chrome_path = paths[0].strip()
-    api_key = paths[3].strip()
-    ext = paths[1].strip()
-
-options.binary_location = chrome_path
-# options.add_extension(ext)
 
 proxy_address = "196.19.121.187"
 proxy_login = 'WyS1nY'
@@ -108,7 +100,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
