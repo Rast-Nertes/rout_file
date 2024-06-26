@@ -14,7 +14,6 @@ user_password = '9eeHhLkJuWTTAKK'
 url = 'https://freekurses.site/moj-akkaunt/'
 
 #API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -104,7 +103,6 @@ def choose_payment_method():
         except Exception as e:
             print(f"PLACE ORDER ERROR \n{e}")
 
-
         try:
             driver.implicitly_wait(30)
             choose_trc20 = driver.find_element(By.CSS_SELECTOR, '#pay_tether_trc_button_open')
@@ -145,6 +143,7 @@ def choose_payment_method():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
+
 
 def wallet():
     wallet_data = choose_payment_method()
