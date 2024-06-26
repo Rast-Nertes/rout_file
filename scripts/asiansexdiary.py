@@ -77,6 +77,7 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR CHOOSE TRC20 \n{e}")
 
+        sleep(7.5)
         try:
             driver.implicitly_wait(30)
             address = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div[1]').text
@@ -90,7 +91,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
