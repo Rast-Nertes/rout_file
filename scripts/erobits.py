@@ -11,8 +11,8 @@ from selenium.webdriver.common.by import By
 # CONSTANS
 
 url = 'https://erobits.com/login/'
-user_email = "kiracase34@gmail.com"
-user_password = "kiramira123"
+user_email = "rwork875@gmail.com"
+user_password = "n7zg4z"
 
 # CHROME CONSTANS
 
@@ -92,7 +92,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
