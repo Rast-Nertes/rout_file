@@ -2,8 +2,6 @@ from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
-from twocaptcha import TwoCaptcha
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,7 +10,6 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-API_KEY = "7f728c25edca4f4d0e14512d756d6868"
 url = 'https://shaobank.com/auth/signin'
 user_email = "alex37347818@gmail.com"
 user_password = "azPid@n#4zPJLsN"
@@ -34,7 +31,7 @@ proxy_port = 8000
 
 proxy_options = {
     "proxy":{
-        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
     }
 }
@@ -68,7 +65,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         actions = ActionChains(driver)
         login(driver)
 
