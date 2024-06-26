@@ -19,8 +19,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
