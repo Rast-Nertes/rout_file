@@ -18,6 +18,7 @@ user_password = "kiramira555"
 
 #####
 
+
 def get_wallet():
     with webdriver.Chrome() as driver:
         driver.get(url)
@@ -50,10 +51,8 @@ def get_wallet():
         except Exception as e:
             print(f"DATA ERROR \n{e}")
 
+
 def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    wallet()
