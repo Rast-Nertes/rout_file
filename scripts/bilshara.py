@@ -142,7 +142,7 @@ def get_wallet():
 
             return {
                 "address": address,
-                "amount": amount,
+                "amount": amount.replace("USDT", ''),
                 "currency": "usdt"
             }
 
