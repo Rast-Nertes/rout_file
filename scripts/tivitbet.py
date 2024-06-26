@@ -61,10 +61,10 @@ async def login(driver):
 
     try:
         await click(driver, 60, '//*[@id="root"]/div/div[4]/div/div[2]/div[2]/div/button[1]')
-        await input_data(driver, 30, '//*[@id="root"]/div/div[2]/div/div/div/div/div[2]/form/div[1]/div/input', user_email)
-        await input_data(driver, 30, '//*[@id="root"]/div/div[2]/div/div/div/div/div[2]/form/div[2]/div[1]/input', user_password)
+        await input_data(driver, 30, '//input[@name="username"]', user_email)
+        await input_data(driver, 30, '//input[@name="password"]', user_password)
         await asyncio.sleep(1.5)
-        await click(driver, 30, '//*[@id="root"]/div/div[2]/div/div/div/div/div[2]/form/button')
+        await click(driver, 30, '//button[@type="submit"]')
     except Exception as e:
         return {"status": "0", "ext": f"login error \n{e}"}
 
