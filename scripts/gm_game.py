@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from anticaptchaofficial.recaptchav2proxyless import *
@@ -27,27 +27,22 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
 
-def captcha_solver():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key(api_key)
-    solver.set_website_url(url)
-    solver.set_website_key(site_key)
-    solver.set_soft_id(0)
-
-    g_response = solver.solve_and_return_solution()
-    return g_response
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
 
 
 def login(driver):
     driver.get(url)
     driver.maximize_window()
-
-    result_captcha = captcha_solver()
-    driver.implicitly_wait(7.5)
-    input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-    driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
 
     try:
         driver.implicitly_wait(50)
@@ -67,31 +62,12 @@ def login(driver):
     except Exception as e:
         print(f"LOGIN ERROR \n{e}")
 
-    while True:
-        try:
-            driver.implicitly_wait(10)
-            find_error = driver.find_element(By.XPATH, '/html/body/div[7]').text
-            if "робот" in find_error:
-                result_captcha = captcha_solver()
-                driver.implicitly_wait(7.5)
-                input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-                driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, result_captcha)
-
-                driver.implicitly_wait(10)
-                login_button = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div/form/div[2]/button/span')
-                sleep(1.5)
-                driver.execute_script("arguments[0].click();", login_button)
-            else:
-                break
-        except:
-            break
-
     sleep(3)
     driver.get('https://gm-game.net/ru/account/insert')
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         login(driver)
 
         try:
