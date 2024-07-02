@@ -73,12 +73,22 @@ def login(driver):
     except Exception as e:
         print(f"ERROR SUBMIT \n{e}")
 
+    while True:
+        try:
+            driver.implicitly_wait(5)
+            find_elem = driver.find_element(By.XPATH, '//*[@id="login"]/form/div[3]/button')
+            print('wait 5 seconds...')
+            sleep(5)
+        except Exception as e:
+            print('success')
+            break
+
     try:
-        click(driver, 10, '//*[@id="react-app"]/div/div[2]/button')
+        click(driver, 5, '//*[@id="react-app"]/div/div[2]/button')
     except Exception as e:
         pass
 
-    sleep(3.5)
+    sleep(5.5)
     driver.get('https://www.mytrannycams.com/ru/free/payment')
 
 
@@ -114,6 +124,13 @@ def get_wallet():
             print(f"ERROR NEXT STEP ONE \n{e}")
 
         try:
+            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
+            sleep(1.5)
+            click(driver, 30, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
+        except Exception as e:
+            print(f'ERROR CHOOSE TRON NET \n{e}')
+
+        try:
             input_data(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[1]/form/div/div[2]/input', user_email_2)
             sleep(1)
             click(driver, 20, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
@@ -121,12 +138,6 @@ def get_wallet():
         except Exception as e:
             print(f"ERROR INPUT EMAIL \n{e}")
 
-        try:
-            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
-            sleep(1.5)
-            click(driver, 30, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
-        except Exception as e:
-            print(f'ERROR CHOOSE TRON NET \n{e}')
 
         try:
             driver.set_window_size(1000, 500)
@@ -143,7 +154,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
