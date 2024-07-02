@@ -77,7 +77,7 @@ def login(driver):
         click(driver, 60, '//button[@title="Login"]')
         input_data(driver, 30, '//input[@name="email"]', user_email)
         input_data(driver, 30, '//input[@name="password"]', user_password)
-        click(driver, 30, '/html/body/div[1]/div[3]/div/div/form/div[3]/div/button')
+        click(driver, 30, '//button[@type="submit"]')
     except Exception as e:
         return {"status": "0", "ext": f"Error login \n{e}"}
 
@@ -123,7 +123,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
