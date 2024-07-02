@@ -1,10 +1,7 @@
 import asyncio
-import pickle
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
-from time import sleep
 from fake_useragent import UserAgent
 
 # CONSTANTS
@@ -123,7 +120,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
-
-if __name__ == "__main__":
-    wallet()
