@@ -41,20 +41,12 @@ def solve_captcha():
 
 def login(driver):
     driver.get(url)
-    #driver.maximize_window()
-    driver.set_window_size(400, 400)
+    driver.maximize_window()
 
     try:
-        driver.implicitly_wait(10)
-        driver.execute_script("document.body.style.zoom='400%'")
-        driver.execute_script("window.scrollBy(0, 1100);")
-        sleep(1.5)
-        driver.save_screenshot('captcha.jpg')
-        sleep(1.5)
-        driver.maximize_window()
-        driver.execute_script("document.body.style.zoom='100%'")
+        driver.find_element(By.XPATH, '/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td[1]/form/table/tbody/tr[5]/td[1]/img').screenshot('captcha.jpg')
     except Exception as e:
-        print(f"IMAGE ERROR \n{e}")
+        print(f'ERROR IMG \n{e}')
 
     try:
         driver.implicitly_wait(30)
@@ -95,12 +87,12 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            ticket = driver.find_element(By.CSS_SELECTOR, 'table > tbody > tr > td > table > tbody > tr > td.bgcolormain > table > tbody > tr > td > div > form > table:nth-child(8) > tbody > tr:nth-child(5) > td > table > tbody > tr > td:nth-child(1) > input[type=radio]')
+            ticket = driver.find_element(By.XPATH, '(//input[@name="type"])[1]')
             sleep(1.5)
             driver.execute_script("arguments[0].click(0);", ticket)
 
             driver.implicitly_wait(10)
-            spend_button = driver.find_element(By.CSS_SELECTOR, 'tbody > tr > td > table > tbody > tr > td.bgcolormain > table > tbody > tr > td > div > form > table:nth-child(8) > tbody > tr:nth-child(6) > td > input')
+            spend_button = driver.find_element(By.XPATH, '//input[@type="submit"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", spend_button)
         except Exception as e:
@@ -108,10 +100,10 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(40)
-            address = driver.find_element(By.CSS_SELECTOR, '#usdt_form > i > a').text.replace('(Token USDT)', "").replace(" ", '')
+            address = driver.find_element(By.XPATH, '//*[@id="usdt.trc20_form"]/i/a').text.replace('(Token USDT)', "").replace(" ", '')
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.CSS_SELECTOR, '#usdt_form > b').text.replace("USDT", "").replace(" ", "")
+            amount = driver.find_element(By.XPATH, '/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td[3]/table/tbody/tr/td/div/table/tbody/tr[8]/td').text.replace("USDT", "").replace(" ", "")
 
             return {
                 "address": address,
