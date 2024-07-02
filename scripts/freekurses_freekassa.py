@@ -58,6 +58,7 @@ def get_wallet(driver):
     except Exception as e:
         print(f"ADD TO BUSKET ERROR \n{e}")
 
+    sleep(5)
     driver.get('https://freekurses.site/wishlist/cart/')
 
     try:
@@ -77,13 +78,20 @@ def get_wallet(driver):
     except Exception as e:
         print(f"REFRESH BUSKET \n{e}")
 
-    sleep(1.5)
+    sleep(5)
     driver.get('https://freekurses.site/wishlist/checkout/')
 
 
 def choose_payment_method():
     with webdriver.Chrome(options=options) as driver:
         get_wallet(driver)
+
+        try:
+            driver.implicitly_wait(10)
+            input_email = driver.find_element(By.XPATH, '//*[@id="billing_email"]')
+            input_email.send_keys(user_login)
+        except Exception as e:
+            print(f'ERROR INPUT EMAIL \n{e}')
 
         try:
             driver.implicitly_wait(10)
@@ -121,20 +129,25 @@ def choose_payment_method():
         except Exception as e:
             print(f"CHOOSE TRC20 ERROR \n{e}")
 
+        sleep(3.5)
+
         try:
-            sunbmit_button = driver.find_element(By.ID, 'submit-payment')
+            submit_button = driver.find_element(By.ID, 'submit-payment')
             sleep(1.5)
-            driver.execute_script("arguments[0].click();", sunbmit_button)
+            driver.execute_script("arguments[0].click();", submit_button)
         except Exception as e:
             print(f"SUBMIT BUTTON ERROR \n{e}")
 
+        sleep(3.5)
+        driver.refresh()
+        sleep(2)
         try:
             driver.implicitly_wait(30)
-            amount_element = driver.find_element(By.CSS_SELECTOR, 'div.sc-VigVT.sc-cBdUnI.dNKmDp > div.sc-kAzzGY.jLybqU > div:nth-child(5) > span')
+            amount_element = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[5]/span')
             amount = amount_element.text
 
             driver.implicitly_wait(20)
-            address_element = driver.find_element(By.CSS_SELECTOR, 'div.sc-kAzzGY.jLybqU > div.sc-iwsKbI.sc-BngTV.sc-bFADNz.gxpDuO > div.sc-keVrkP.iCLDVv')
+            address_element = driver.find_element(By.XPATH, '//*[@id="pay-global"]/div/div[5]/div[1]/div[3]/div[7]/div[2]')
             address = address_element.text
 
             return {
@@ -143,7 +156,8 @@ def choose_payment_method():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = choose_payment_method()
