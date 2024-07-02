@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,8 +22,22 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
+
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
+proxy_port = 8000
+
+proxy_options = {
+    "proxy":{
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
+        "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
+    }
+}
+
+
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         actions = ActionChains(driver)
         driver.get('https://vipstealth.com/shop/fake-id-templates/')
         driver.maximize_window()
@@ -70,11 +84,25 @@ def get_wallet():
             input_username = driver.find_element(By.ID, 'billing_company')
             input_username.send_keys("Kira")
 
-            driver.implicitly_wait(10)
-            tg = driver.find_element(By.ID, 'contact')
-            tg.send_keys("@sobaka")
+            driver.implicitly_wait(30)
+            input_email = driver.find_element(By.XPATH, '//*[@id="support"]')
+            input_email.send_keys("@sobaka")
         except Exception as e:
             print(f"INPUT ERROR \n{e}")
+
+        try:
+            driver.implicitly_wait(20)
+            choose_country = driver.find_element(By.XPATH, '//span[@class="selection"]')
+            choose_country.click()
+
+            sleep(0.5)
+            actions.send_keys(Keys.ARROW_DOWN).perform()
+            sleep(0.5)
+            actions.send_keys(Keys.ENTER).perform()
+        except Exception as e:
+            print(f'ERROR CHOOSE CITY \n{e}')
+
+        sleep(5)
 
         try:
             driver.implicitly_wait(10)
@@ -126,7 +154,8 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
