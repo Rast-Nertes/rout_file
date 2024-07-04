@@ -1,7 +1,6 @@
 import requests
 from seleniumwire import webdriver
 from time import sleep
-from urllib.parse import urlparse, parse_qs
 from anticaptchaofficial.imagecaptcha import *
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
@@ -13,11 +12,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-#Whitebit
-#https://cryptofiat.finance/exchange-visamatertry-to-usdttrc20/
-
 #CONSTANS
-app = Flask(__name__)
+
 user_login = 'kiracase34'
 user_password = 'S8u6BjV6BmPnun5'
 url = 'https://cryptofiat.finance'
@@ -221,11 +217,10 @@ def get_wallet():
                 return None
 
         except Exception as e:
-            print(f"MONEY ERROR \n{e}")
-            return None
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
