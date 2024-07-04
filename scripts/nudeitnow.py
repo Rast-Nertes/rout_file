@@ -2,7 +2,6 @@ from flask import jsonify
 from selenium import webdriver
 from time import sleep
 import pyautogui
-from twocaptcha import TwoCaptcha
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -15,11 +14,8 @@ from selenium.webdriver.common.by import By
 url = 'https://nudeitnow.com/auth/login'
 user_email = "rwork875@gmail.com"
 user_password = "718930L21"
-site_key = '6LfBfjIpAAAAAORmdXbLeyY74J1zS11nBBYPCqCt'
 
 # CHROME CONSTANS
-
-#718930L21
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -118,7 +114,7 @@ def login(driver):
         click(driver, 20, '/html/body/div[2]/div/div/div[5]/div[1]/div/div')
         sleep(2.5)
 
-        click(driver, 20, '/html/body/div[2]/div/div/div[6]/div/div/div/div[4]/div[1]/button')
+        click(driver, 20, '//*[@id=":r2:"]')
         sleep(3.5)
     except Exception as e:
         print(f'ERROR CHOOSE TARIFF \n{e}')
@@ -132,9 +128,6 @@ def login(driver):
             break
 
     try:
-        # sleep(3.5)
-        # driver.refresh()
-
         click(driver, 20, '//*[@id="app"]/div/div/div/div[2]/div[2]/div[1]/div[3]/button')
     except Exception as e:
         print(f'ERROR NEXT BUT \n{e}')
