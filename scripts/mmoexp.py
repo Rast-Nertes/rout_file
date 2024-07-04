@@ -1,6 +1,5 @@
 from selenium import webdriver
 from time import sleep
-from twocaptcha import TwoCaptcha
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
 from urllib.parse import urlparse, parse_qs
@@ -13,57 +12,62 @@ from selenium.webdriver.chrome.options import Options
 #Coinpal
 
 #CONSTANS
-app = Flask(__name__)
+
 user_login = 'kiracase34@gmail.com'
 user_password = 'kirakira1234'
 url = 'https://www.mmoexp.com/Fc-24/Coins.html'
 
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
-
 #CHROME CONSTANS
+
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.headless = False
 
-#driver = webdriver.Chrome(options= options)
 
 def login(driver):
     driver.get(url)
     driver.maximize_window()
     print("START LOGIN")
+
+    sleep(3)
     try:
-        driver.implicitly_wait(20)
-        button_to_login = driver.find_element(By.XPATH, '/html/body/header/div[1]/div/div[2]/ul/li[3]/span[1]')
-        driver.execute_script("arguments[0].click();", button_to_login)
+        find_log_but = WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.XPATH, '//span[@class="sing user current jq-user"]'))
+        )
+        find_log_but.click()
     except Exception as e:
-        print(f"BUTTON ERROR \n{e}")
-        return None
+        print(f'ERROR CLICK LOG BUT \n{e}')
 
     try:
-        driver.implicitly_wait(20)
-        input_email = driver.find_element(By.XPATH, '/html/body/header/ul[1]/li[3]/input')
-        input_email.send_keys(user_login)
+        find_log_input = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '(//input[@type="text"])[2]'))
+        )
+        find_log_input.send_keys(user_login)
 
-        driver.implicitly_wait(20)
-        input_password = driver.find_element(By.XPATH, '/html/body/header/ul[1]/li[4]/input')
-        input_password.send_keys(user_password)
+        sleep(0.5)
+
+        find_pass_input = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '(//input[@type="password"])[1]'))
+        )
+        find_pass_input.send_keys(user_password)
     except Exception as e:
-        print(f"INPUT ERROR \n{e}")
-        return None
+        print(f'ERROR INPUT LOG DATA \n{e}')
 
+    sleep(1)
     try:
-        driver.implicitly_wait(10)
-        button_login = driver.find_element(By.XPATH, '/html/body/header/ul[1]/li[6]/span')
-        driver.execute_script("arguments[0].click();", button_login)
-        sleep(3)
+        log_but = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '/html/body/header/ul[1]/li[6]/span'))
+        )
+        log_but.click()
     except Exception as e:
-        print(f"CLICK TO LOG IN BUTTON ERROR \n{e}")
-        return None
+        print(f'ERROR CLICK LOG BUTT \n{e}')
+
+    input("press")
     print("LOGIN SUCCEFULY")
+
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -167,8 +171,10 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"INFO ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
