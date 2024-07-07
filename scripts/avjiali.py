@@ -20,7 +20,7 @@ options = webdriver.ChromeOptions()
 user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
-options.add_argument('--headless')
+# options.add_argument('--headless')
 
 proxy_address = "196.19.121.187"
 proxy_login = 'WyS1nY'
@@ -111,7 +111,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
