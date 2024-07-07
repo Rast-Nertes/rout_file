@@ -12,9 +12,6 @@ user_login = 'kiracase34@gmail.com'
 user_password = '9eeHhLkJuWTTAKK'
 url = 'https://freekurses.site/moj-akkaunt/'
 
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
-
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -93,6 +90,16 @@ def choose_payment_method():
             print(f"CHOOSE PAYEER ERROR \n{e}")
 
         sleep(3)
+
+        try:
+            driver.implicitly_wait(10)
+            input_email = driver.find_element(By.XPATH, '//*[@id="billing_email"]')
+            input_email.send_keys(user_login)
+        except Exception as e:
+            print(f'ERROR INPUT EMAIL \n{e}')
+
+        sleep(1.5)
+
         try:
             driver.implicitly_wait(20)
             accept_choose = driver.find_element(By.CSS_SELECTOR, '#place_order')
@@ -111,7 +118,7 @@ def choose_payment_method():
 
         try:
             driver.implicitly_wait(30)
-            choose_trc20 = driver.find_element(By.CSS_SELECTOR, 'div.container > div.slist > ul:nth-child(3) > li:nth-child(3) > div')
+            choose_trc20 = driver.find_element(By.CSS_SELECTOR, 'div.container > div.slist > ul:nth-child(3) > li:nth-child(4) > div')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
 
@@ -144,6 +151,7 @@ def choose_payment_method():
             }
         except Exception as e:
             print(f"DATA ERROR \n{e}")
+
 
 def wallet():
     wallet_data = choose_payment_method()
