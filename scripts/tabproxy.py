@@ -13,7 +13,6 @@ from selenium.webdriver.common.keys import Keys
 
 #CONSTANS
 
-app = Flask(__name__)
 url = 'https://www.tabproxy.com/login'
 user_login = 'kiracase34@gmail.com'
 user_password = 'proxycase1'
@@ -35,6 +34,7 @@ chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 user_agent = UserAgent()
 chrome_options.add_argument(f"user-agent={user_agent.random}")
 
+
 def get_wallet_data():
     try:
         driver = webdriver.Chrome(options=chrome_options)
@@ -43,7 +43,7 @@ def get_wallet_data():
 
         try:
             pricing = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="header"]/div[1]/div[2]/div[1]'))
+                EC.visibility_of_element_located((By.XPATH, '//div[@class="banner_class"]'))
             )
             pricing.click()
         except Exception as e:
@@ -51,10 +51,19 @@ def get_wallet_data():
 
         try:
             driver.implicitly_wait(10)
-            start_trial = driver.find_element(By.XPATH, '//*[@id="pay_box"]/div/div[1]/div[1]/div')
+            start_trial = driver.find_element(By.XPATH, '//*[@id="pay_box"]/div[3]/div[2]/div/button')
             driver.execute_script("arguments[0].click();", start_trial)
         except Exception as e:
             print(f"START TRIAL ERROR \n{e}")
+
+        try:
+            pay_but = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="checkout_paymethod"]/div[1]/div[1]/div[9]/button[2]'))
+            )
+            pay_but.click()
+        except Exception as e:
+            print(f'ERROR DATA {Exception}')
+
 
         input_email = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//*[@id="order_form_flow"]/div/div/div[6]/input[1]'))
@@ -118,10 +127,7 @@ def get_wallet_data():
         print(f"GET WALLET ERROR -- \n{e}")
         return None
 
-@app.route('/api/selenium/tabproxy')
+
 def wallet():
     wallet_data = get_wallet_data()
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5015)
