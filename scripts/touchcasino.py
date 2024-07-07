@@ -19,8 +19,6 @@ proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -44,26 +42,35 @@ async def input_data(driver, time, XPATH, data):
 
 async def login(driver):
     await driver.maximize_window()
-    await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
+    # await driver.set_single_proxy(f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}")
     await asyncio.sleep(1)
-    await driver.get(url, timeout=60)
+    await driver.get(url, timeout=90)
 
     try:
-        await click(driver, 10, '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"]')
+        await click(driver, 20, '//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"]')
     except Exception as e:
         print(f'ERROR CLICK COOK \n{e}')
 
     try:
-        await click(driver, 30, '//*[@id="root"]/div[1]/div/div[2]/button[1]')
+        await click(driver, 30, '//button[@class="sidebar-login-button"]')
     except Exception as e:
         print(f'ERROR CLICK LOG BUT \n{e}')
 
     try:
+        await asyncio.sleep(3.5)
         await input_data(driver, 30, '//input[@name="email_input"]', user_email)
         await input_data(driver, 30, '//input[@name="password_input"]', user_password)
         await click(driver, 30, '//button[@type="submit"]')
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
+
+    try:
+        await asyncio.sleep(3.5)
+        await click(driver, 30, '/html/body/div[4]/div/div/div[2]/div[2]/label/span[1]/span[2]')
+        await asyncio.sleep(1.5)
+        await click(driver, 10, '//button[@type="button"]')
+    except Exception as e:
+        print(f'ERROR ACCEPT COND \n{e}')
 
     try:
         await click(driver, 30, '//button[@class="deposit-button"]')
