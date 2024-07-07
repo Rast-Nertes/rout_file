@@ -72,9 +72,26 @@ def login(driver):
     except Exception as e:
         print(f"ERROR INPUT DATA \n{e}")
 
+    sleep(2.5)
+
     try:
-        click(driver, 20, '//*[@id="payment_method_wc_payerurl_gateway"]')
-        sleep(3.5)
+        find_click = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="mcc_currency_id"]'))
+        )
+        find_click.click()
+
+        sleep(1.5)
+
+        for _ in range(7):
+            sleep(0.2)
+            actions.send_keys(Keys.ARROW_DOWN).perform()
+
+        sleep(0.5)
+        actions.send_keys(Keys.ENTER).perform()
+    except Exception as e:
+        print(f'ERROR CHOOSE TRC20 \n{e}')
+
+    try:
         click(driver, 20, '//*[@id="terms"]')
     except Exception as e:
         print(f'ERROR INPUT TERMS \n{e}')
@@ -84,11 +101,6 @@ def login(driver):
     except Exception as e:
         print(f"ERROR PLACE ORDER \n{e}")
 
-    try:
-        click(driver, 35, '/html/body/div[2]/div[2]/div/div[2]/div/a[2]')
-    except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
-
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
@@ -97,14 +109,14 @@ def get_wallet():
         try:
             sleep(3.5)
             driver.implicitly_wait(35)
-            address = driver.find_element(By.ID, 'add_val').get_attribute('value')
+            amount = driver.find_element(By.XPATH, '//span[@class="amount"]/span/input').get_attribute('value')
 
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.ID, 'amt_val').text
+            address = driver.find_element(By.XPATH, '//*[@id="content"]/div/div/div/div[2]/div/section/div/div/div/div/div/div/div/div[2]/div/p/span[2]/span/input').get_attribute('value')
 
             return {
                 "address": address,
-                "amount": amount,
+                "amount": amount.replace("USDT_TRON", '').replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
