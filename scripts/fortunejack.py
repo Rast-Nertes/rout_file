@@ -19,14 +19,12 @@ with open('config.txt') as file:
     chrome_path = paths[0].strip()
     ext = paths[1].strip()
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "196.19.121.187"
+proxy_login = 'WyS1nY'
+proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.binary_location = chrome_path
 # options.add_extension(ext)
@@ -41,13 +39,13 @@ async def login(driver):
     try:
 
         await asyncio.sleep(2)
-        input_email = await driver.find_element(By.XPATH, '//*[@id="app"]/div[3]/div/div/div[3]/form/div[2]/div[1]/div/div/input', timeout=20)
+        input_email = await driver.find_element(By.XPATH, '//input[@name="email"]', timeout=20)
         await input_email.write(user_email)
 
-        input_pass = await driver.find_element(By.XPATH, '//*[@id="app"]/div[3]/div/div/div[3]/form/div[2]/div[2]/div/div/input', timeout=20)
+        input_pass = await driver.find_element(By.XPATH, '//input[@name="password"]', timeout=20)
         await input_pass.write(user_password)
 
-        log_but = await driver.find_element(By.XPATH, '//*[@id="app"]/div[3]/div/div/div[3]/form/div[2]/div[3]/button', timeout=20)
+        log_but = await driver.find_element(By.XPATH, '//button[@type="submit"]', timeout=20)
         await asyncio.sleep(2.5)
         await log_but.click()
     except Exception as e:
