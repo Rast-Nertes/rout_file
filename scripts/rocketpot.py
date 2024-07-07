@@ -1,6 +1,5 @@
 import asyncio
 import pyperclip
-from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -101,7 +100,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
