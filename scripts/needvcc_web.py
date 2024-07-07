@@ -9,24 +9,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://needvcc.com/product/buy-admaven-ads-accounts/'
 user_email = "alex37347818@gmail.com"
 user_password = "onvB2mkVH5c"
 
 # CHROME CONSTANS
-
-# proxy_address = "62.3.13.13"
-# proxy_login = '1QjtPL'
-# proxy_password = 'pHSyxy'
-# proxy_port = 8000
-#
-# proxy_options = {
-#     "proxy":{
-#         "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}",
-#         "https": f"http://{proxy_login}:{proxy_password}@{proxy_address}:{proxy_port}"
-#     }
-# }
 
 options = webdriver.ChromeOptions()
 user_agent = UserAgent()
@@ -127,7 +115,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
