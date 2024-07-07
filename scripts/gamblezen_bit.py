@@ -1,7 +1,6 @@
 import asyncio
 import pyperclip
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
@@ -63,12 +62,13 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR DEPOS BUTTON \n{e}')
 
+    await asyncio.sleep(10)
     try:
-        choose_bit = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div[3]/div/div[9]', timeout=30)
+        choose_bit = await driver.find_element(By.XPATH, '//img[@alt="Bitpace"]', timeout=30)
         await asyncio.sleep(1)
         await choose_bit.click()
     except Exception as e:
-        print(f'ERROR CHOOSE TRC20 \n{e}')
+        print(f'ERROR CHOOSE BITPACE \n{e}')
 
     try:
         click_depos_but = await driver.find_element(By.XPATH, '//*[@id="cashierDepositSubmit"]', timeout=20)
@@ -142,4 +142,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
