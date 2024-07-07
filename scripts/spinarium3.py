@@ -54,14 +54,16 @@ def login(driver):
     sleep(3.5)
     driver.get('https://spinarium3.com/deposit')
 
+    # input("press")
+
     try:
-        click(driver, 20, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div[1]/div/div[14]/img')
+        click(driver, 20, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div[1]/div[1]/div/div[5]')
     except:
         return {"status": "0", "ext": "Login error. Check script."}
 
     try:
-        click(driver, 20, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div[2]/div/div[2]/div[1]')
-        click(driver, 20, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div[2]/div/div[3]/button')
+        click(driver, 20, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div[1]')
+        click(driver, 20, '(//button[@type="button"])[8]')
     except Exception as e:
         print(f'ERROR GET ADDRESS \n{e}')
 
@@ -73,17 +75,13 @@ def get_wallet():
         try:
             sleep(2)
             driver.implicitly_wait(60)
-            address_elem = driver.find_element(By.XPATH, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div/div[1]/button')
-            sleep(1.5)
-            address_elem.click()
-
-            sleep(2)
-            address = pyperclip.paste()
+            address_elem = driver.find_element(By.XPATH, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div[3]/div[2]/div/p')
+            address = address_elem.text
             print(address)
 
             sleep(2)
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/main/div[1]/div/div[2]/div/div/div[1]/div[2]').text.split("USDTT")[1]
+            amount = driver.find_element(By.XPATH, '//*[@id="__nuxt"]/div/div/main/div[1]/div/div[2]/div/div/div[2]/div[3]/div[4]/div/p').text
             print(amount)
 
             return {
@@ -92,7 +90,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
