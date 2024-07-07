@@ -1,7 +1,5 @@
-import cloudscraper
 from selenium import webdriver
 from time import sleep
-from twocaptcha import TwoCaptcha
 from flask import Flask, jsonify
 from fake_useragent import UserAgent
 from urllib.parse import urlparse, parse_qs
@@ -13,15 +11,10 @@ from selenium.webdriver.chrome.options import Options
 
 #PAYMENTARS
 
-#CONSTANS
-app = Flask(__name__)
-scrap = cloudscraper.create_scraper()
 user_login = 'kiracase34@gmail.com'
 user_password = 'kiramira123!'
 url = 'https://www.seoclerk.com'
 
-#API CONSTANS
-api_key = '7f728c25edca4f4d0e14512d756d6868'
 
 #CHROME CONSTANS
 options = webdriver.ChromeOptions()
@@ -30,7 +23,6 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#driver = webdriver.Chrome(options= options)
 
 def login(driver):
     driver.get('https://922proxy.com/login.html')
@@ -63,6 +55,7 @@ def login(driver):
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
 
+
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
@@ -80,12 +73,12 @@ def get_wallet():
 
         try:
             crypto_currency = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div[3]/div[1]/div[2]/div[2]/div[1]'))
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div[3]/div[1]/div[2]/div[3]/div[1]'))
             )
             crypto_currency.click()
 
             continue_to_pay_button = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div[3]/div[1]/div[2]/div[2]/div[2]/div[2]/div/div[1]'))
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div[3]/div[3]/div[1]/div[2]/div[3]/div[2]/div[2]/div/div[1]'))
             )
             continue_to_pay_button.click()
         except Exception as e:
@@ -95,22 +88,17 @@ def get_wallet():
         new_window = driver.window_handles[1]
         driver.switch_to.window(new_window)
 
-        trc_20 = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[2]/div/div[1]')
-        driver.execute_script("arguments[0].click();", trc_20)
-
-        driver.execute_script("window.scrollBy(0, 300);")
+        address = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located(
+                (By.XPATH, '//p[@class="address-ph"]'))
+        )
+        address = address.text.replace("USDT", "")
 
         amount = WebDriverWait(driver, 30).until(
             EC.visibility_of_element_located(
-                (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[2]/div[1]/p/i'))
+                (By.XPATH, '//p[@class="total-money"]'))
         )
-        amount = amount.text.replace("USDT", "")
-
-        address = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, '/html/body/div[3]/div[2]/div[2]/div[1]/div[3]/div[7]/div[1]/div[1]/p'))
-        )
-        address = address.text
+        amount = amount.text
 
         return {
             "address": address,
@@ -118,6 +106,8 @@ def get_wallet():
             "currency": "usdt"
         }
 
+
 def wallet():
     wallet_data = get_wallet()
+    print(wallet_data)
     return jsonify(wallet_data)
