@@ -62,10 +62,10 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(10)
-            address = driver.find_element(By.XPATH, '//*[@id="usdt_form"]/i/a').text
+            address = driver.find_element(By.XPATH, '//a[@class="wallet-address"]').get_attribute('href').split('tron:')[1]
 
             driver.implicitly_wait(10)
-            amount = driver.find_element(By.CSS_SELECTOR, '#usdt_form > b').text.replace("Tether TRC20", '').replace("USDT", "").replace(" ", '')
+            amount = driver.find_element(By.XPATH, '//*[@id="usdt.trc20_form"]/b').text.replace("Tether TRC20", '').replace("USDT", "").replace(" ", '')
 
             return {
                 "address": address,
@@ -73,7 +73,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
