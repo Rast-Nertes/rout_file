@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # CONSTANS
-#form_token_login
+
 url = 'https://dino-money.mom'
 user_email = "kiracase34@gmail.com"
 user_password = "kiramira123"
@@ -21,9 +21,9 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
-proxy_address = "62.3.13.13"
-proxy_login = '1QjtPL'
-proxy_password = 'pHSyxy'
+proxy_address = "45.130.254.133"
+proxy_login = 'K0nENe'
+proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 proxy_options = {
