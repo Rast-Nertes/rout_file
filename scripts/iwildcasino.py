@@ -53,7 +53,7 @@ async def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
-        choose_bit = await driver.find_element(By.XPATH, '//*[@id="walletDepositPaymentList"]/div/div[2]/ul/li[6]/button', timeout=20)
+        choose_bit = await driver.find_element(By.XPATH, '//img[@alt="Bitpace"]', timeout=20)
         await asyncio.sleep(1)
         await choose_bit.click()
     except Exception as e:
@@ -122,7 +122,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
