@@ -67,19 +67,19 @@ def login(driver):
         print(f'ERROR LOGIN \n{e}')
 
     try:
-        click(driver, 20, '//*[@id="13"]')
+        click(driver, 20, '//*[@id="14"]')
         sleep(1)
 
-        click(driver, 20, '//*[@id="depositPromocode"]/div[3]/button[1]')
-    except Exception as e:
-        print(f'ERROR INPUT AMOUNT\n{e}')
-
-    try:
         click(driver, 20, '//*[@id="depositPromocode"]/div[4]/div/div/p')
         sleep(1)
         click(driver, 20, '//*[@id="depositPromocode"]/div[4]/div/div[2]/div[7]')
     except Exception as e:
-        print(f'ERROR CHOOSE NET \n{e}')
+        print(f'ERROR Choose net\n{e}')
+
+    try:
+        click(driver, 20, '//*[@id="depositPromocode"]/div[3]/button[1]')
+    except Exception as e:
+        print(f'ERROR input min amount \n{e}')
 
     try:
         click(driver, 20, '//*[@id="depositPromocode"]/div[9]/button')
@@ -105,7 +105,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
