@@ -1,6 +1,4 @@
 import asyncio
-import pyperclip
-from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -21,8 +19,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -32,7 +28,6 @@ with open('config.txt') as file:
     ext = paths[1].strip()
 
 options.binary_location = chrome_path
-# options.add_extension(ext)
 
 
 async def click(driver, time, XPATH):
@@ -90,7 +85,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
