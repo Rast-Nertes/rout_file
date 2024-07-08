@@ -20,8 +20,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 with open('config.txt') as file:
@@ -52,7 +50,7 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
-        await click(driver, 40, '//*[@id="vue-integration"]/div/div[2]/div[1]/div/div/div[2]/div/table/tbody/tr[5]/td[6]/div/button')
+        await click(driver, 40, '//*[@id="vue-integration"]/div/div/div[1]/div[1]/div/div/div[2]/div/div')
     except Exception as e:
         print(f"ERROR CLICK LOG \n{e}")
 
@@ -60,27 +58,21 @@ async def login(driver):
         await input_data(driver, 30, '//*[@id="email"]', user_email)
         await input_data(driver, 20, '//*[@id="password"]', user_password)
         await asyncio.sleep(2.5)
-        await click(driver, 30, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
+        await click(driver, 10, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
         await asyncio.sleep(2.5)
-        await click(driver, 30, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
+        await click(driver, 3.5, '/html/body/div[6]/div[2]/div/div[1]/div/div[2]/div[2]/div/form/footer/div/button')
     except Exception as e:
         print(f'ERROR LOG \n{e}')
 
     try:
-        await click(driver, 20, '//*[@id="vue-integration"]/div/div[2]/div[1]/div/div/div[2]/div/table/tbody/tr[5]/td[6]/div/a/button/span')
+        await click(driver, 20, '//*[@id="vue-integration"]/div/div/div[2]/div[1]/div/div/div[2]/div/table/tbody/tr[6]/td[6]/div/button')
     except Exception as e:
-        find_input_tag = await driver.find_element(By.XPATH,
-                                                   '//*[@id="email"]',
-                                                   timeout=10)
-        if find_input_tag:
-            return {"status": "0", "ext": "Login error. Check script."}
-        else:
-            print(f"ERROR DEPOS BUT \n{e}")
+        print(f"ERROR CHOOSE TRC20 \n{e}")
 
     try:
         await click(driver, 20, '//*[@id="personal-container"]/div/div[1]/div/div[1]/div[2]/div[6]')
     except Exception as e:
-        print(f"ERROR CHOOSE TRC20 \n{e}")
+        print(f'ERROR CLICK TRC20 \n{e}')
 
 
 async def get_wallet():
@@ -94,16 +86,18 @@ async def get_wallet():
             address_elem = await driver.find_element(By.XPATH, '//*[@id="personal-container"]/div/div[2]/div[1]/div/div[1]/div/span', timeout=30)
             address = await address_elem.text
 
+            # input("press")
+
             amount_elem = await driver.find_element(By.XPATH, '//*[@id="personal-container"]/div/div[1]/div/div[2]/span', timeout=30)
             amount = await amount_elem.text
 
             return {
                 "address": address,
-                "amount": amount.replace("Количество | min ", '').replace(" ", ''),
+                "amount": amount.replace("profile.wallet.choose-wallet | min ", '').replace(" ", ''),
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
