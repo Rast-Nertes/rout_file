@@ -1,7 +1,6 @@
 import asyncio
 import pyperclip
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
@@ -58,7 +57,7 @@ async def login(driver):
     await driver.get('https://www.catcasino.com/en/profile/cash')
 
     try:
-        choose_trc20 = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[5]/div/div[2]/div[2]/div[2]/div[1]/div[2]/div/ul/li[6]/button/span', timeout=30)
+        choose_trc20 = await driver.find_element(By.XPATH, '(//img[@alt="USDT TRC-20"])[2]', timeout=30)
         await asyncio.sleep(1)
         await choose_trc20.click()
     except Exception as e:
@@ -71,13 +70,13 @@ async def get_wallet():
 
         await asyncio.sleep(4.5)
         try:
-            copy_address = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[5]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/div[1]/div/div/button/span', timeout=30)
+            copy_address = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[6]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/div[1]/div/div/button', timeout=30)
             await asyncio.sleep(2)
             await copy_address.click()
             await asyncio.sleep(3.5)
             address = pyperclip.paste()
 
-            amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[5]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/span[1]', timeout=30)
+            amount_elem = await driver.find_element(By.XPATH, '/html/body/div[1]/div/div[6]/div/div[2]/div[2]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/span[1]', timeout=30)
             amount = await amount_elem.text
 
             return {
@@ -86,7 +85,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
