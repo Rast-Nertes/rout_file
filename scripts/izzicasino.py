@@ -1,6 +1,5 @@
 import asyncio
 import pyperclip
-from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -55,12 +54,18 @@ async def login(driver):
     try:
         await input_data(driver, 30, '//input[@name="email"]', user_email)
         await input_data(driver, 30, '//input[@name="password"]', user_password)
-        await click(driver, 30, '//*[@id="popup-sign_in-to_sign_in"]')
     except Exception as e:
         print(f'ERROR CAPTCHA SOLVE \n{e}')
 
+    while True:
+        try:
+            await click(driver, 10, '//button[@type="submit"]')
+            await asyncio.sleep(1)
+        except:
+            break
+
     try:
-        await click(driver, 30, '//*[@id="popup-deposit"]/div[2]/div/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div/div[4]/div[1]')
+        await click(driver, 30, '//*[@id="popup-deposit"]/div[2]/div/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div/div[4]')
     except Exception as e:
         print(f'ERROR CHOOSE CRYPTO \n{e}')
 
@@ -85,11 +90,11 @@ async def get_wallet():
 
             return {
                 "address": address,
-                "amount": amount.replace("USDT", '').replace(" ", ''),
+                "amount": amount.replace("USDT", '').replace("\xa0", '').replace(" ", ""),
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
