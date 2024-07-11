@@ -78,7 +78,7 @@ async def login(driver):
 
     while True:
         try:
-            await click(driver, 10, '//img[@alt="USDTether TRC20"]')
+            await click(driver, 5, '//img[@alt="USDTether TRC20"]')
             await asyncio.sleep(1.5)
             break
         except Exception as e:
