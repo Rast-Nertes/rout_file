@@ -14,15 +14,8 @@ from selenium.webdriver.chrome.options import Options
 
 #CONSTANS
 
-app = Flask(__name__)
-url = 'https://www.musicianmadness.com/accessories/korg-metronome-tuner-with-contact-microphone-tm60whtc/'
+url = 'https://www.musicianmadness.com/drum-workshop-mini-tunable-conga-bottom-gold/'
 user_login = 'kiracase34@gmail.com'
-
-#API CONSTANS
-
-API_KEY = '7f728c25edca4f4d0e14512d756d6868'
-API_URL = 'http://rucaptcha.com/in.php'
-API_RESULT_URL = f'http://rucaptcha.com/res.php?key={API_KEY}&action=get'
 
 #CHROME OPTIONS
 
@@ -52,7 +45,6 @@ proxy_options = {
     }
 }
 
-#driver = webdriver.Chrome(options=options, seleniumwire_options=proxy_options)
 
 def get_wallet():
     with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
@@ -60,7 +52,7 @@ def get_wallet():
         driver.maximize_window()
         actions = ActionChains(driver)
 
-        #Слипы лучше не трогать, клики не успевают обрабатываться
+        # Слипы лучше не трогать, клики не успевают обрабатываться
 
         try:
             driver.implicitly_wait(20)
@@ -185,9 +177,10 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
+
 
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
