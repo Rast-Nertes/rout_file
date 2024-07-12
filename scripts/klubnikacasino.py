@@ -37,16 +37,16 @@ proxy_options = {
 }
 
 
-def captcha_solver():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key(api_key)
-    solver.set_website_url(url)
-    solver.set_website_key(site_key)
-    solver.set_soft_id(0)
-
-    g_response = solver.solve_and_return_solution()
-    return g_response
+# def captcha_solver():
+#     solver = recaptchaV2Proxyless()
+#     solver.set_verbose(1)
+#     solver.set_key(api_key)
+#     solver.set_website_url(url)
+#     solver.set_website_key(site_key)
+#     solver.set_soft_id(0)
+#
+#     g_response = solver.solve_and_return_solution()
+#     return g_response
 
 
 def click(driver, time, XPATH):
@@ -87,8 +87,8 @@ def login(driver):
 
     try:
         input_data(driver, 20, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[1]/div[2]/div/input', user_email)
-        click(driver, 20, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/fieldset/div[3]/div[1]/label')
         click(driver, 20, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/section[2]/div[2]/form/div/button')
+        click(driver, 20, '//*[@id="__layout"]/div/main/div/div/div/section/div/section/section/div/div/div/div/div[2]/div[1]/button')
     except Exception as e:
         print(f'ERROR INPUT EMAIL \n{e}')
 
