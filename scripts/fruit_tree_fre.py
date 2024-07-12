@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 
 # CONSTANS
 
-url = 'https://fruit-tree.one/login'
+url = 'https://s1.fruit-tree.ink/login'
 user_email = "kiracase34@gmail.com"
 user_password = "E9nvJLtnYzSr296"
 
