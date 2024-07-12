@@ -60,11 +60,18 @@ def login(driver):
         print(f"ERROR NEXT BUT \n{e}")
 
     try:
+        click(driver, 10, '//*[@id="gdpr_accept_button"]')
+    except:
+        pass
+
+    try:
         click(driver, 35, '//*[@id="TypeCurr_msdd"]')
         sleep(1.5)
 
         driver.implicitly_wait(20)
         choose_tc20 = driver.find_element(By.XPATH, '//span[@class="ddlabel" and text()="USDT"]')
+
+        sleep(1.5)
         choose_tc20.click()
         sleep(2.5)
     except Exception as e:
