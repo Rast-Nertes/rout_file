@@ -98,9 +98,9 @@ def login(driver):
 
     try:
         driver.implicitly_wait(30)
-        click_send_but = driver.find_element(By.CSS_SELECTOR, 'div.single-wrap > div > div.modal-content-payments-single > div > div.form-cont > form > button')
+        click_send_but = driver.find_element(By.CSS_SELECTOR, 'div > div.form-cont > form > button')
         click_send_but.click()
-        click(driver, 30, '//*[@id="root"]/div/div/div[4]/div/div[2]/div/button[1]')
+        # click(driver, 30, '//*[@id="root"]/div/div/div[4]/div/div[2]/div/button[1]')
     except Exception as e:
         print(f'ERROR SEND BUT \n{e}')
 
@@ -119,7 +119,7 @@ def login(driver):
         sleep(1.5)
         select_click.click()
 
-        for _ in range(7):
+        for _ in range(10):
             actions.send_keys(Keys.ARROW_DOWN).perform()
             sleep(0.5)
 
@@ -129,8 +129,8 @@ def login(driver):
         print(f'ERROR CHOOSE TRC20 \n{e}')
 
     try:
-        click(driver, 30, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form/div[5]/div/div/label/span[1]/input')
-        click(driver, 30, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form/div[6]/div/button')
+        click(driver, 30, '//input[@type="checkbox"]')
+        click(driver, 30, '//button[@type="submit"]')
     except Exception as e:
         print(f'ERROR CHECKBOX \n{e}')
 
@@ -147,7 +147,7 @@ def get_wallet():
             address = driver.find_element(By.XPATH, '//*[@id="mui-9"]').get_attribute('value')
 
             driver.implicitly_wait(20)
-            amount = driver.find_element(By.XPATH, '//*[@id="root"]/div/div/div[2]/div/div/div[2]/form[1]/div[1]/div/div/div/div/div/div/div/h2').text
+            amount = driver.find_element(By.XPATH, '//div/h2').text
 
             return {
                 "address": address,
