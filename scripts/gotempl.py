@@ -151,9 +151,11 @@ def get_wallet():
 
         try:
             driver.implicitly_wait(60)
-            choose_trc20 = driver.find_element(By.XPATH, '//*[@id="auth"]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td/div/form/table[1]/tbody/tr[3]/td/table/tbody/tr/td/table/tbody/tr/td[2]/label[2]/table')
+            choose_trc20 = driver.find_element(By.XPATH, '//label[@for="USDTTRC"]')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", choose_trc20)
+
+            sleep(1.5)
 
             driver.implicitly_wait(20)
             make_payment_2 = driver.find_element(By.CSS_SELECTOR, 'table:nth-child(4) > tbody > tr > td > table > tbody > tr > td > div > form > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(1) > input')
