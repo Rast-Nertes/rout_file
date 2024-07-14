@@ -21,8 +21,6 @@ proxy_password = '8suHN9'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
 
@@ -45,7 +43,7 @@ async def login(driver):
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
 
-    await asyncio.sleep(3.5)
+    await asyncio.sleep(5)
     await driver.get('https://winlegends.co/de/wallet/deposit')
     await asyncio.sleep(1.5)
 
