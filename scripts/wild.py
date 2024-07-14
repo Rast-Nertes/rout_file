@@ -1,6 +1,5 @@
 import asyncio
 from flask import jsonify
-from anticaptchaofficial.hcaptchaproxyless import *
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
 from time import sleep
@@ -25,8 +24,6 @@ proxy_password = 'uw7RQ3'
 proxy_port = 8000
 
 options = webdriver.ChromeOptions()
-user_agent = UserAgent()
-options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.binary_location = chrome_path
 
@@ -38,7 +35,8 @@ async def login(driver):
     await driver.maximize_window()
 
     try:
-        but_to_log = await driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[3]/div/header/div/div[2]/div/div/button[1]', timeout=20)
+        # input("press")
+        but_to_log = await driver.find_element(By.XPATH, '//*[@id="app-body"]/div[3]/header/div/div[2]/div/button[1]', timeout=20)
         await asyncio.sleep(1)
         await but_to_log.click()
 
@@ -48,41 +46,25 @@ async def login(driver):
         input_pass = await driver.find_element(By.ID, 'password', timeout=20)
         await input_pass.write(user_password)
 
-        log_but = await driver.find_element(By.XPATH, '//*[@id="headlessui-dialog-panel-:r4:"]/div[2]/div[2]/div/form/div[2]/div[1]/button', timeout=20)
+        log_but = await driver.find_element(By.XPATH, '//button[@type="submit"]', timeout=20)
         await asyncio.sleep(2.5)
         await log_but.click()
     except Exception as e:
         print(f'ERROR LOG \n{e}')
 
-    try:
-        choose_wal = await driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[3]/div/header/div/div[2]/div/div[1]/div[2]/button', timeout=20)
-        await asyncio.sleep(1.5)
-        await choose_wal.click()
-    except Exception as e:
-        print(f'error choose wal \n{e}' )
-
-    try:
-        choose_sect = await driver.find_element(By.XPATH, '//*[@id="headlessui-combobox-button-:rh:"]', timeout=20)
-        await asyncio.sleep(1.5)
-        await choose_sect.click()
-
-        choose_net = await driver.find_element(By.XPATH, '//*[@id="headlessui-combobox-option-:rk:"]', timeout=20)
-        await asyncio.sleep(1.5)
-        await choose_net.click()
-    except Exception as e:
-        print(f'error choose trc20 \n{e}')
+    await asyncio.sleep(5)
+    await driver.get('https://wild.io/?m=wallet&a=deposit&c=USDT&p=TRC20')
 
 
 async def get_wallet():
     async with webdriver.Chrome(options=options) as driver:
         await login(driver)
 
-        await asyncio.sleep(4.5)
         try:
-            address_elem = await driver.find_element(By.XPATH, '//*[@id="headlessui-dialog-panel-:r9:"]/div[2]/div/div[2]/div[2]/div/div[4]/div[2]/div/div/div[1]/div/div/div[1]/p[2]', timeout=30)
+            address_elem = await driver.find_element(By.XPATH, '/html/body/div[6]/div/div/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div[2]/div/div[1]', timeout=30)
             address = await address_elem.text
 
-            amount_elem = await driver.find_element(By.XPATH, '//*[@id="headlessui-dialog-panel-:r9:"]/div[2]/div/div[2]/div[2]/div/div[4]/div[2]/div/div/div[2]/span[1]/span[1]', timeout=30)
+            amount_elem = await driver.find_element(By.XPATH, '//*[@id="headlessui-dialog-panel-:rb:"]/div/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div/div/span/span/span', timeout=30)
             amount = await amount_elem.text
 
             return {
@@ -91,7 +73,7 @@ async def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"ERROR DATA \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
