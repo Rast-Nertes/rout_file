@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 #
 
 #CONSTANS
-app = Flask(__name__)
+# app = Flask(__name__)
 user_login = 'kiracase34@gmail.com'
 user_password = 'Kirakira123'
 url = 'https://accounts.mobidea.com/idp/login'
@@ -29,7 +29,6 @@ options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 options.headless = False
 
-#   driver = webdriver.Chrome(options= options)
 
 def login(driver):
     driver.get(url)
@@ -49,9 +48,12 @@ def login(driver):
             EC.visibility_of_element_located((By.XPATH, '//*[@id="form"]/div[4]/input'))
         )
         sleep(3)
+
+        # input("press")
         button.click()
     except Exception as e:
         print(f"INPUT ERROR \n{e}")
+
 
 def get_wallet():
     with webdriver.Chrome(options) as driver:
@@ -136,11 +138,8 @@ def get_wallet():
             "currency": "usdt"
         }
 
-@app.route('/api/selenium/mobidea')
+
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    app.run(use_reloader=False, debug=True, port=5029)
