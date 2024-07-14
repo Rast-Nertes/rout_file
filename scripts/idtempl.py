@@ -22,61 +22,112 @@ user_agent = UserAgent()
 options.add_argument(f"user-agent={user_agent.random}")
 options.add_argument("--disable-save-password-bubble")
 
-def solve_captcha():
-    solver = recaptchaV2Proxyless()
-    solver.set_verbose(1)
-    solver.set_key("6ab87383c97cb688c42b47e81c96bbcc")
-    solver.set_website_url(url)
-    solver.set_website_key("6LfmjcAiAAAAAA3IZHNxmhNZX6Ls01dg3RfAhZlK")
-    solver.set_soft_id(0)
 
-    g_response = solver.solve_and_return_solution()
-    return g_response
+with open('config.txt') as file:
+    paths = file.readlines()
+    chrome_path = paths[0].strip()
+    api_key = paths[3].strip()
+    ext = paths[1].strip()
+
+options.add_extension(ext)
+
+
+def click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    elem_click.click()
+
+
+def js_click(driver, time, XPATH):
+    driver.implicitly_wait(time)
+    elem_click = driver.find_element(By.XPATH, XPATH)
+    sleep(1.5)
+    driver.execute_script("arguments[0].click();", elem_click)
+
+
+def wait_visibility(driver, time, XPATH):
+    WebDriverWait(driver, time).until(
+        EC.visibility_of_element_located((By.XPATH, XPATH))
+    )
+    sleep(2.5)
+
+
+def input_data(driver, time, XPATH, data):
+    driver.implicitly_wait(time)
+    elem_input = driver.find_element(By.XPATH, XPATH)
+    elem_input.clear()
+    elem_input.send_keys(data)
+
+
+def api_connect(driver):
+    sleep(1.5)
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if "2Cap" in driver.title:
+            break
+
+    try:
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveInvisibleRecaptchaV2"]')
+        js_click(driver, 30, '//*[@id="autoSolveRecaptchaV3"]')
+        js_click(driver, 30, '//*[@id="autoSolveHCaptcha"]')
+
+        input_data(driver, 30, '/html/body/div/div[1]/table/tbody/tr[1]/td[2]/input', api_key)
+        click(driver, 30, '//*[@id="connect"]')
+        sleep(4.5)
+        driver.switch_to.alert.accept()
+    except Exception as e:
+        print(f'ERROR CLICK \n{e}')
+
+    windows = driver.window_handles
+    for win in windows:
+        driver.switch_to.window(win)
+        sleep(1.5)
+        if not("2Cap" in driver.title):
+            break
 
 
 def login(driver):
+    api_connect(driver)
     driver.get(url)
     driver.maximize_window()
 
-    captcha_code = solve_captcha()
-    input_captcha_code = driver.find_element(By.TAG_NAME, 'textarea')
-    driver.execute_script("arguments[0].innerHTML = arguments[1]", input_captcha_code, captcha_code)
-    sleep(1.5)
+    try:
+        input_data(driver, 15, '(//form/div/div/div/input)[1]', user_email)
+        input_data(driver, 10, '(//form/div/div/div/input)[2]', user_password)
+    except Exception as e:
+        print(f'ERROR INPUT LOG DATA \n{e}')
 
     try:
-        driver.implicitly_wait(30)
-        input_email = driver.find_element(By.CSS_SELECTOR, 'div.xoo-el-section.xoo-el-active > div > form > div.xoo-aff-group.xoo-aff-cont-text.one.xoo-aff-cont-required.xoo-el-username_cont > div > input')
-        input_email.clear()
-        input_email.send_keys(user_email)
-
-        driver.implicitly_wait(10)
-        input_password = driver.find_element(By.CSS_SELECTOR, 'div.xoo-el-section.xoo-el-active > div > form > div.xoo-aff-group.xoo-aff-cont-password.one.xoo-aff-cont-required.xoo-el-password_cont > div > input')
-        input_password.clear()
-        input_password.send_keys(user_password)
-
-        driver.implicitly_wait(10)
-        login_button = driver.find_element(By.CSS_SELECTOR, 'div.xoo-el-form-container.xoo-el-form-inline > div.xoo-el-section.xoo-el-active > div > form > button')
-        sleep(1.5)
-        driver.execute_script("arguments[0].click();", login_button)
+        time_loop = 0
+        while True:
+            driver.implicitly_wait(10)
+            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
+            if ("ена" in find_check) or ("lve" in find_check):
+                break
+            else:
+                if time_loop > 120:
+                    return {"status": "0", "ext": "CAPTCHA ERROR"}
+                time_loop += 5
+                sleep(5)
+                print("Wait 5 seconds, captcha solving...")
     except Exception as e:
-        print(f"LOGIN ERROR \n{e}")
+        print(f'ERROR CHECKBOX ')
+
+    try:
+        click(driver, 10, '(//button[@type="submit"])[2]')
+    except Exception as e:
+        print(f'ERROR CLICK LOG BUT \n{e}')
 
 
 def get_wallet():
     with webdriver.Chrome(options=options) as driver:
         login(driver)
 
-        while True:
-            try:
-                driver.implicitly_wait(5)
-                find_error = driver.find_element(By.CSS_SELECTOR, 'div.xoo-el-form-container.xoo-el-form-inline > div.xoo-el-section.xoo-el-active > div > div > div > strong').text
-                if "Error" in find_error:
-                    login(driver)
-            except:
-                break
-                pass
-
-        sleep(2)
+        sleep(7.5)
         driver.get('https://idtempl.com/product/bangladesh-id-card-psd-template/?swcfpc=1')
 
         try:
@@ -84,12 +135,20 @@ def get_wallet():
             buy_now_button = driver.find_element(By.CSS_SELECTOR, '#shop-now > button.tbay-buy-now.button')
             sleep(1.5)
             driver.execute_script("arguments[0].click();", buy_now_button)
+        except Exception as e:
+            print(f'ERROR BUY BUT \n{e}')
 
+        sleep(1.5)
+
+        try:
             driver.implicitly_wait(10)
             input_count = driver.find_element(By.XPATH, '/html/body/div[2]/div[4]/section/div/div/div/div/form/div/div[1]/div[1]/div[2]/div[3]/div/span/input')
             input_count.clear()
             input_count.send_keys('1')
+        except Exception as e:
+            print(f'ERROR INPUT COUNT \n{e}')
 
+        try:
             driver.implicitly_wait(10)
             update_cart = driver.find_element(By.CSS_SELECTOR, 'div.cart-bottom.clearfix.actions > div.update-cart.pull-right > input')
             sleep(1.5)
@@ -101,7 +160,7 @@ def get_wallet():
             sleep(1.5)
             driver.execute_script("arguments[0].click();", proceed_button)
         except Exception as e:
-            print(f"INPUT COUNT ERROR \n{e}")
+            print(f"UPDATE CART ERROR \n{e}")
 
         try:
             driver.implicitly_wait(10)
@@ -110,11 +169,12 @@ def get_wallet():
             input_zipcode.send_keys("12345")
             sleep(1.5)
 
-            driver.implicitly_wait(10)
-            choose_nowpayments = driver.find_element(By.ID, 'payment_method_nowpayments')
-            sleep(1.5)
-            driver.execute_script("arguments[0].click();", choose_nowpayments)
-            sleep(1.5)
+            # driver.implicitly_wait(10)
+            # choose_nowpayments = driver.find_element(By.ID, 'payment_method_nowpayments')
+            # sleep(1.5)
+            # driver.execute_script("arguments[0].click();", choose_nowpayments)
+
+            sleep(7.5)
 
             driver.implicitly_wait(10)
             ticket = driver.find_element(By.ID, 'terms')
@@ -127,6 +187,7 @@ def get_wallet():
             driver.execute_script("arguments[0].click();", place_order)
         except Exception as e:
             print(f"ERROR PLACE ORDER BUTTON \n{e}")
+
 
         try:
             driver.implicitly_wait(20)
