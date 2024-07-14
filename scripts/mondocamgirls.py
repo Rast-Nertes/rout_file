@@ -72,25 +72,23 @@ def get_wallet():
         login(driver)
 
         try:
-            click(driver, 60, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div/label[10]/span[2]/div')
-            sleep(1)
-            click(driver, 20, '//*[@id="__next"]/div/div/div[2]/div[5]/div/div[2]/div/button')
+            click(driver, 20, '//button[@data-test="continue-button"]')
         except Exception as e:
             print(f'ERROR CHOOSE USDT \n{e}')
 
         try:
-            input_data(driver, 35, '//*[@id="__next"]/div/div/div[2]/div[1]/form/div/div[2]/input', user_email)
+            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]/span[2]/div')
             sleep(1)
-            click(driver, 20, '//*[@id="__next"]/div/div/div[2]/div[1]/div[2]/button')
-        except Exception as e:
-            print(f'ERROR INPUT EMAIL \n{e}')
-
-        try:
-            click(driver, 40, '//*[@id="__next"]/div/div/div[2]/div[3]/div/div/label[3]')
-            sleep(1)
-            click(driver, 20, '//*[@id="__next"]/div/div/div[2]/div[4]/div/div[2]/div/button')
+            click(driver, 20, '//button[@data-test="continue-button"]')
         except Exception as e:
             print(f'ERROR CHOOSE NET \n{e}')
+
+        try:
+            input_data(driver, 35, '//input[@name="email"]', user_email)
+            sleep(1)
+            click(driver, 20, '//button[@data-test="continue-button"]')
+        except Exception as e:
+            print(f'ERROR INPUT EMAIL \n{e}')
 
         try:
             driver.set_window_size(1000, 500)
