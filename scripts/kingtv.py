@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 #Acquiring.obmenka
 
 #CONSTANS
-app = Flask(__name__)
+
 user_login = 'kiracase34@gmail.com'
 user_password = 'wC$Hp9Ws2#4iLTN'
 url = 'https://kingtv.org/'
@@ -206,12 +206,8 @@ def get_wallet():
             "currency": "usdt"
         }
 
-@app.route('/api/selenium/kingtv')
+
 def wallet():
     wallet_data = get_wallet()
-    #print(wallet_data)
+    print(wallet_data)
     return jsonify(wallet_data)
-
-if __name__ == "__main__":
-    #wallet()
-    app.run(use_reloader=False, debug=True, port=5028)
