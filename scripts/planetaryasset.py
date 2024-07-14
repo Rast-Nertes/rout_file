@@ -93,7 +93,7 @@ def get_wallet():
                 "currency": "usdt"
             }
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":f"error data {e}"}
 
 
 def wallet():
