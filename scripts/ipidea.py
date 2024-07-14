@@ -1,4 +1,3 @@
-import requests
 from seleniumwire import webdriver
 from time import sleep
 from flask import Flask, jsonify
