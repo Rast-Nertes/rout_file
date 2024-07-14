@@ -1,4 +1,3 @@
-import pyautogui
 from flask import jsonify
 from seleniumwire import webdriver
 from time import sleep
