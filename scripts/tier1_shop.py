@@ -126,7 +126,7 @@ def get_wallet():
             }
 
         except Exception as e:
-            print(f"DATA ERROR \n{e}")
+            return {"status":"0", "ext":f"error data {e}"}
 
 
 def wallet():
