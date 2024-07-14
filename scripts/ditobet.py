@@ -186,4 +186,3 @@ def wallet():
     wallet_data = get_wallet()
     print(wallet_data)
     return jsonify(wallet_data)
-
