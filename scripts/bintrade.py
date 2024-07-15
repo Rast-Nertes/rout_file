@@ -1,6 +1,4 @@
 import asyncio
-import pyperclip
-from twocaptcha import TwoCaptcha
 from flask import jsonify
 from selenium_driverless import webdriver
 from selenium_driverless.types.by import By
@@ -66,7 +64,7 @@ async def login(driver):
 
     try:
         await asyncio.sleep(3.5)
-        await click(driver, 30, '/html/body/div[2]/div[2]/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div[2]/label[2]')
+        await click(driver, 30, '/html/body/div[2]/div[2]/div[1]/div/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div[2]/label[3]')
         await click(driver, 30, '//input[@class="yellow_btn filled"]')
     except Exception as e:
         find_input_tag = await driver.find_element(By.XPATH, '//*[@id="loginform-email"]', timeout=10)
@@ -76,9 +74,8 @@ async def login(driver):
             print(f"ERROR DEPOS BUT \n{e}")
 
     try:
-        # input()
         await asyncio.sleep(3)
-        find_trc20 = await driver.find_element(By.XPATH, '/html/body/div[4]/div[2]/div/div[3]/div/div/div/div[11]', timeout=20)
+        find_trc20 = await driver.find_element(By.XPATH, '(//img[@alt="USDT (TRC20)"])[2]', timeout=20)
         await asyncio.sleep(1)
         await find_trc20.click()
         # await click(driver, 30, '//*[@id="currency-15"]')
@@ -115,4 +112,3 @@ def wallet():
     wallet_data = asyncio.run(get_wallet())
     print(wallet_data)
     return jsonify(wallet_data)
-
