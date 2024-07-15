@@ -49,11 +49,16 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
+        await asyncio.sleep(3.5)
         await click(driver, 20, '//*[@id="side-menu"]/div/div[2]/div/span[2]/a')
+    except Exception as e:
+        print(f'ERROR BUT TO LOG \n{e}')
+
+    try:
         await asyncio.sleep(4.5)
         await input_data(driver, 40,'//*[@id="login-modal"]/div/div/div[2]/div/form/div[1]/input', user_email)
         await input_data(driver, 20,'//*[@id="login-modal"]/div/div/div[2]/div/form/div[3]/input', user_password)
-        await click(driver, 20, '//*[@id="login-modal"]/div/div/div[2]/div/form/button')
+        await click(driver, 20, '(//button[@type="submit"])[2]')
     except Exception as e:
         print(f'ERROR LOGIN \n{e}')
 
