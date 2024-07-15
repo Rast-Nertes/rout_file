@@ -56,6 +56,7 @@ async def login(driver):
         print(f'ERROR SIGN IN BUTTON \n{e}')
 
     try:
+        await asyncio.sleep(1.5)
         await input_data(driver, 20, '//*[@id="UserName"]', user_email)
         await input_data(driver, 20, '//*[@id="Password"]', user_password)
         await click(driver, 20, '/html/body/div[3]/div/div/section/div/div[1]/form/button')
