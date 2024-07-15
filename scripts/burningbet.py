@@ -49,10 +49,11 @@ async def login(driver):
     await driver.get(url, timeout=60)
 
     try:
+        await asyncio.sleep(2.5)
         await input_data(driver, 20, '//*[@id="login"]', user_email)
         await input_data(driver, 20, '//*[@id="password"]', user_password)
         await click(driver, 29, '//*[@id="popupSubmit"]')
-    except:
+    except Exception as e:
         print(f"ERROR LOGIN \n{e}")
 
     try:
