@@ -119,22 +119,6 @@ def login(driver):
         print(f'ERROR INPUT DATA \n {e}')
 
     try:
-        time_loop = 0
-        while True:
-            driver.implicitly_wait(10)
-            find_check = driver.find_element(By.XPATH, '//div[@class="captcha-solver-info"]').text
-            if ("ена" in find_check) or ("lve" in find_check):
-                break
-            else:
-                if time_loop > 120:
-                    return {"status": "0", "ext": "CAPTCHA ERROR"}
-                time_loop += 5
-                sleep(5)
-                print("Wait 5 seconds, captcha solving...")
-    except Exception as e:
-        print(f'ERROR CHECKBOX')
-
-    try:
         driver.implicitly_wait(10)
         login_button = driver.find_element(By.ID, 'recaptcha-submit')
         sleep(1.5)
