@@ -15,15 +15,15 @@ user_password = 'a40d37a'
 
 #PROXY_CONSTANS
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "45.142.31.82"
+proxy_login = 'EeHUrd'
+proxy_password = 'xBJeLY'
 proxy_port = 8000
 
 proxy_options = {
     "proxy":{
-        "http":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000",
-        "https":f"http://{proxy_login}:{proxy_password}@45.130.254.133:8000"
+        "http":f"http://{proxy_login}:{proxy_password}@{proxy_address}:8000",
+        "https":f"http://{proxy_login}:{proxy_password}@{proxy_address}:8000"
     }
 }
 
