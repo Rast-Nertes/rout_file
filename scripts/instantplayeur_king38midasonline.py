@@ -1,5 +1,5 @@
 from flask import jsonify
-from selenium import webdriver
+from seleniumwire import webdriver
 from time import sleep
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -25,11 +25,10 @@ with open('config.txt') as file:
     api_key = paths[3].strip()
     ext = paths[1].strip()
 
-proxy_address = "45.130.254.133"
-proxy_login = 'K0nENe'
-proxy_password = 'uw7RQ3'
+proxy_address = "45.142.31.82"
+proxy_login = 'EeHUrd'
+proxy_password = 'xBJeLY'
 proxy_port = 8000
-
 
 proxy_options = {
     "proxy":{
@@ -108,7 +107,7 @@ def login(driver):
 
 
 def get_wallet():
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(options=options, seleniumwire_options=proxy_options) as driver:
         log = login(driver)
         if log:
             return log
